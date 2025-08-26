@@ -163,7 +163,7 @@ const BillingPage = () => {
             <div className="space-y-6">
                 {/* Header with Actions */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <h1 className="text-2xl font-bold text-t-primary">Billing & Financials</h1>
+                    <h1 className="text-2xl font-bold text-t-primary"></h1>
                     <div className="flex gap-2 flex-wrap">
                         <Button onClick={() => setNewInvOpen(true)}>
                             <Icon name="plus" className="w-4 h-4 mr-2" />Create Invoice
