@@ -4,7 +4,7 @@ import Icon from "@/components/Icon";
 import Percentage from "@/components/Percentage";
 import NewCustomers from "@/components/NewCustomers";
 import Balance from "./Balance";
-import { revenueData, users } from "@/lib/data.ts";
+import { revenueData, users } from "@/lib/data";
 
 const durations = [
     { id: 1, name: "Last 7 days" },
