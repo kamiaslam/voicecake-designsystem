@@ -13,7 +13,7 @@ import { devicesChartData, devicesGenderData } from "@/mocks/charts";
 
 const OverviewPage = () => {
     return (
-        <Layout title="Dashboard">
+        <Layout title="Voice Cake Dashboard">
             <div className="flex max-lg:flex-col">
                 <div className="col-left">
                     <Overview />

@@ -1,20 +1,24 @@
+"use client";
+
 import { useState } from "react";
 import Layout from "@/components/Layout";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
 import Badge from "@/components/Badge";
 import Select from "@/components/Select";
+import { SelectOption } from "@/types/select";
 
+// Mock data types
 const DevNotesPage = () => {
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState<SelectOption>({ id: 1, name: "All Categories" });
 
-  const categories = [
-    { value: "all", label: "All Categories" },
-    { value: "api", label: "API Documentation" },
-    { value: "integration", label: "Integration Guides" },
-    { value: "troubleshooting", label: "Troubleshooting" },
-    { value: "changelog", label: "Changelog" },
-    { value: "examples", label: "Code Examples" }
+  const categories: SelectOption[] = [
+    { id: 1, name: "All Categories" },
+    { id: 2, name: "API Documentation" },
+    { id: 3, name: "Integration Guides" },
+    { id: 4, name: "Troubleshooting" },
+    { id: 5, name: "Changelog" },
+    { id: 6, name: "Code Examples" }
   ];
 
   const apiEndpoints = [
@@ -146,50 +150,50 @@ const DevNotesPage = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "stable": return "bg-green-100 text-green-800";
-      case "beta": return "bg-yellow-100 text-yellow-800";
-      case "alpha": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "stable": return "bg-green-500/10 text-green-400";
+      case "beta": return "bg-yellow-500/10 text-yellow-400";
+      case "alpha": return "bg-red-500/10 text-red-400";
+      default: return "bg-[var(--backgrounds-surface2)] text-[var(--text-secondary)]";
     }
   };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "beginner": return "bg-green-100 text-green-800";
-      case "intermediate": return "bg-yellow-100 text-yellow-800";
-      case "advanced": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "beginner": return "bg-green-500/10 text-green-400";
+      case "intermediate": return "bg-yellow-500/10 text-yellow-400";
+      case "advanced": return "bg-red-500/10 text-red-400";
+      default: return "bg-[var(--backgrounds-surface2)] text-[var(--text-secondary)]";
     }
   };
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case "low": return "bg-green-100 text-green-800";
-      case "medium": return "bg-yellow-100 text-yellow-800";
-      case "high": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "low": return "bg-green-500/10 text-green-400";
+      case "medium": return "bg-yellow-500/10 text-yellow-400";
+      case "high": return "bg-red-500/10 text-red-400";
+      default: return "bg-[var(--backgrounds-surface2)] text-[var(--text-secondary)]";
     }
   };
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case "feature": return "bg-blue-100 text-blue-800";
-      case "fix": return "bg-green-100 text-green-800";
-      case "improvement": return "bg-purple-100 text-purple-800";
-      case "security": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "feature": return "bg-blue-500/10 text-blue-400";
+      case "fix": return "bg-green-500/10 text-green-400";
+      case "improvement": return "bg-purple-500/10 text-purple-400";
+      case "security": return "bg-red-500/10 text-red-400";
+      default: return "bg-[var(--backgrounds-surface2)] text-[var(--text-secondary)]";
     }
   };
 
   const filteredContent = () => {
-    switch (selectedCategory) {
-      case "api":
+    switch (selectedCategory.id) {
+      case 2:
         return apiEndpoints;
-      case "integration":
+      case 3:
         return integrationGuides;
-      case "troubleshooting":
+      case 4:
         return troubleshootingItems;
-      case "changelog":
+      case 5:
         return changelogEntries;
       default:
         return [];
@@ -203,16 +207,15 @@ const DevNotesPage = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold">Developer Notes</h1>
-            <p className="text-gray-600">Technical documentation and development resources</p>
+            <p className="text-[var(--text-secondary)]">Technical documentation and development resources</p>
           </div>
           <div className="flex gap-3">
             <Select
               value={selectedCategory}
               onChange={setSelectedCategory}
               options={categories}
-              className="w-48"
             />
-            <Button variant="outline">
+            <Button >
               Download SDK
             </Button>
           </div>
@@ -220,41 +223,36 @@ const DevNotesPage = () => {
 
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="p-6">
-            <div className="text-sm text-gray-600 mb-1">API Endpoints</div>
-            <div className="text-2xl font-bold text-blue-600">{apiEndpoints.length}</div>
-            <div className="text-xs text-gray-500">documented</div>
+          <Card title="API Endpoints" className="p-6">
+            <div className="text-2xl font-bold text-t-primary">{apiEndpoints.length}</div>
+            <div className="text-xs text-[var(--text-tertiary)]">documented</div>
           </Card>
-          <Card className="p-6">
-            <div className="text-sm text-gray-600 mb-1">Integration Guides</div>
-            <div className="text-2xl font-bold text-green-600">{integrationGuides.length}</div>
-            <div className="text-xs text-gray-500">available</div>
+          <Card title="Integration Guides" className="p-6">
+            <div className="text-2xl font-bold text-t-primary">{integrationGuides.length}</div>
+            <div className="text-xs text-[var(--text-tertiary)]">available</div>
           </Card>
-          <Card className="p-6">
-            <div className="text-sm text-gray-600 mb-1">Known Issues</div>
-            <div className="text-2xl font-bold text-yellow-600">{troubleshootingItems.length}</div>
-            <div className="text-xs text-gray-500">documented</div>
+          <Card title="Known Issues" className="p-6">
+            <div className="text-2xl font-bold text-t-primary">{troubleshootingItems.length}</div>
+            <div className="text-xs text-[var(--text-tertiary)]">documented</div>
           </Card>
-          <Card className="p-6">
-            <div className="text-sm text-gray-600 mb-1">Latest Version</div>
-            <div className="text-2xl font-bold text-purple-600">v2.1.0</div>
-            <div className="text-xs text-gray-500">released Jan 22</div>
+          <Card title="Latest Version" className="p-6">
+            <div className="text-2xl font-bold text-t-primary">v2.1.0</div>
+            <div className="text-xs text-[var(--text-tertiary)]">released Jan 22</div>
           </Card>
         </div>
 
         {/* API Documentation */}
-        {(selectedCategory === "all" || selectedCategory === "api") && (
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">API Documentation</h2>
+        {(selectedCategory.id === 1 || selectedCategory.id === 2) && (
+          <Card title="API Documentation" className="p-6">
             <div className="space-y-4">
               {apiEndpoints.map((endpoint, index) => (
-                <div key={index} className="border rounded-lg p-4">
+                <div key={index} className="border border-[var(--stroke-border)] rounded-lg p-4">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
                     <div className="flex items-center gap-3">
-                      <Badge className={`${endpoint.method === 'GET' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'} font-mono`}>
+                      <Badge className={`${endpoint.method === 'GET' ? 'bg-blue-500/10 text-blue-400' : 'bg-green-500/10 text-green-400'} font-mono`}>
                         {endpoint.method}
                       </Badge>
-                      <code className="font-mono text-sm bg-gray-100 px-2 py-1 rounded">
+                      <code className="font-mono text-sm bg-[var(--backgrounds-surface2)] px-2 py-1 rounded">
                         {endpoint.endpoint}
                       </code>
                     </div>
@@ -262,8 +260,8 @@ const DevNotesPage = () => {
                       {endpoint.status}
                     </Badge>
                   </div>
-                  <p className="text-gray-600 text-sm mb-2">{endpoint.description}</p>
-                  <div className="text-xs text-gray-500">Last updated: {endpoint.lastUpdated}</div>
+                  <p className="text-[var(--text-secondary)] text-sm mb-2">{endpoint.description}</p>
+                  <div className="text-xs text-[var(--text-tertiary)]">Last updated: {endpoint.lastUpdated}</div>
                 </div>
               ))}
             </div>
@@ -271,22 +269,21 @@ const DevNotesPage = () => {
         )}
 
         {/* Integration Guides */}
-        {(selectedCategory === "all" || selectedCategory === "integration") && (
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Integration Guides</h2>
+        {(selectedCategory.id === 1 || selectedCategory.id === 3) && (
+          <Card title="Integration Guides" className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {integrationGuides.map((guide, index) => (
-                <div key={index} className="border rounded-lg p-4">
+                <div key={index} className="border border-[var(--stroke-border)] rounded-lg p-4">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-medium">{guide.title}</h3>
                     <Badge className={getDifficultyColor(guide.difficulty)}>
                       {guide.difficulty}
                     </Badge>
                   </div>
-                  <p className="text-gray-600 text-sm mb-3">{guide.description}</p>
-                  <div className="flex justify-between items-center text-xs text-gray-500">
+                  <p className="text-[var(--text-secondary)] text-sm mb-3">{guide.description}</p>
+                  <div className="flex justify-between items-center text-xs text-[var(--text-tertiary)]">
                     <span>Est. time: {guide.estimatedTime}</span>
-                    <Button size="sm" variant="outline">
+                    <Button>
                       View Guide
                     </Button>
                   </div>
@@ -297,19 +294,18 @@ const DevNotesPage = () => {
         )}
 
         {/* Troubleshooting */}
-        {(selectedCategory === "all" || selectedCategory === "troubleshooting") && (
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Troubleshooting</h2>
+        {(selectedCategory.id === 1 || selectedCategory.id === 4) && (
+          <Card title="Troubleshooting" className="p-6">
             <div className="space-y-4">
               {troubleshootingItems.map((item, index) => (
-                <div key={index} className="border rounded-lg p-4">
+                <div key={index} className="border border-[var(--stroke-border)] rounded-lg p-4">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-medium">{item.issue}</h3>
                     <Badge className={getSeverityColor(item.severity)}>
                       {item.severity}
                     </Badge>
                   </div>
-                  <p className="text-gray-600 text-sm">{item.solution}</p>
+                  <p className="text-[var(--text-secondary)] text-sm">{item.solution}</p>
                 </div>
               ))}
             </div>
@@ -317,12 +313,11 @@ const DevNotesPage = () => {
         )}
 
         {/* Changelog */}
-        {(selectedCategory === "all" || selectedCategory === "changelog") && (
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Changelog</h2>
+        {(selectedCategory.id === 1 || selectedCategory.id === 5) && (
+          <Card title="Changelog" className="p-6">
             <div className="space-y-4">
               {changelogEntries.map((entry, index) => (
-                <div key={index} className="border-l-4 border-blue-500 pl-4">
+                <div key={index} className="border-l-4 border-[var(--primary-01)] pl-4">
                   <div className="flex justify-between items-start mb-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{entry.version}</span>
@@ -330,9 +325,9 @@ const DevNotesPage = () => {
                         {entry.type}
                       </Badge>
                     </div>
-                    <span className="text-sm text-gray-500">{entry.date}</span>
+                    <span className="text-sm text-[var(--text-tertiary)]">{entry.date}</span>
                   </div>
-                  <p className="text-gray-600 text-sm">{entry.description}</p>
+                  <p className="text-[var(--text-secondary)] text-sm">{entry.description}</p>
                 </div>
               ))}
             </div>
@@ -340,13 +335,13 @@ const DevNotesPage = () => {
         )}
 
         {/* Code Examples */}
-        {selectedCategory === "examples" && (
-          <Card className="p-6">
+        {selectedCategory.id === 6 && (
+          <Card title="Code Examples" className="p-6">
             <h2 className="text-xl font-semibold mb-4">Code Examples</h2>
             <div className="space-y-6">
               <div>
                 <h3 className="font-medium mb-2">Basic API Request</h3>
-                <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
+                <pre className="bg-[var(--backgrounds-surface2)] p-4 rounded-lg text-sm overflow-x-auto">
                   <code>{`// JavaScript example
 const response = await fetch('/api/v1/users', {
   method: 'GET',
@@ -359,10 +354,10 @@ const response = await fetch('/api/v1/users', {
 const users = await response.json();`}</code>
                 </pre>
               </div>
-              
+
               <div>
                 <h3 className="font-medium mb-2">React Component Integration</h3>
-                <pre className="bg-gray-100 p-4 rounded-lg text-sm overflow-x-auto">
+                <pre className="bg-[var(--backgrounds-surface2)] p-4 rounded-lg text-sm overflow-x-auto">
                   <code>{`// React component example
 import { DashboardProvider } from '@your-org/dashboard';
 

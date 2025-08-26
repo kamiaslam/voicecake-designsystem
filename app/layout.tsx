@@ -31,8 +31,8 @@ const interDisplay = localFont({
 });
 
 export const metadata: Metadata = {
-    title: "Core 2.0",
-    description: "Core 2.0",
+    title: "Voice Cake Dashboard",
+    description: "Voice Cake Dashboard",
 };
 
 export default function RootLayout({
@@ -46,25 +46,25 @@ export default function RootLayout({
                 {/* Description no longer than 155 characters */}
                 <meta
                     name="description"
-                    content="Core 2.0 – Dashboard Builder"
+                    content="Voice Cake Dashboard - AI-Powered Voice Communication Platform"
                 />
                 {/* Product Name */}
                 <meta
                     name="product-name"
-                    content="Core 2.0 – Dashboard Builder"
+                    content="Voice Cake Dashboard"
                 />
                 {/* Twitter Card data */}
                 <meta name="twitter:card" content="summary" />
-                <meta name="twitter:site" content="@ui8" />
+                <meta name="twitter:site" content="@voicecake" />
                 <meta
                     name="twitter:title"
-                    content="Core 2.0 – Dashboard Builder"
+                    content="Voice Cake Dashboard"
                 />
                 <meta
                     name="twitter:description"
-                    content="Minimal & Ready-to-Build Dashboard UI Design Kit + Code 🔥"
+                    content="AI-Powered Voice Communication Platform with Conversa & Empath Agents 🔥"
                 />
-                <meta name="twitter:creator" content="@ui8" />
+                <meta name="twitter:creator" content="@voicecake" />
                 <meta
                     name="twitter:image"
                     content="%PUBLIC_URL%/twitter-card.png"
@@ -72,12 +72,12 @@ export default function RootLayout({
                 {/* Open Graph data for Facebook */}
                 <meta
                     property="og:title"
-                    content="Core 2.0 – Dashboard Builder"
+                    content="Voice Cake Dashboard"
                 />
                 <meta property="og:type" content="Article" />
                 <meta
                     property="og:url"
-                    content="https://ui8.net/ui8/products/core-20--dashboard-builder"
+                    content="https://voicecake.com/dashboard"
                 />
                 <meta
                     property="og:image"
@@ -85,21 +85,21 @@ export default function RootLayout({
                 />
                 <meta
                     property="og:description"
-                    content="Minimal & Ready-to-Build Dashboard UI Design Kit + Code 🔥"
+                    content="AI-Powered Voice Communication Platform with Conversa & Empath Agents 🔥"
                 />
                 <meta
                     property="og:site_name"
-                    content="Core 2.0 – Dashboard Builder"
+                    content="Voice Cake Dashboard"
                 />
                 <meta property="fb:admins" content="132951670226590" />
                 {/* Open Graph data for LinkedIn */}
                 <meta
                     property="og:title"
-                    content="Core 2.0 – Dashboard Builder"
+                    content="Voice Cake Dashboard"
                 />
                 <meta
                     property="og:url"
-                    content="https://ui8.net/ui8/products/core-20--dashboard-builder"
+                    content="https://voicecake.com/dashboard"
                 />
                 <meta
                     property="og:image"
@@ -107,16 +107,16 @@ export default function RootLayout({
                 />
                 <meta
                     property="og:description"
-                    content="Minimal & Ready-to-Build Dashboard UI Design Kit + Code 🔥"
+                    content="AI-Powered Voice Communication Platform with Conversa & Empath Agents 🔥"
                 />
                 {/* Open Graph data for Pinterest */}
                 <meta
                     property="og:title"
-                    content="Core 2.0 – Dashboard Builder"
+                    content="Voice Cake Dashboard"
                 />
                 <meta
                     property="og:url"
-                    content="https://ui8.net/ui8/products/core-20--dashboard-builder"
+                    content="https://voicecake.com/dashboard"
                 />
                 <meta
                     property="og:image"
@@ -124,7 +124,7 @@ export default function RootLayout({
                 />
                 <meta
                     property="og:description"
-                    content="Minimal & Ready-to-Build Dashboard UI Design Kit + Code 🔥"
+                    content="AI-Powered Voice Communication Platform with Conversa & Empath Agents 🔥"
                 />
             </head>
             <body

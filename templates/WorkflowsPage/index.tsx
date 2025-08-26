@@ -8,6 +8,7 @@ import TableRow from "@/components/TableRow";
 import Badge from "@/components/Badge";
 import Search from "@/components/Search";
 import Select from "@/components/Select";
+import Icon from "@/components/Icon";
 import { workflows, type Workflow } from "@/lib/data";
 
 const WorkflowsPage = () => {
@@ -56,21 +57,21 @@ const WorkflowsPage = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300";
-      case "paused": return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-300";
-      case "draft": return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300";
-      case "error": return "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300";
-      default: return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300";
+      case "active": return "bg-primary-02/20 text-primary-02 border border-primary-02/30";
+      case "paused": return "bg-[#FFB020]/20 text-[#FFB020] border border-[#FFB020]/30";
+      case "draft": return "bg-t-tertiary/20 text-t-tertiary border border-t-tertiary/30";
+      case "error": return "bg-[#FF6A55]/20 text-[#FF6A55] border border-[#FF6A55]/30";
+      default: return "bg-t-tertiary/20 text-t-tertiary border border-t-tertiary/30";
     }
   };
 
   const getTriggerColor = (trigger: string) => {
     switch (trigger) {
-      case "webhook": return "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300";
-      case "schedule": return "bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300";
-      case "manual": return "bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-300";
-      case "event": return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-300";
-      default: return "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-300";
+      case "webhook": return "bg-[#6366F1]/20 text-[#6366F1] border border-[#6366F1]/30";
+      case "schedule": return "bg-[#8B5CF6]/20 text-[#8B5CF6] border border-[#8B5CF6]/30";
+      case "manual": return "bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/30";
+      case "event": return "bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30";
+      default: return "bg-t-tertiary/20 text-t-tertiary border border-t-tertiary/30";
     }
   };
 
@@ -86,20 +87,20 @@ const WorkflowsPage = () => {
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card title="Total Workflows" className="p-6">
-            <div className="text-2xl font-bold text-blue-600">{workflowData.length}</div>
+            <div className="text-2xl font-bold text-t-primary">{workflowData.length}</div>
             <div className="text-xs text-t-tertiary">all workflows</div>
           </Card>
           <Card title="Active Workflows" className="p-6">
-            <div className="text-2xl font-bold text-green-600">{activeWorkflows}</div>
+            <div className="text-2xl font-bold text-t-primary">{activeWorkflows}</div>
             <div className="text-xs text-t-tertiary">of {workflowData.length} total</div>
           </Card>
           <Card title="Total Executions" className="p-6">
-            <div className="text-2xl font-bold text-purple-600">{totalExecutions.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-t-primary">{totalExecutions.toLocaleString()}</div>
             <div className="text-xs text-t-tertiary">across all workflows</div>
           </Card>
           <Card title="Avg Success Rate" className="p-6">
             <div className="text-sm text-t-secondary mb-1">Avg Success Rate</div>
-            <div className="text-2xl font-bold text-orange-600">{avgSuccessRate.toFixed(1)}%</div>
+            <div className="text-2xl font-bold text-white">{avgSuccessRate.toFixed(1)}%</div>
             <div className="text-xs text-t-tertiary">last 30 days</div>
           </Card>
         </div>
@@ -114,6 +115,7 @@ const WorkflowsPage = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full sm:w-64"
+                  isGray
                 />
                 <Select
                   value={statusOptions.find(option => option.id === statusFilter) || null}
@@ -122,6 +124,7 @@ const WorkflowsPage = () => {
                   className="w-full sm:w-40"
                 />
                 <Button className="w-full sm:w-auto">
+                  <Icon name="plus" className="w-4 h-4 mr-2" />
                   Create Workflow
                 </Button>
               </div>
@@ -129,59 +132,62 @@ const WorkflowsPage = () => {
           </div>
 
           {loading ? (
-            <div className="text-center py-8 text-t-secondary">Loading workflows...</div>
+            <div className="text-center py-8 text-t-tertiary">Loading workflows...</div>
           ) : (
             <Table 
               cellsThead={
                 <>
-                  <th className="text-left">Name</th>
-                  <th className="text-left">Description</th>
-                  <th className="text-left">Trigger</th>
-                  <th className="text-left">Status</th>
-                  <th className="text-left">Executions</th>
-                  <th className="text-left">Success Rate</th>
-                  <th className="text-left">Last Run</th>
-                  <th className="text-left">Actions</th>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Name</th>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Description</th>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Trigger</th>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Status</th>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Executions</th>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Success Rate</th>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Last Run</th>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Actions</th>
                 </>
               }
             >
               {filteredWorkflows.map((workflow) => (
                 <TableRow key={workflow.id}>
-                  <td className="font-medium">{workflow.name}</td>
-                  <td className="text-t-secondary max-w-xs truncate">{workflow.description}</td>
-                  <td>
+                  <td className="py-4 px-4 font-medium text-t-primary">{workflow.name}</td>
+                  <td className="py-4 px-4 text-t-secondary max-w-xs truncate">{workflow.description}</td>
+                  <td className="py-4 px-4">
                     <Badge className={getTriggerColor(workflow.trigger)}>
                       {workflow.trigger.charAt(0).toUpperCase() + workflow.trigger.slice(1)}
                     </Badge>
                   </td>
-                  <td>
+                  <td className="py-4 px-4">
                     <Badge className={getStatusColor(workflow.status)}>
                       {workflow.status.charAt(0).toUpperCase() + workflow.status.slice(1)}
                     </Badge>
                   </td>
-                  <td className="font-medium">{workflow.executions.toLocaleString()}</td>
-                  <td>
+                  <td className="py-4 px-4 font-medium text-t-primary">{workflow.executions.toLocaleString()}</td>
+                  <td className="py-4 px-4">
                     <span className={`font-medium ${
-                      workflow.successRate >= 95 ? 'text-green-600' :
-                      workflow.successRate >= 80 ? 'text-yellow-600' : 'text-red-600'
+                      workflow.successRate >= 95 ? 'text-primary-02' :
+                      workflow.successRate >= 80 ? 'text-[#FFB020]' : 'text-[#FF6A55]'
                     }`}>
                       {workflow.successRate.toFixed(1)}%
                     </span>
                   </td>
-                  <td className="text-t-secondary">
+                  <td className="py-4 px-4 text-t-secondary">
                     {new Date(workflow.lastRun).toLocaleString()}
                   </td>
-                  <td>
+                  <td className="py-4 px-4">
                      <div className="flex gap-2">
                        <Button isStroke>
+                         <Icon name="edit" className="w-4 h-4 mr-2" />
                          Edit
                        </Button>
                        {workflow.status === "active" ? (
                          <Button isStroke>
+                           <Icon name="pause" className="w-4 h-4 mr-2" />
                            Pause
                          </Button>
                        ) : (
                          <Button>
+                           <Icon name="play" className="w-4 h-4 mr-2" />
                            Start
                          </Button>
                        )}
@@ -193,7 +199,7 @@ const WorkflowsPage = () => {
           )}
 
           {filteredWorkflows.length === 0 && !loading && (
-            <div className="text-center py-8 text-t-secondary">
+            <div className="text-center py-8 text-t-tertiary">
               No workflows found matching your criteria.
             </div>
           )}

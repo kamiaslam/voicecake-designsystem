@@ -1722,7 +1722,7 @@ export default function AdminDashboard() {
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="w-72 bg-white shadow-md p-4 flex flex-col">
-        <h1 className="text-xl font-bold mb-6">VoiceCake Admin</h1>
+        <h1 className="text-xl font-bold mb-6">Voice Cake Dashboard</h1>
         <nav className="flex flex-col space-y-2">
           <Button variant="ghost" className="justify-start" onClick={() => setActivePage("dashboard")}>Dashboard</Button>
           <Button variant="ghost" className="justify-start" onClick={() => setActivePage("gallery")}><LayoutGrid className="w-4 h-4 mr-2"/>Pages Gallery</Button>

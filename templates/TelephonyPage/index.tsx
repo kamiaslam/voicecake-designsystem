@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import Card from "@/components/Card";
@@ -7,12 +9,29 @@ import TableRow from "@/components/TableRow";
 import Badge from "@/components/Badge";
 import Search from "@/components/Search";
 import Select from "@/components/Select";
-import { phoneNumbers, type PhoneNumber } from "@/lib/data.ts";
+import Icon from "@/components/Icon";
+import { SelectOption } from "@/types/select";
+
+// Phone number data from Data.tsx
+const numbers = [
+  { number: "+44 20 7123 9876", client: "Acme Health", mappedTo: "Receptionist UK", inbound: 812, outbound: 102, health: "ok" },
+  { number: "+1 415 555 0199", client: "Nimbus Retail", mappedTo: "Sales SDR-1", inbound: 211, outbound: 540, health: "ok" },
+  { number: "+44 161 555 0102", client: "ZenCare Homes", mappedTo: "Wellness Check", inbound: 1203, outbound: 36, health: "warning" },
+];
+
+type PhoneNumber = {
+  number: string;
+  client: string;
+  mappedTo: string;
+  inbound: number;
+  outbound: number;
+  health: string;
+};
 
 const TelephonyPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [typeFilter, setTypeFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState(1);
+  const [typeFilter, setTypeFilter] = useState(1);
   const [numbersData, setNumbersData] = useState<PhoneNumber[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,42 +41,59 @@ const TelephonyPage = () => {
       setLoading(true);
       // Add some delay to simulate API call
       await new Promise(resolve => setTimeout(resolve, 500));
-      setNumbersData(phoneNumbers);
+      setNumbersData(numbers);
       setLoading(false);
     };
 
     loadNumbers();
   }, []);
 
-  const statusOptions = [
-    { value: "all", label: "All Status" },
-    { value: "active", label: "Active" },
-    { value: "inactive", label: "Inactive" },
-    { value: "pending", label: "Pending" }
+  const statusOptions: SelectOption[] = [
+    { id: 1, name: "All Status" },
+    { id: 2, name: "Active" },
+    { id: 3, name: "Inactive" },
+    { id: 4, name: "Pending" }
   ];
 
-  const typeOptions = [
-    { value: "all", label: "All Types" },
-    { value: "local", label: "Local" },
-    { value: "toll-free", label: "Toll-Free" },
-    { value: "mobile", label: "Mobile" }
+  const typeOptions: SelectOption[] = [
+    { id: 1, name: "All Types" },
+    { id: 2, name: "Local" },
+    { id: 3, name: "Toll-Free" },
+    { id: 4, name: "Mobile" }
   ];
+
+  const statusFilterMap: Record<number, string> = {
+    1: "all",
+    2: "active",
+    3: "inactive",
+    4: "pending"
+  };
+
+  const typeFilterMap: Record<number, string> = {
+    1: "all",
+    2: "local",
+    3: "toll-free",
+    4: "mobile"
+  };
+
+  const currentStatusFilter = statusFilterMap[statusFilter] || "all";
+  const currentTypeFilter = typeFilterMap[typeFilter] || "all";
 
   const filteredNumbers = numbersData.filter(number => {
     const matchesSearch = number.number.includes(searchTerm) ||
-                         number.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         (number.assignedTo && number.assignedTo.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesStatus = statusFilter === "all" || number.status === statusFilter;
-    const matchesType = typeFilter === "all" || number.type === typeFilter;
+                         number.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (number.mappedTo && number.mappedTo.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesStatus = currentStatusFilter === "all" || number.health === currentStatusFilter;
+    const matchesType = currentTypeFilter === "all";
     return matchesSearch && matchesStatus && matchesType;
   });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "bg-green-100 text-green-800";
-      case "inactive": return "bg-gray-100 text-gray-800";
-      case "pending": return "bg-yellow-100 text-yellow-800";
-      default: return "bg-gray-100 text-gray-800";
+      case "ok": return "bg-primary-02/20 text-primary-02 border border-primary-02/30";
+      case "warning": return "bg-[#FFB020]/20 text-[#FFB020] border border-[#FFB020]/30";
+      case "error": return "bg-[#FF6A55]/20 text-[#FF6A55] border border-[#FF6A55]/30";
+      default: return "bg-t-tertiary/20 text-t-tertiary border border-t-tertiary/30";
     }
   };
 
@@ -70,144 +106,137 @@ const TelephonyPage = () => {
     }
   };
 
-  const activeNumbers = numbersData.filter(n => n.status === "active").length;
-  const totalMinutes = numbersData.reduce((sum, n) => sum + n.monthlyMinutes, 0);
-  const totalCost = numbersData.reduce((sum, n) => sum + n.monthlyCost, 0);
+  const activeNumbers = numbersData.filter(n => n.health === "ok").length;
+  const totalMinutes = numbersData.reduce((sum, n) => sum + n.inbound + n.outbound, 0);
+  const totalCost = totalMinutes * 0.05; // Estimated cost per minute
 
   return (
     <Layout title="Telephony">
       <div className="space-y-6">
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="p-6">
-            <div className="text-sm text-gray-600 mb-1">Active Numbers</div>
-            <div className="text-2xl font-bold text-green-600">{activeNumbers}</div>
+          <Card title="Active Numbers" className="p-6">
+            <div className="text-2xl font-bold text-t-primary">{activeNumbers}</div>
             <div className="text-xs text-gray-500">of {numbersData.length} total</div>
           </Card>
-          <Card className="p-6">
-            <div className="text-sm text-gray-600 mb-1">Monthly Minutes</div>
-            <div className="text-2xl font-bold text-blue-600">{totalMinutes.toLocaleString()}</div>
+          <Card title="Monthly Minutes" className="p-6">
+            <div className="text-2xl font-bold text-t-primary">{totalMinutes.toLocaleString()}</div>
             <div className="text-xs text-gray-500">across all numbers</div>
           </Card>
-          <Card className="p-6">
-            <div className="text-sm text-gray-600 mb-1">Monthly Cost</div>
-            <div className="text-2xl font-bold text-purple-600">${totalCost.toFixed(2)}</div>
+          <Card title="Monthly Cost" className="p-6">
+            <div className="text-2xl font-bold text-t-primary">${totalCost.toFixed(2)}</div>
             <div className="text-xs text-gray-500">total telephony cost</div>
           </Card>
         </div>
 
         {/* Phone Numbers Table */}
-        <Card className="p-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-            <h2 className="text-xl font-semibold">Phone Numbers</h2>
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-              <Search
-                placeholder="Search numbers..."
-                value={searchTerm}
-                onChange={setSearchTerm}
-                className="w-full sm:w-64"
-              />
-              <Select
-                value={statusFilter}
-                onChange={setStatusFilter}
-                options={statusOptions}
-                className="w-full sm:w-32"
-              />
-              <Select
-                value={typeFilter}
-                onChange={setTypeFilter}
-                options={typeOptions}
-                className="w-full sm:w-32"
-              />
-              <Button className="w-full sm:w-auto">
-                Add Number
-              </Button>
+        <Card title="Phone Numbers" className="p-6">
+          <div className="mb-6">
+             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <Search
+                  placeholder="Search numbers..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full sm:w-64"
+                  isGray
+                />
+                <Select
+                  value={statusOptions.find(opt => opt.id === statusFilter) || statusOptions[0]}
+                  onChange={(option) => setStatusFilter(option.id)}
+                  options={statusOptions}
+                  className="w-full sm:w-40"
+                />
+                <Select
+                  value={typeOptions.find(opt => opt.id === typeFilter) || typeOptions[0]}
+                  onChange={(option) => setTypeFilter(option.id)}
+                  options={typeOptions}
+                  className="w-full sm:w-40"
+                />
+                <Button className="w-full sm:w-auto">
+                  <Icon name="plus" className="w-4 h-4 mr-2" />
+                  Add Number
+                </Button>
+              </div>
             </div>
           </div>
 
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Loading phone numbers...</div>
+            <div className="text-center py-8 text-t-tertiary">Loading phone numbers...</div>
           ) : (
-            <Table>
-              <thead>
-                <tr>
-                  <th className="text-left">Number</th>
-                  <th className="text-left">Type</th>
-                  <th className="text-left">Location</th>
-                  <th className="text-left">Status</th>
-                  <th className="text-left">Assigned To</th>
-                  <th className="text-left">Monthly Minutes</th>
-                  <th className="text-left">Monthly Cost</th>
-                  <th className="text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredNumbers.map((number) => (
-                  <TableRow key={number.id}>
-                    <td className="font-mono font-medium">{number.number}</td>
-                    <td>
-                      <Badge className={getTypeColor(number.type)}>
-                        {number.type.charAt(0).toUpperCase() + number.type.slice(1)}
-                      </Badge>
-                    </td>
-                    <td>{number.location}</td>
-                    <td>
-                      <Badge className={getStatusColor(number.status)}>
-                        {number.status.charAt(0).toUpperCase() + number.status.slice(1)}
-                      </Badge>
-                    </td>
-                    <td className="text-gray-600">
-                      {number.assignedTo || "Unassigned"}
-                    </td>
-                    <td className="font-medium">{number.monthlyMinutes.toLocaleString()}</td>
-                    <td className="font-medium">${number.monthlyCost.toFixed(2)}</td>
-                    <td>
-                      <div className="flex gap-2">
-                        <Button size="sm" variant="outline">
-                          Configure
-                        </Button>
-                        {number.status === "active" ? (
-                          <Button size="sm" variant="outline">
-                            Disable
-                          </Button>
-                        ) : (
-                          <Button size="sm">
-                            Enable
-                          </Button>
-                        )}
-                      </div>
-                    </td>
-                  </TableRow>
-                ))}
-              </tbody>
+            <Table 
+              cellsThead={
+                <>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Number</th>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Client</th>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Agent</th>
+                  <th className="text-right py-3 px-4 font-medium text-t-secondary">Inbound</th>
+                  <th className="text-right py-3 px-4 font-medium text-t-secondary">Outbound</th>
+                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Health</th>
+                  <th className="text-right py-3 px-4 font-medium text-t-secondary">Actions</th>
+                </>
+              }
+            >
+              {filteredNumbers.map((number) => (
+                <TableRow key={number.number}>
+                  <td className="py-4 px-4 font-medium text-t-primary">{number.number}</td>
+                  <td className="py-4 px-4 text-t-secondary">{number.client}</td>
+                  <td className="py-4 px-4 text-t-secondary">{number.mappedTo}</td>
+                  <td className="py-4 px-4 font-medium text-t-primary text-right">{number.inbound.toLocaleString()}</td>
+                  <td className="py-4 px-4 font-medium text-t-primary text-right">{number.outbound.toLocaleString()}</td>
+                  <td className="py-4 px-4">
+                    <Badge className={getStatusColor(number.health)}>
+                      {number.health.charAt(0).toUpperCase() + number.health.slice(1)}
+                    </Badge>
+                  </td>
+                  <td className="py-4 px-4">
+                    <div className="flex gap-2">
+                      <Button isStroke>
+                        Configure
+                      </Button>
+                      <Button
+                        isStroke={number.health === "ok"}
+                        onClick={() => {
+                          setNumbersData(prev => prev.map(n => 
+                            n.number === number.number 
+                              ? { ...n, health: n.health === "ok" ? "warning" : "ok" }
+                              : n
+                          ));
+                        }}
+                      >
+                        {number.health === "ok" ? "Disable" : "Enable"}
+                      </Button>
+                    </div>
+                  </td>
+                </TableRow>
+              ))}
             </Table>
           )}
 
           {filteredNumbers.length === 0 && !loading && (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-t-tertiary">
               No phone numbers found matching your criteria.
             </div>
           )}
         </Card>
 
         {/* Call Analytics */}
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Call Analytics</h3>
+        <Card title="Call Analytics" className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">1,234</div>
+              <div className="text-2xl font-bold text-t-primary">1,234</div>
               <div className="text-sm text-gray-600">Total Calls</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">98.5%</div>
+              <div className="text-2xl font-bold text-t-primary">98.5%</div>
               <div className="text-sm text-gray-600">Success Rate</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">4.2m</div>
+              <div className="text-2xl font-bold text-t-primary">4.2m</div>
               <div className="text-sm text-gray-600">Avg Duration</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">$0.05</div>
+              <div className="text-2xl font-bold text-t-primary">$0.05</div>
               <div className="text-sm text-gray-600">Avg Cost/Min</div>
             </div>
           </div>

@@ -1,6 +1,6 @@
 export const navigation = [
     {
-        title: "Dashboard",
+        title: "Voice Cake Dashboard",
         icon: "dashboard",
         href: "/",
     },
