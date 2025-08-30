@@ -23,8 +23,8 @@ const ProductActivity = ({}) => {
 
     return (
         <Card
-            className="col-left mb-0 max-lg:mb-3"
-            title="Product activity"
+            className="p-6 mb-0"
+            title="Customer activities"
             selectValue={duration}
             selectOnChange={setDuration}
             selectOptions={durations}
@@ -37,7 +37,7 @@ const ProductActivity = ({}) => {
                 setValue={setCategory}
             />
             <div className="p-5 pb-0 max-md:pt-4 max-lg:px-3">
-                <div className="flex items-center gap-6 h-14 text-caption text-t-tertiary/80">
+                <div className="flex items-center gap-3 h-14 text-caption text-t-tertiary/80">
                     <div className="flex-1">Week</div>
                     <div
                         className={`flex-1 ${
@@ -64,7 +64,7 @@ const ProductActivity = ({}) => {
                 </div>
                 {productActivity.map((item) => (
                     <div
-                        className="flex items-center gap-6 h-17 border-t border-s-subtle text-body-2 last:h-19"
+                        className="flex items-center gap-3 h-17 border-t border-s-subtle text-body-2 last:h-19"
                         key={item.id}
                     >
                         <div className="flex items-center flex-1">

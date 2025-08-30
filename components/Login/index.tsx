@@ -15,7 +15,7 @@ const Login = ({}) => {
                 {isResetPassword
                     ? "Reset password"
                     : isSignIn
-                    ? "Sign in to Voice Cake Dashboard"
+                    ? "Sign in to Dashboard"
                     : "Create an account"}
             </div>
             {isResetPassword ? (

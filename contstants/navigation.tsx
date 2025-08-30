@@ -1,8 +1,13 @@
 export const navigation = [
     {
-        title: "Voice Cake Dashboard",
+        title: "Dashboard",
         icon: "dashboard",
         href: "/",
+    },
+    {
+        title: "Products",
+        icon: "product",
+        href: "/products",
     },
     {
         title: "Users & Accounts",
@@ -25,9 +30,29 @@ export const navigation = [
         href: "/workflows",
     },
     {
+        title: "Custom Tools",
+        icon: "product",
+        href: "/custom-tools",
+    },
+    {
+        title: "Create Assistant",
+        icon: "plus",
+        href: "/create-assistant",
+    },
+    {
+        title: "Landing",
+        icon: "home",
+        href: "/landing",
+    },
+    {
         title: "Telephony",
         icon: "wallet",
         href: "/telephony",
+    },
+    {
+        title: "Phone Numbers",
+        icon: "phone",
+        href: "/phone-numbers",
     },
     {
         title: "Security",
@@ -58,6 +83,16 @@ export const navigation = [
         title: "Developer Notes",
         icon: "bag",
         href: "/devnotes",
+    },
+    {
+        title: "Sim AI",
+        icon: "product-think",
+        href: "/sim-ai",
+    },
+    {
+        title: "Sim AI Products",
+        icon: "product",
+        href: "/sim-ai-products",
     },
 ];
 

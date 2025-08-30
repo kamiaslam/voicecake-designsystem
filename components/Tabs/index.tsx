@@ -18,6 +18,11 @@ const Tabs = ({
     setValue,
     isOnlyIcon,
 }: TabsProps) => {
+    // Safety check for undefined items
+    if (!items || !Array.isArray(items)) {
+        return null;
+    }
+
     return (
         <div
             className={`flex ${isOnlyIcon ? "gap-2" : "gap-1"} ${

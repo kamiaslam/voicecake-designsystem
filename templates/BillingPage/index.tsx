@@ -160,7 +160,7 @@ const BillingPage = () => {
 
     return (
         <Layout title="Billing & Financials">
-            <div className="space-y-6">
+            <div className="space-y-3">
                 {/* Header with Actions */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <h1 className="text-2xl font-bold text-t-primary"></h1>
@@ -188,7 +188,7 @@ const BillingPage = () => {
                 </div>
 
                 {/* Revenue Chart and Invoices */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                     <Card title="Revenue" className="lg:col-span-2 p-6">
                         <div className="pt-3 px-3 pb-1">
                             <div className="h-79 max-xl:h-63.5">

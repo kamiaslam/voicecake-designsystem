@@ -3,7 +3,7 @@ import Select from "@/components/Select";
 type CardProps = {
     className?: string;
     classHead?: string;
-    title: string;
+    title?: string;
     children: React.ReactNode;
     selectOptions?: { id: number; name: string }[];
     selectValue?: {
@@ -23,26 +23,32 @@ const Card = ({
     selectOnChange,
     children,
     headContent,
-}: CardProps) => (
-    <div className={`card ${className || ""}`}>
-        <div
-            className={`flex items-center h-12 pl-5 max-lg:pl-3 ${
-                classHead || ""
-            }`}
-        >
-            <div className="mr-auto text-h6">{title}</div>
-            {headContent}
-            {selectOptions && selectValue && selectOnChange && (
-                <Select
-                    className="min-w-40 max-md:min-w-34"
-                    value={selectValue}
-                    onChange={selectOnChange}
-                    options={selectOptions}
-                />
+}: CardProps) => {
+    const hasHeader = title || headContent || (selectOptions && selectValue && selectOnChange);
+    
+    return (
+        <div className={`card ${className || ""}`}>
+            {hasHeader && (
+                <div
+                    className={`flex items-center h-12 ${
+                        classHead || ""
+                    }`}
+                >
+                    {title && <div className="mr-auto text-h6">{title}</div>}
+                    {headContent}
+                    {selectOptions && selectValue && selectOnChange && (
+                        <Select
+                            className="min-w-40 max-md:min-w-34"
+                            value={selectValue}
+                            onChange={selectOnChange}
+                            options={selectOptions}
+                        />
+                    )}
+                </div>
             )}
+            <div className={hasHeader ? "pt-3" : ""}>{children}</div>
         </div>
-        <div className="pt-3">{children}</div>
-    </div>
-);
+    );
+};
 
 export default Card;

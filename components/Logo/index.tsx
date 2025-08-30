@@ -10,8 +10,8 @@ const Logo = ({ className }: LogoProps) => {
         <Link className={`block w-12 h-12 ${className || ""}`} href="/">
             <Image
                 className="size-full opacity-100 dark:!hidden"
-                src="/images/logo-light.png"
-                alt="logo"
+                src="/images/voice-cake-logo-dark.png"
+                alt="Voice Cake Logo"
                 width={48}
                 height={48}
                 priority
@@ -19,8 +19,8 @@ const Logo = ({ className }: LogoProps) => {
             />
             <Image
                 className="size-full !hidden opacity-100 dark:!block"
-                src="/images/logo-light.png"
-                alt="logo"
+                src="/images/voice-cake-logo-light.png"
+                alt="Voice Cake Logo"
                 width={48}
                 height={48}
                 priority

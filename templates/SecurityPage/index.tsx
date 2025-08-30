@@ -78,9 +78,9 @@ const SecurityPage = () => {
 
   return (
     <Layout title="Security">
-      <div className="space-y-6">
+                  <div className="space-y-3">
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Card title="High Risk Events" className="p-6">
             <div className="text-2xl font-bold text-t-primary">{highRiskEvents}</div>
             <div className="text-xs text-gray-500">require attention</div>
@@ -172,7 +172,7 @@ const SecurityPage = () => {
         </Card>
 
         {/* Security Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <Card title="Threat Detection" className="p-6">
             <div className="space-y-3">
               <div className="flex justify-between">

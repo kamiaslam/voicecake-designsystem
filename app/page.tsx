@@ -1,5 +1,5 @@
-import HomePage from "@/templates/HomePage";
+import OverviewPage from "@/templates/Products/OverviewPage";
 
 export default function Page() {
-    return <HomePage />;
+    return <OverviewPage />;
 }

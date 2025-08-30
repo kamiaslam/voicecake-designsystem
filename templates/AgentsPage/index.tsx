@@ -57,10 +57,10 @@ const AgentsPage = () => {
 
     return (
         <Layout title="Agents & Bots">
-            <div className="space-y-6">
+            <div className="space-y-3">
                 {/* Header with stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <Card className="p-6" title="Total Agents">
+                    <Card className="p-6 mb-0" title="Total Agents">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-t-secondary">Total Agents</p>
@@ -69,7 +69,7 @@ const AgentsPage = () => {
                             <Icon name="robot" className="w-8 h-8 fill-t-secondary" />
                         </div>
                     </Card>
-                    <Card className="p-6" title="Avg Latency">
+                    <Card className="p-6 mb-0" title="Avg Latency">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-t-secondary">Avg Latency</p>
@@ -80,7 +80,7 @@ const AgentsPage = () => {
                             <Icon name="clock" className="w-8 h-8 fill-t-secondary" />
                         </div>
                     </Card>
-                    <Card className="p-6" title="Avg CSAT">
+                    <Card className="p-6 mb-0" title="Avg CSAT">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-t-secondary">Avg CSAT</p>
@@ -91,7 +91,7 @@ const AgentsPage = () => {
                             <Icon name="star" className="w-8 h-8 fill-t-secondary" />
                         </div>
                     </Card>
-                    <Card className="p-6" title="Total Calls">
+                    <Card className="p-6 mb-0" title="Total Calls">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-t-secondary">Total Calls</p>
@@ -210,9 +210,8 @@ const AgentsPage = () => {
                 </Card>
 
                 {/* Performance Chart Section */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                     <Card className="p-6" title="Agent Performance">
-                        <h3 className="text-lg font-semibold text-t-primary mb-4">Agent Performance</h3>
                         <div className="space-y-4">
                             {agents.map((agent, index) => (
                                 <div key={index} className="flex items-center justify-between p-3 bg-b-depth2 rounded-lg">
@@ -230,7 +229,6 @@ const AgentsPage = () => {
                     </Card>
 
                     <Card className="p-6" title="Agent Types Distribution">
-                        <h3 className="text-lg font-semibold text-t-primary mb-4">Agent Types Distribution</h3>
                         <div className="space-y-4">
                             <div className="flex items-center justify-between p-4 bg-b-depth2 border border-s-stroke rounded-lg">
                                 <div className="flex items-center gap-3">

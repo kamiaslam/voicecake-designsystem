@@ -153,9 +153,9 @@ const InsightsPage = () => {
 
   return (
     <Layout title="Insights">
-      <div className="space-y-6">
+      <div className="space-y-3">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
             <h1 className="text-2xl font-bold">Strategic Insights</h1>
             <p className="text-gray-600">Voice Cake analytics and business intelligence dashboard</p>
@@ -173,7 +173,7 @@ const InsightsPage = () => {
         </div>
 
         {/* Key Performance Indicators */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Card title="Total Revenue" className="p-6">
             <div className="text-2xl font-bold text-t-primary">${totalRevenue.toLocaleString()}</div>
             <div className="text-xs text-green-600">+12.5% vs last period</div>
@@ -193,7 +193,7 @@ const InsightsPage = () => {
         </div>
 
         {/* Revenue Analytics */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <Card title="Revenue Trends" className="p-6">
             {loading ? (
               <div className="text-center py-8 text-gray-500">Loading chart...</div>
@@ -300,7 +300,7 @@ const InsightsPage = () => {
         </div>
 
         {/* Churn Analysis & Geographic Distribution */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <Card title="Churn Analysis" className="p-6">
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -389,7 +389,7 @@ const InsightsPage = () => {
 
         {/* Business Intelligence Summary */}
         <Card title="Business Intelligence Summary" className="p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="space-y-3">
               <h4 className="font-medium text-gray-900">Growth Metrics</h4>
               <div className="space-y-2 text-sm">
@@ -459,7 +459,7 @@ const InsightsPage = () => {
         </Card>
 
         {/* Additional Analytics Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <Card title="Agent Performance" className="p-6">
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">

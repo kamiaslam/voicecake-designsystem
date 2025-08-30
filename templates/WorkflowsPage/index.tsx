@@ -83,22 +83,22 @@ const WorkflowsPage = () => {
 
   return (
     <Layout title="Workflows">
-      <div className="space-y-6">
+      <div className="space-y-3">
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card title="Total Workflows" className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+          <Card title="Total Workflows" className="p-6 mb-0">
             <div className="text-2xl font-bold text-t-primary">{workflowData.length}</div>
             <div className="text-xs text-t-tertiary">all workflows</div>
           </Card>
-          <Card title="Active Workflows" className="p-6">
+          <Card title="Active Workflows" className="p-6 mb-0">
             <div className="text-2xl font-bold text-t-primary">{activeWorkflows}</div>
             <div className="text-xs text-t-tertiary">of {workflowData.length} total</div>
           </Card>
-          <Card title="Total Executions" className="p-6">
+          <Card title="Total Executions" className="p-6 mb-0">
             <div className="text-2xl font-bold text-t-primary">{totalExecutions.toLocaleString()}</div>
             <div className="text-xs text-t-tertiary">across all workflows</div>
           </Card>
-          <Card title="Avg Success Rate" className="p-6">
+          <Card title="Avg Success Rate" className="p-6 mb-0">
             <div className="text-sm text-t-secondary mb-1">Avg Success Rate</div>
             <div className="text-2xl font-bold text-white">{avgSuccessRate.toFixed(1)}%</div>
             <div className="text-xs text-t-tertiary">last 30 days</div>

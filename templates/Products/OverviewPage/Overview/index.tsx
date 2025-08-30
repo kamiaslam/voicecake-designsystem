@@ -30,6 +30,7 @@ const Overview = ({}) => {
         <Card
             className="max-lg:overflow-hidden"
             title="Overview"
+            style={{ marginBottom: '12px' }}
             headContent={
                 <>
                     <Tabs
@@ -48,7 +49,7 @@ const Overview = ({}) => {
             }
         >
             <div className="relative before:hidden after:hidden before:absolute before:-left-3 before:top-0 before:bottom-0 before:z-3 before:w-8 before:bg-linear-to-r before:from-b-surface2 before:to-transparent before:pointer-events-none after:absolute after:-right-3 after:top-0 after:bottom-0 after:z-3 after:w-8 after:bg-linear-to-l after:from-b-surface2 after:to-transparent after:pointer-events-none max-lg:before:block max-lg:after:block">
-                <div className="flex gap-8 p-5 pt-4 max-lg:-mx-3 max-lg:px-6 max-lg:overflow-auto max-lg:scrollbar-none">
+                <div className="flex gap-8 p-5 pt-4 pb-0 max-lg:-mx-3 max-lg:px-6 max-lg:overflow-auto max-lg:scrollbar-none">
                     {overview.map((item) => (
                         <Item value={item} key={item.id} />
                     ))}

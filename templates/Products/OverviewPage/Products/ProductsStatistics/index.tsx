@@ -1,5 +1,6 @@
 import { NumericFormat } from "react-number-format";
 import millify from "millify";
+import { useRouter } from "next/navigation";
 import Table from "@/components/Table";
 import TableRow from "@/components/TableRow";
 import TableProductCell from "@/components/TableProductCell";
@@ -13,21 +14,19 @@ import { ProductStatistics } from "@/types/product";
 
 type ProductsStatisticsProps = {
     items: ProductStatistics[];
-    selectedRows: number[];
-    onRowSelect: (id: number) => void;
-    selectAll: boolean;
-    onSelectAll: () => void;
     isViewers?: boolean;
 };
 
 const ProductsStatistics = ({
-    selectedRows,
-    onRowSelect,
-    selectAll,
-    onSelectAll,
     items,
     isViewers,
 }: ProductsStatisticsProps) => {
+    const router = useRouter();
+
+    const handleEdit = () => {
+        router.push('/customers');
+    };
+
     return (
         <>
             <Legend
@@ -35,8 +34,6 @@ const ProductsStatistics = ({
                 data={items[0].trafficSource}
             />
             <Table
-                selectAll={selectAll}
-                onSelectAll={onSelectAll}
                 cellsThead={
                     <>
                         <th>Product</th>
@@ -56,8 +53,6 @@ const ProductsStatistics = ({
                 {items.map((item) => (
                     <TableRow
                         className="max-md:flex max-md:flex-col"
-                        selectedRows={selectedRows.includes(item.id)}
-                        onRowSelect={() => onRowSelect(item.id)}
                         key={item.id}
                     >
                         <TableProductCell
@@ -84,7 +79,7 @@ const ProductsStatistics = ({
                                 </div>
                             }
                         >
-                            <button className="action">
+                            <button className="action" onClick={handleEdit}>
                                 <Icon name="edit" />
                                 Edit
                             </button>
@@ -114,10 +109,10 @@ const ProductsStatistics = ({
                                 <Percentage value={item.percentage} />
                             </div>
                         </td>
-                        <td className="w-160 max-4xl:w-131 max-2xl:w-100 max-xl:w-96 max-lg:w-46 max-md:w-full max-md:!pt-1 max-md:!pb-4">
+                        <td className="max-lg:hidden">
                             <ProgressBar
-                                percentage={item.traffic}
                                 data={item.trafficSource}
+                                percentage={item.percentage}
                             />
                         </td>
                     </TableRow>

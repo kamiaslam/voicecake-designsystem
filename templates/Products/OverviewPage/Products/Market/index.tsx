@@ -1,4 +1,5 @@
 import { NumericFormat } from "react-number-format";
+import { useRouter } from "next/navigation";
 import Table from "@/components/Table";
 import TableRow from "@/components/TableRow";
 import TableProductCell from "@/components/TableProductCell";
@@ -12,10 +13,6 @@ const tableHead = ["Product", "Status", "Price", "Sales", "Views", "Like"];
 
 type MarketProps = {
     items: ProductMarket[];
-    selectedRows: number[];
-    onRowSelect: (id: number) => void;
-    selectAll: boolean;
-    onSelectAll: () => void;
 };
 
 const Cell = ({ value, percentage }: { value: string; percentage: number }) => (
@@ -34,17 +31,15 @@ const Cell = ({ value, percentage }: { value: string; percentage: number }) => (
     </td>
 );
 
-const Market = ({
-    selectedRows,
-    onRowSelect,
-    selectAll,
-    onSelectAll,
-    items,
-}: MarketProps) => {
+const Market = ({ items }: MarketProps) => {
+    const router = useRouter();
+
+    const handleEdit = () => {
+        router.push('/customers');
+    };
+
     return (
         <Table
-            selectAll={selectAll}
-            onSelectAll={onSelectAll}
             cellsThead={tableHead.map((head) => (
                 <th
                     className="max-lg:nth-5:hidden max-lg:nth-6:hidden max-lg:nth-7:hidden"
@@ -55,11 +50,7 @@ const Market = ({
             ))}
         >
             {items.map((item) => (
-                <TableRow
-                    selectedRows={selectedRows.includes(item.id)}
-                    onRowSelect={() => onRowSelect(item.id)}
-                    key={item.id}
-                >
+                <TableRow key={item.id}>
                     <TableProductCell
                         title={item.title}
                         details={item.details}
@@ -79,7 +70,7 @@ const Market = ({
                             </>
                         }
                     >
-                        <button className="action">
+                        <button className="action" onClick={handleEdit}>
                             <Icon name="edit" />
                             Edit
                         </button>

@@ -96,13 +96,8 @@ const Header = ({
                         isWhite
                     />
                 </div>
-                {title && (
-                    <div className="mr-auto text-h4 max-lg:text-h5 max-md:hidden">
-                        {title}
-                    </div>
-                )}
                 <div
-                    className={`flex items-center gap-3 ${
+                    className={`flex items-center gap-3 ml-auto ${
                         newProduct ? "hidden max-md:flex" : ""
                     } ${
                         hideSidebar ? "grow max-lg:grow-0 max-lg:ml-auto" : ""

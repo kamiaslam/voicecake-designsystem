@@ -192,8 +192,8 @@ const HomePage = () => {
   };
 
   return (
-    <Layout title="Voice Cake Dashboard">
-      <div className="space-y-6">
+    <Layout title="Dashboard">
+      <div className="space-y-3">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -215,40 +215,92 @@ const HomePage = () => {
         </div>
 
         {/* Key Performance Indicators */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card title="Total Revenue" className="p-6">
-            <div className="text-2xl font-bold text-t-primary">${totalRevenue.toLocaleString()}</div>
-            <div className="flex items-center gap-2 mt-1">
-              <Percentage value={12.5} />
-              <span className="text-xs text-gray-500">vs last period</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 max-lg:overflow-hidden">
+          <Card className="p-6 mb-0">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary-02 rounded-full">
+                <Icon name="wallet" className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="text-sub-title-1">Total Revenue</div>
+                  <div className="flex fill-t-secondary opacity-50 hover:opacity-100 transition-all duration-150 cursor-pointer hover:!fill-primary-01">
+                    <Icon name="help-circle" className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="text-2xl font-bold text-t-primary">${totalRevenue.toLocaleString()}</div>
+                <div className="flex items-center gap-2 mt-1">
+                  <Percentage value={12.5} />
+                  <span className="text-xs text-gray-500">vs last period</span>
+                </div>
+              </div>
             </div>
           </Card>
-          <Card title="Active Users" className="p-6">
-            <div className="text-2xl font-bold text-t-primary">{activeUsers}</div>
-            <div className="flex items-center gap-2 mt-1">
-              <Percentage value={2.3} />
-              <span className="text-xs text-gray-500">of {totalUsers} total</span>
+          <Card className="p-6 mb-0">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary-02 rounded-full">
+                <Icon name="users" className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="text-sub-title-1">Active Users</div>
+                  <div className="flex fill-t-secondary opacity-50 hover:opacity-100 transition-all duration-150 cursor-pointer hover:!fill-primary-01">
+                    <Icon name="help-circle" className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="text-2xl font-bold text-t-primary">{activeUsers}</div>
+                <div className="flex items-center gap-2 mt-1">
+                  <Percentage value={2.3} />
+                  <span className="text-xs text-gray-500">of {totalUsers} total</span>
+                </div>
+              </div>
             </div>
           </Card>
-          <Card title="Total Calls" className="p-6">
-            <div className="text-2xl font-bold text-t-primary">{totalCalls.toLocaleString()}</div>
-            <div className="flex items-center gap-2 mt-1">
-              <Percentage value={8.7} />
-              <span className="text-xs text-gray-500">this month</span>
+          <Card className="p-6 mb-0">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary-02 rounded-full">
+                <Icon name="phone" className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="text-sub-title-1">Total Calls</div>
+                  <div className="flex fill-t-secondary opacity-50 hover:opacity-100 transition-all duration-150 cursor-pointer hover:!fill-primary-01">
+                    <Icon name="help-circle" className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="text-2xl font-bold text-t-primary">{totalCalls.toLocaleString()}</div>
+                <div className="flex items-center gap-2 mt-1">
+                  <Percentage value={8.7} />
+                  <span className="text-xs text-gray-500">this month</span>
+                </div>
+              </div>
             </div>
           </Card>
-          <Card title="Workflow Success" className="p-6">
-            <div className="text-2xl font-bold text-t-primary">{workflowSuccessRate.toFixed(1)}%</div>
-            <div className="flex items-center gap-2 mt-1">
-              <Percentage value={1.2} />
-              <span className="text-xs text-gray-500">across all workflows</span>
+          <Card className="p-6 mb-0">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-16 h-16 bg-primary-02 rounded-full">
+                <Icon name="check-circle" className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="text-sub-title-1">Workflow Success</div>
+                  <div className="flex fill-t-secondary opacity-50 hover:opacity-100 transition-all duration-150 cursor-pointer hover:!fill-primary-01">
+                    <Icon name="help-circle" className="w-6 h-6" />
+                  </div>
+                </div>
+                <div className="text-2xl font-bold text-t-primary">{workflowSuccessRate.toFixed(1)}%</div>
+                <div className="flex items-center gap-2 mt-1">
+                  <Percentage value={1.2} />
+                  <span className="text-xs text-gray-500">across all workflows</span>
+                </div>
+              </div>
             </div>
           </Card>
         </div>
 
         {/* Revenue Analytics */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card title="Revenue Trends" className="p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3 max-lg:overflow-hidden">
+          <Card title="Revenue Trends" className="p-6 mb-0">
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={revenueData} margin={{ top: 8, right: 7, left: 0, bottom: 0 }}>
@@ -314,7 +366,7 @@ const HomePage = () => {
             </div>
           </Card>
 
-          <Card title="Usage Distribution" className="p-6">
+          <Card title="Usage Distribution" className="p-6 mb-0">
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -350,8 +402,8 @@ const HomePage = () => {
         </div>
 
         {/* Geographic Distribution & Agent Performance */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card title="Geographic Distribution" className="p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3 max-lg:overflow-hidden">
+          <Card title="Geographic Distribution" className="p-6 mb-0">
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={countryUsage} margin={{ top: 8, right: 7, left: 0, bottom: 40 }}>
@@ -395,7 +447,7 @@ const HomePage = () => {
             </div>
           </Card>
 
-          <Card title="Agent Performance" className="p-6">
+          <Card title="Agent Performance" className="p-6 mb-0">
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={agents} margin={{ top: 8, right: 7, left: 0, bottom: 40 }}>
@@ -433,8 +485,8 @@ const HomePage = () => {
         </div>
 
         {/* Recent Activity & System Health */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card title="Recent Activity" className="p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3 max-lg:overflow-hidden">
+          <Card title="Recent Activity" className="p-6 mb-0">
             <div className="space-y-4">
               {recentActivities.map((activity) => (
                 <div key={activity.id} className={`flex items-center gap-3 p-3 rounded-lg ${getStatusColor(activity.status)}`}>
@@ -448,7 +500,7 @@ const HomePage = () => {
             </div>
           </Card>
 
-          <Card title="System Health" className="p-6">
+          <Card title="System Health" className="p-6 mb-0">
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-gray-600">API Response Time</span>
@@ -471,7 +523,7 @@ const HomePage = () => {
         </div>
 
         {/* Quick Actions */}
-        <Card title="Quick Actions" className="p-6">
+        <Card title="Quick Actions" className="mb-3 max-lg:overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Button isStroke className="p-4 h-auto flex-col items-start">
               <Icon name="plus" className="w-5 h-5 text-blue-600 mb-2" />

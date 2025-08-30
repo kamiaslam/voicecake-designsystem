@@ -54,9 +54,8 @@ const ProductView = ({ className }: ProductViewProps) => {
 
     return (
         <Card
-            className={`${className || ""}`}
-            classHead="!pl-3"
-            title="Product views"
+            className={`p-6 mb-0 ${className || ""}`}
+            title="Customer views"
         >
             <div className="px-2 pb-3">
                 <div className="h-52">

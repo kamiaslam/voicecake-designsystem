@@ -10,6 +10,9 @@ import Select from "@/components/Select";
 import Table from "@/components/Table";
 import TableRow from "@/components/TableRow";
 import Badge from "@/components/Badge";
+import Switch from "@/components/Switch";
+import PricingOverrideModal from "@/components/PricingOverrideModal";
+import SimulateInvoiceModal from "@/components/SimulateInvoiceModal";
 import { users, type User } from "@/lib/data";
 
 const statusOptions = [
@@ -31,6 +34,23 @@ const UsersPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState(statusOptions[0]);
     const [planFilter, setPlanFilter] = useState(planOptions[0]);
+    const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
+    const [isSimulateModalOpen, setIsSimulateModalOpen] = useState(false);
+    const [selectedCompany, setSelectedCompany] = useState("");
+    const [pricingData, setPricingData] = useState({
+        enableOverride: false,
+        conversa: 0.12,
+        empath: 0.13,
+        automationsPack: 10,
+        premiumVoiceSurcharge: 0.015
+    });
+    const [usageData, setUsageData] = useState({
+        conversaMinutes: 1200,
+        empathMinutes: 800,
+        premiumVoiceMinutes: 150,
+        automationsCount: 18000
+    });
+    const [autoRenewStates, setAutoRenewStates] = useState<{ [key: string]: boolean }>({});
 
     const filteredUsers = useMemo(() => {
         return users.filter(user => {
@@ -43,8 +63,8 @@ const UsersPage = () => {
 
     const getStatusBadge = (status: string) => {
         const statusClasses = {
-            active: "bg-primary-02/20 text-primary-02 border border-primary-02/30",
-            trial: "bg-[#FFB020]/20 text-[#FFB020] border border-[#FFB020]/30",
+            active: "bg-gray-900 text-white border border-gray-900",
+            trial: "bg-gray-100 text-gray-900 border border-gray-200",
             inactive: "bg-[#FF6A55]/20 text-[#FF6A55] border border-[#FF6A55]/30",
         };
         return statusClasses[status as keyof typeof statusClasses] || "bg-t-tertiary/20 text-t-tertiary border border-t-tertiary/30";
@@ -58,6 +78,27 @@ const UsersPage = () => {
             Enterprise: "bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/30",
         };
         return planClasses[plan as keyof typeof planClasses] || "bg-t-tertiary/20 text-t-tertiary border border-t-tertiary/30";
+    };
+
+    const handleOverrideClick = (companyName: string) => {
+        setSelectedCompany(companyName);
+        setIsPricingModalOpen(true);
+    };
+
+    const handleSimulateClick = (companyName: string) => {
+        setSelectedCompany(companyName);
+        setIsSimulateModalOpen(true);
+    };
+
+    const handleAutoRenewToggle = (companyName: string, currentState: boolean) => {
+        setAutoRenewStates(prev => ({
+            ...prev,
+            [companyName]: !currentState
+        }));
+    };
+
+    const getAutoRenewState = (companyName: string, defaultState: boolean) => {
+        return autoRenewStates[companyName] !== undefined ? autoRenewStates[companyName] : defaultState;
     };
 
     return (
@@ -116,23 +157,25 @@ const UsersPage = () => {
                             <Search
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                placeholder="Search companies..."
+                                placeholder="Search company"
                                 isGray
                             />
                         </div>
                         <div className="flex gap-4">
                             <Select
-                                value={statusFilter}
-                                onChange={setStatusFilter}
-                                options={statusOptions}
-                                placeholder="Select status"
-                            />
-                            <Select
                                 value={planFilter}
                                 onChange={setPlanFilter}
                                 options={planOptions}
-                                placeholder="Select plan"
+                                placeholder="Plan"
                             />
+                            <Button>
+                                <Icon name="plus" className="w-4 h-4 mr-2" />
+                                New Client
+                            </Button>
+                            <Button isStroke>
+                                <Icon name="download" className="w-4 h-4 mr-2" />
+                                Export PDF
+                            </Button>
                         </div>
                     </div>
 
@@ -144,56 +187,70 @@ const UsersPage = () => {
                                 <th className="text-left py-3 px-4 font-medium text-t-secondary">Plan</th>
                                 <th className="text-left py-3 px-4 font-medium text-t-secondary">Seats</th>
                                 <th className="text-left py-3 px-4 font-medium text-t-secondary">Status</th>
+                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Auto-renew</th>
+                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Pricing</th>
                                 <th className="text-left py-3 px-4 font-medium text-t-secondary">MRR</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Auto Renew</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Actions</th>
                             </>
                         }
                     >
-                        {filteredUsers.map((user, index) => (
-                            <TableRow key={index}>
-                                <td className="py-4 px-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-gradient-to-br from-primary-01 to-[#8B5CF6] rounded-lg flex items-center justify-center text-t-light font-semibold">
-                                            {user.company.charAt(0)}
+                        {filteredUsers.map((user, index) => {
+                            const autoRenewState = getAutoRenewState(user.company, user.autoRenew);
+                            
+                            return (
+                                <TableRow key={index}>
+                                    <td className="py-4 px-4">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 bg-gradient-to-br from-primary-01 to-[#8B5CF6] rounded-lg flex items-center justify-center text-t-light font-semibold">
+                                                {user.company.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <p className="font-medium text-t-primary">{user.company}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p className="font-medium text-t-primary">{user.company}</p>
+                                    </td>
+                                    <td className="py-4 px-4">
+                                        <Badge className={`px-2 py-1 text-xs font-medium ${getPlanBadge(user.plan)}`}>
+                                            {user.plan}
+                                        </Badge>
+                                    </td>
+                                    <td className="py-4 px-4 text-t-primary">{user.seats}</td>
+                                    <td className="py-4 px-4">
+                                        <Badge className={`px-2 py-1 text-xs font-medium ${getStatusBadge(user.status)}`}>
+                                            {user.status}
+                                        </Badge>
+                                    </td>
+                                    <td className="py-4 px-4">
+                                        <div className="flex items-center">
+                                            <Switch
+                                                checked={autoRenewState}
+                                                onChange={() => handleAutoRenewToggle(user.company, autoRenewState)}
+                                            />
                                         </div>
-                                    </div>
-                                </td>
-                                <td className="py-4 px-4">
-                                    <Badge className={`px-2 py-1 text-xs font-medium ${getPlanBadge(user.plan)}`}>
-                                        {user.plan}
-                                    </Badge>
-                                </td>
-                                <td className="py-4 px-4 text-t-primary">{user.seats}</td>
-                                <td className="py-4 px-4">
-                                    <Badge className={`px-2 py-1 text-xs font-medium ${getStatusBadge(user.status)}`}>
-                                        {user.status}
-                                    </Badge>
-                                </td>
-                                <td className="py-4 px-4 font-medium text-t-primary">${user.mrr}</td>
-                                <td className="py-4 px-4">
-                                    <div className="flex items-center">
-                                        <div className={`w-2 h-2 rounded-full ${user.autoRenew ? 'bg-primary-02' : 'bg-[#FF6A55]'}`}></div>
-                                        <span className="ml-2 text-sm text-t-secondary">
-                                            {user.autoRenew ? 'Yes' : 'No'}
-                                        </span>
-                                    </div>
-                                </td>
-                                <td className="py-4 px-4">
-                                    <div className="flex gap-2">
-                                        <Button isStroke>
-                                            <Icon name="edit" className="w-4 h-4" />
-                                        </Button>
-                                        <Button isStroke>
-                                            <Icon name="dots" className="w-4 h-4" />
-                                        </Button>
-                                    </div>
-                                </td>
-                            </TableRow>
-                        ))}
+                                    </td>
+                                    <td className="py-4 px-4">
+                                        <div className="flex gap-2">
+                                            <Button 
+                                                isStroke 
+                                                className="text-xs px-2 py-1 h-6"
+                                                onClick={() => handleOverrideClick(user.company)}
+                                            >
+                                                <Icon name="edit" className="w-3 h-3 mr-1" />
+                                                Override
+                                            </Button>
+                                            <Button 
+                                                isStroke 
+                                                className="text-xs px-2 py-1 h-6"
+                                                onClick={() => handleSimulateClick(user.company)}
+                                            >
+                                                <Icon name="calculator" className="w-3 h-3 mr-1" />
+                                                Simulate
+                                            </Button>
+                                        </div>
+                                    </td>
+                                    <td className="py-4 px-4 font-medium text-t-primary">${user.mrr}</td>
+                                </TableRow>
+                            );
+                        })}
                     </Table>
                     
                     {filteredUsers.length === 0 && (
@@ -203,6 +260,25 @@ const UsersPage = () => {
                     )}
                 </Card>
             </div>
+
+            {/* Pricing Override Modal */}
+            <PricingOverrideModal
+                isOpen={isPricingModalOpen}
+                onClose={() => setIsPricingModalOpen(false)}
+                companyName={selectedCompany}
+                pricing={pricingData}
+                onPricingChange={setPricingData}
+            />
+
+            {/* Simulate Invoice Modal */}
+            <SimulateInvoiceModal
+                isOpen={isSimulateModalOpen}
+                onClose={() => setIsSimulateModalOpen(false)}
+                companyName={selectedCompany}
+                usage={usageData}
+                onUsageChange={setUsageData}
+                pricing={pricingData}
+            />
         </Layout>
     );
 };

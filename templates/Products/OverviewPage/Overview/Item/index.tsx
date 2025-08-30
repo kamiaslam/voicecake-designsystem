@@ -20,20 +20,22 @@ type ItemProps = {
 
 const Item = ({ value }: ItemProps) => (
     <div className="flex-1 pr-6 border-r border-shade-07/10 last:border-r-0 max-4xl:nth-3:hidden max-2xl:last:pr-0 max-lg:flex-auto max-lg:shrink-0 max-lg:w-66">
-        <div className="flex items-center justify-center size-16 mb-10 rounded-full bg-b-surface1">
-            <Icon
-                className={`fill-t-primary ${
-                    value.title === "Payout" ? "-rotate-45" : ""
-                }`}
-                name={value.icon}
-            />
+        <div className="flex items-center gap-3 mb-2">
+            <div className="flex items-center justify-center size-16 rounded-full" style={{ backgroundColor: '#05b4669e' }}>
+                <Icon
+                    className={`fill-t-primary ${
+                        value.title === "Payout" ? "-rotate-45" : ""
+                    }`}
+                    name={value.icon}
+                />
+            </div>
+            <div className="flex items-center gap-2">
+                <div className="text-sub-title-1">{value.title}</div>
+                <Tooltip content={value.tooltip} large />
+            </div>
         </div>
         <div className="flex max-2xl:relative">
             <div className="grow">
-                <div className="flex items-center gap-2 mb-2">
-                    <div className="text-sub-title-1">{value.title}</div>
-                    <Tooltip content={value.tooltip} large />
-                </div>
                 <div className="flex mb-3">
                     {(value.title === "Earning" ||
                         value.title === "Payout") && (

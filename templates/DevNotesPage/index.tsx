@@ -202,7 +202,7 @@ const DevNotesPage = () => {
 
   return (
     <Layout title="Developer Notes">
-      <div className="space-y-6">
+                  <div className="space-y-3">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -222,7 +222,7 @@ const DevNotesPage = () => {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Card title="API Endpoints" className="p-6">
             <div className="text-2xl font-bold text-t-primary">{apiEndpoints.length}</div>
             <div className="text-xs text-[var(--text-tertiary)]">documented</div>
@@ -338,7 +338,7 @@ const DevNotesPage = () => {
         {selectedCategory.id === 6 && (
           <Card title="Code Examples" className="p-6">
             <h2 className="text-xl font-semibold mb-4">Code Examples</h2>
-            <div className="space-y-6">
+            <div className="space-y-3">
               <div>
                 <h3 className="font-medium mb-2">Basic API Request</h3>
                 <pre className="bg-[var(--backgrounds-surface2)] p-4 rounded-lg text-sm overflow-x-auto">

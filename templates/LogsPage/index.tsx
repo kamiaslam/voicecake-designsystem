@@ -164,9 +164,9 @@ const LogsPage = () => {
 
   return (
     <Layout title="Error Logs">
-      <div className="space-y-6">
+                  <div className="space-y-3">
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Card title="Total Logs" className="p-6">
             <div className="text-2xl font-bold text-t-primary">{logsData.length}</div>
             <div className="text-xs text-gray-500">all time</div>
@@ -269,7 +269,7 @@ const LogsPage = () => {
         </Card>
 
         {/* Log Statistics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           <Card title="Log Levels Distribution" className="p-6">
             <div className="space-y-3">
               <div className="flex justify-between">

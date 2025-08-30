@@ -9,12 +9,18 @@ import Products from "./Products";
 const OverviewPage = () => {
     return (
         <Layout title="Product overview">
-            <Overview />
-            <div className="flex mb-3 max-lg:flex-col">
-                <ProductActivity />
-                <ProductView className="col-right" />
+            <div className="space-y-3 [&>*:last-child]:mb-0">
+                <Overview />
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+                    <div className="lg:col-span-7">
+                        <ProductActivity />
+                    </div>
+                    <div className="lg:col-span-5">
+                        <ProductView />
+                    </div>
+                </div>
+                <Products />
             </div>
-            <Products />
         </Layout>
     );
 };

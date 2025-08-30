@@ -139,7 +139,7 @@ const Icon = ({ className, name, fill }: IconProps) => (
         height={24}
         viewBox="0 0 24 24"
     >
-        <path fill={fill} d={icons[name]}></path>
+        <path fill={fill || "currentColor"} d={icons[name]}></path>
     </svg>
 );
 

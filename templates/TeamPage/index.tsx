@@ -123,20 +123,20 @@ const TeamPage = () => {
 
   return (
     <Layout title="Team & Permissions">
-      <div className="space-y-6">
+                  <div className="space-y-3">
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Card title="Total Members" className="p-6">
             <div className="text-2xl font-bold text-t-primary">{staffData.length}</div>
             <div className="text-xs text-gray-500">team members</div>
           </Card>
-          <Card title="Active Members" className="p-6">
+          <Card className="p-6">
             <div className="text-sm text-gray-60 mb-1">Active Members</div>
             <div className="text-2xl font-bold text-t-primary">{activeMembers}</div>
             <div className="text-xs text-gray-500">currently active</div>
           </Card>
-          <Card title="Inactive Members" className="p-6">
-            <div className="text-sm text-gray-600mb-1">Inactive Members</div>
+          <Card className="p-6">
+            <div className="text-sm text-gray-600 mb-1">Inactive Members</div>
             <div className="text-2xl font-bold text-t-primary">{inactiveMembers}</div>
             <div className="text-xs text-gray-500">currently inactive</div>
           </Card>

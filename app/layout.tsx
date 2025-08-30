@@ -31,8 +31,8 @@ const interDisplay = localFont({
 });
 
 export const metadata: Metadata = {
-    title: "Voice Cake Dashboard",
-    description: "Voice Cake Dashboard",
+    title: "Dashboard",
+    description: "Dashboard",
 };
 
 export default function RootLayout({
@@ -43,22 +43,26 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
+                {/* Google Fonts - Inter, Roboto Condensed & JetBrains Mono */}
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Condensed:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
                 {/* Description no longer than 155 characters */}
                 <meta
                     name="description"
-                    content="Voice Cake Dashboard - AI-Powered Voice Communication Platform"
+                    content="Dashboard - AI-Powered Voice Communication Platform"
                 />
                 {/* Product Name */}
                 <meta
                     name="product-name"
-                    content="Voice Cake Dashboard"
+                    content="Dashboard"
                 />
                 {/* Twitter Card data */}
                 <meta name="twitter:card" content="summary" />
                 <meta name="twitter:site" content="@voicecake" />
                 <meta
                     name="twitter:title"
-                    content="Voice Cake Dashboard"
+                    content="Dashboard"
                 />
                 <meta
                     name="twitter:description"
@@ -72,7 +76,7 @@ export default function RootLayout({
                 {/* Open Graph data for Facebook */}
                 <meta
                     property="og:title"
-                    content="Voice Cake Dashboard"
+                    content="Dashboard"
                 />
                 <meta property="og:type" content="Article" />
                 <meta
@@ -89,13 +93,13 @@ export default function RootLayout({
                 />
                 <meta
                     property="og:site_name"
-                    content="Voice Cake Dashboard"
+                    content="Dashboard"
                 />
                 <meta property="fb:admins" content="132951670226590" />
                 {/* Open Graph data for LinkedIn */}
                 <meta
                     property="og:title"
-                    content="Voice Cake Dashboard"
+                    content="Dashboard"
                 />
                 <meta
                     property="og:url"
@@ -112,7 +116,7 @@ export default function RootLayout({
                 {/* Open Graph data for Pinterest */}
                 <meta
                     property="og:title"
-                    content="Voice Cake Dashboard"
+                    content="Dashboard"
                 />
                 <meta
                     property="og:url"
@@ -128,7 +132,7 @@ export default function RootLayout({
                 />
             </head>
             <body
-                className={`${interDisplay.variable} bg-b-surface1 font-inter text-body-1 text-t-primary antialiased`}
+                className={`${interDisplay.variable} bg-b-surface1 font-mono text-body-1 text-t-primary antialiased`}
             >
                 <Providers>{children}</Providers>
             </body>
