@@ -134,68 +134,140 @@ const WorkflowsPage = () => {
           {loading ? (
             <div className="text-center py-8 text-t-tertiary">Loading workflows...</div>
           ) : (
-            <Table 
-              cellsThead={
-                <>
-                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Name</th>
-                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Description</th>
-                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Trigger</th>
-                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Status</th>
-                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Executions</th>
-                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Success Rate</th>
-                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Last Run</th>
-                  <th className="text-left py-3 px-4 font-medium text-t-secondary">Actions</th>
-                </>
-              }
-            >
-              {filteredWorkflows.map((workflow) => (
-                <TableRow key={workflow.id}>
-                  <td className="py-4 px-4 font-medium text-t-primary">{workflow.name}</td>
-                  <td className="py-4 px-4 text-t-secondary max-w-xs truncate">{workflow.description}</td>
-                  <td className="py-4 px-4">
-                    <Badge className={getTriggerColor(workflow.trigger)}>
-                      {workflow.trigger.charAt(0).toUpperCase() + workflow.trigger.slice(1)}
-                    </Badge>
-                  </td>
-                  <td className="py-4 px-4">
-                    <Badge className={getStatusColor(workflow.status)}>
-                      {workflow.status.charAt(0).toUpperCase() + workflow.status.slice(1)}
-                    </Badge>
-                  </td>
-                  <td className="py-4 px-4 font-medium text-t-primary">{workflow.executions.toLocaleString()}</td>
-                  <td className="py-4 px-4">
-                    <span className={`font-medium ${
-                      workflow.successRate >= 95 ? 'text-primary-02' :
-                      workflow.successRate >= 80 ? 'text-[#FFB020]' : 'text-[#FF6A55]'
-                    }`}>
-                      {workflow.successRate.toFixed(1)}%
-                    </span>
-                  </td>
-                  <td className="py-4 px-4 text-t-secondary">
-                    {new Date(workflow.lastRun).toLocaleString()}
-                  </td>
-                  <td className="py-4 px-4">
-                     <div className="flex gap-2">
-                       <Button isStroke>
-                         <Icon name="edit" className="w-4 h-4 mr-2" />
-                         Edit
-                       </Button>
-                       {workflow.status === "active" ? (
-                         <Button isStroke>
-                           <Icon name="pause" className="w-4 h-4 mr-2" />
-                           Pause
-                         </Button>
-                       ) : (
-                         <Button>
-                           <Icon name="play" className="w-4 h-4 mr-2" />
-                           Start
-                         </Button>
-                       )}
-                     </div>
-                   </td>
-                </TableRow>
-              ))}
-            </Table>
+            <>
+              {/* Mobile Card Layout */}
+              <div className="block lg:hidden space-y-4">
+                {filteredWorkflows.map((workflow) => (
+                  <div key={workflow.id} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-t-primary">{workflow.name}</h3>
+                        <p className="text-sm text-t-secondary mt-1">{workflow.description}</p>
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
+                        <Badge className={getTriggerColor(workflow.trigger)}>
+                          {workflow.trigger.charAt(0).toUpperCase() + workflow.trigger.slice(1)}
+                        </Badge>
+                        <Badge className={getStatusColor(workflow.status)}>
+                          {workflow.status.charAt(0).toUpperCase() + workflow.status.slice(1)}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    {/* Metrics */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-t-secondary">Executions</p>
+                        <p className="font-medium text-t-primary">{workflow.executions.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-t-secondary">Success Rate</p>
+                        <p className={`font-medium ${
+                          workflow.successRate >= 95 ? 'text-primary-02' :
+                          workflow.successRate >= 80 ? 'text-[#FFB020]' : 'text-[#FF6A55]'
+                        }`}>
+                          {workflow.successRate.toFixed(1)}%
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Last Run */}
+                    <div>
+                      <p className="text-sm text-t-secondary">Last Run</p>
+                      <p className="text-t-primary">{new Date(workflow.lastRun).toLocaleString()}</p>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-2 pt-2 border-t border-gray-100">
+                      <Button isStroke className="flex-1">
+                        <Icon name="edit" className="w-4 h-4 mr-2" />
+                        Edit
+                      </Button>
+                      {workflow.status === "active" ? (
+                        <Button isStroke className="flex-1">
+                          <Icon name="pause" className="w-4 h-4 mr-2" />
+                          Pause
+                        </Button>
+                      ) : (
+                        <Button className="flex-1">
+                          <Icon name="play" className="w-4 h-4 mr-2" />
+                          Start
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table Layout */}
+              <div className="hidden lg:block">
+                <div className="overflow-x-auto">
+                  <Table 
+                    cellsThead={
+                      <>
+                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Name</th>
+                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Description</th>
+                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Trigger</th>
+                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Status</th>
+                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Executions</th>
+                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Success Rate</th>
+                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Last Run</th>
+                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Actions</th>
+                      </>
+                    }
+                  >
+                    {filteredWorkflows.map((workflow) => (
+                      <TableRow key={workflow.id}>
+                        <td className="py-4 px-4 font-medium text-t-primary">{workflow.name}</td>
+                        <td className="py-4 px-4 text-t-secondary max-w-xs truncate">{workflow.description}</td>
+                        <td className="py-4 px-4">
+                          <Badge className={getTriggerColor(workflow.trigger)}>
+                            {workflow.trigger.charAt(0).toUpperCase() + workflow.trigger.slice(1)}
+                          </Badge>
+                        </td>
+                        <td className="py-4 px-4">
+                          <Badge className={getStatusColor(workflow.status)}>
+                            {workflow.status.charAt(0).toUpperCase() + workflow.status.slice(1)}
+                          </Badge>
+                        </td>
+                        <td className="py-4 px-4 font-medium text-t-primary">{workflow.executions.toLocaleString()}</td>
+                        <td className="py-4 px-4">
+                          <span className={`font-medium ${
+                            workflow.successRate >= 95 ? 'text-primary-02' :
+                            workflow.successRate >= 80 ? 'text-[#FFB020]' : 'text-[#FF6A55]'
+                          }`}>
+                            {workflow.successRate.toFixed(1)}%
+                          </span>
+                        </td>
+                        <td className="py-4 px-4 text-t-secondary">
+                          {new Date(workflow.lastRun).toLocaleString()}
+                        </td>
+                        <td className="py-4 px-4">
+                           <div className="flex gap-2">
+                             <Button isStroke>
+                               <Icon name="edit" className="w-4 h-4 mr-2" />
+                               Edit
+                             </Button>
+                             {workflow.status === "active" ? (
+                               <Button isStroke>
+                                 <Icon name="pause" className="w-4 h-4 mr-2" />
+                                 Pause
+                               </Button>
+                             ) : (
+                               <Button>
+                                 <Icon name="play" className="w-4 h-4 mr-2" />
+                                 Start
+                               </Button>
+                             )}
+                           </div>
+                         </td>
+                      </TableRow>
+                    ))}
+                  </Table>
+                </div>
+              </div>
+            </>
           )}
 
           {filteredWorkflows.length === 0 && !loading && (

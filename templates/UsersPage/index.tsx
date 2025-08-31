@@ -161,97 +161,173 @@ const UsersPage = () => {
                                 isGray
                             />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col sm:flex-row gap-4">
                             <Select
                                 value={planFilter}
                                 onChange={setPlanFilter}
                                 options={planOptions}
                                 placeholder="Plan"
                             />
-                            <Button>
-                                <Icon name="plus" className="w-4 h-4 mr-2" />
-                                New Client
-                            </Button>
-                            <Button isStroke>
-                                <Icon name="download" className="w-4 h-4 mr-2" />
-                                Export PDF
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button className="flex-1 sm:flex-none">
+                                    <Icon name="plus" className="w-4 h-4 mr-2" />
+                                    <span className="hidden sm:inline">New Client</span>
+                                    <span className="sm:hidden">New</span>
+                                </Button>
+                                <Button isStroke className="flex-1 sm:flex-none">
+                                    <Icon name="download" className="w-4 h-4 mr-2" />
+                                    <span className="hidden sm:inline">Export PDF</span>
+                                    <span className="sm:hidden">Export</span>
+                                </Button>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Users Table */}
-                    <Table
-                        cellsThead={
-                            <>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Company</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Plan</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Seats</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Status</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Auto-renew</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Pricing</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">MRR</th>
-                            </>
-                        }
-                    >
+                    {/* Mobile Card Layout */}
+                    <div className="block lg:hidden space-y-4">
                         {filteredUsers.map((user, index) => {
                             const autoRenewState = getAutoRenewState(user.company, user.autoRenew);
                             
                             return (
-                                <TableRow key={index}>
-                                    <td className="py-4 px-4">
+                                <div key={index} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                                    {/* Company Header */}
+                                    <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-3">
                                             <div className="w-10 h-10 bg-gradient-to-br from-primary-01 to-[#8B5CF6] rounded-lg flex items-center justify-center text-t-light font-semibold">
                                                 {user.company.charAt(0)}
                                             </div>
                                             <div>
                                                 <p className="font-medium text-t-primary">{user.company}</p>
+                                                <p className="text-sm text-t-secondary">${user.mrr} MRR</p>
                                             </div>
                                         </div>
-                                    </td>
-                                    <td className="py-4 px-4">
-                                        <Badge className={`px-2 py-1 text-xs font-medium ${getPlanBadge(user.plan)}`}>
-                                            {user.plan}
-                                        </Badge>
-                                    </td>
-                                    <td className="py-4 px-4 text-t-primary">{user.seats}</td>
-                                    <td className="py-4 px-4">
                                         <Badge className={`px-2 py-1 text-xs font-medium ${getStatusBadge(user.status)}`}>
                                             {user.status}
                                         </Badge>
-                                    </td>
-                                    <td className="py-4 px-4">
-                                        <div className="flex items-center">
+                                    </div>
+
+                                    {/* Plan and Seats */}
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-sm text-t-secondary">Plan</p>
+                                            <Badge className={`px-2 py-1 text-xs font-medium ${getPlanBadge(user.plan)}`}>
+                                                {user.plan}
+                                            </Badge>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-t-secondary">Seats</p>
+                                            <p className="text-t-primary font-medium">{user.seats}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Auto-renew and Actions */}
+                                    <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm text-t-secondary">Auto-renew</span>
                                             <Switch
                                                 checked={autoRenewState}
                                                 onChange={() => handleAutoRenewToggle(user.company, autoRenewState)}
                                             />
                                         </div>
-                                    </td>
-                                    <td className="py-4 px-4">
                                         <div className="flex gap-2">
                                             <Button 
                                                 isStroke 
                                                 className="text-xs px-2 py-1 h-6"
                                                 onClick={() => handleOverrideClick(user.company)}
                                             >
-                                                <Icon name="edit" className="w-3 h-3 mr-1" />
-                                                Override
+                                                <Icon name="edit" className="w-3 h-3" />
                                             </Button>
                                             <Button 
                                                 isStroke 
                                                 className="text-xs px-2 py-1 h-6"
                                                 onClick={() => handleSimulateClick(user.company)}
                                             >
-                                                <Icon name="calculator" className="w-3 h-3 mr-1" />
-                                                Simulate
+                                                <Icon name="calculator" className="w-3 h-3" />
                                             </Button>
                                         </div>
-                                    </td>
-                                    <td className="py-4 px-4 font-medium text-t-primary">${user.mrr}</td>
-                                </TableRow>
+                                    </div>
+                                </div>
                             );
                         })}
-                    </Table>
+                    </div>
+
+                    {/* Desktop Table Layout */}
+                    <div className="hidden lg:block">
+                        <div className="overflow-x-auto">
+                            <Table
+                                cellsThead={
+                                    <>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Company</th>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Plan</th>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Seats</th>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Status</th>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Auto-renew</th>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Pricing</th>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">MRR</th>
+                                    </>
+                                }
+                            >
+                                {filteredUsers.map((user, index) => {
+                                    const autoRenewState = getAutoRenewState(user.company, user.autoRenew);
+                                    
+                                    return (
+                                        <TableRow key={index}>
+                                            <td className="py-4 px-4">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 bg-gradient-to-br from-primary-01 to-[#8B5CF6] rounded-lg flex items-center justify-center text-t-light font-semibold">
+                                                        {user.company.charAt(0)}
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-medium text-t-primary">{user.company}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4">
+                                                <Badge className={`px-2 py-1 text-xs font-medium ${getPlanBadge(user.plan)}`}>
+                                                    {user.plan}
+                                                </Badge>
+                                            </td>
+                                            <td className="py-4 px-4 text-t-primary">{user.seats}</td>
+                                            <td className="py-4 px-4">
+                                                <Badge className={`px-2 py-1 text-xs font-medium ${getStatusBadge(user.status)}`}>
+                                                    {user.status}
+                                                </Badge>
+                                            </td>
+                                            <td className="py-4 px-4">
+                                                <div className="flex items-center">
+                                                    <Switch
+                                                        checked={autoRenewState}
+                                                        onChange={() => handleAutoRenewToggle(user.company, autoRenewState)}
+                                                    />
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4">
+                                                <div className="flex gap-2">
+                                                    <Button 
+                                                        isStroke 
+                                                        className="text-xs px-2 py-1 h-6"
+                                                        onClick={() => handleOverrideClick(user.company)}
+                                                    >
+                                                        <Icon name="edit" className="w-3 h-3 mr-1" />
+                                                        Override
+                                                    </Button>
+                                                    <Button 
+                                                        isStroke 
+                                                        className="text-xs px-2 py-1 h-6"
+                                                        onClick={() => handleSimulateClick(user.company)}
+                                                    >
+                                                        <Icon name="calculator" className="w-3 h-3 mr-1" />
+                                                        Simulate
+                                                    </Button>
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4 font-medium text-t-primary">${user.mrr}</td>
+                                        </TableRow>
+                                    );
+                                })}
+                            </Table>
+                        </div>
+                    </div>
                     
                     {filteredUsers.length === 0 && (
                         <div className="text-center py-8">

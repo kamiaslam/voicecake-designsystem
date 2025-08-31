@@ -181,68 +181,136 @@ const TeamPage = () => {
           {loading ? (
             <div className="text-center py-8 text-gray-500">Loading team members...</div>
           ) : (
-            <Table
-              cellsThead={
-                <>
-                  <th className="text-left">Name</th>
-                  <th className="text-left">Email</th>
-                  <th className="text-left">Role</th>
-                  <th className="text-left">Status</th>
-                  <th className="text-left">Last Active</th>
-                  <th className="text-left">Permissions</th>
-                  <th className="text-left">Actions</th>
-                </>
-              }
-            >
-              {filteredStaff.map((member) => (
-                <TableRow key={member.id}>
-                  <td className="font-medium">{member.name}</td>
-                  <td className="text-gray-600">{member.email}</td>
-                  <td>
-                    <Badge className={getRoleColor(member.role)}>
-                      {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
-                    </Badge>
-                  </td>
-                  <td>
-                    <Badge className={getStatusColor(member.active ? "active" : "inactive")}>
-                      {member.active ? "Active" : "Inactive"}
-                    </Badge>
-                  </td>
-                  <td className="text-gray-600">
-                    {new Date(member.lastActive).toLocaleDateString()}
-                  </td>
-                  <td>
-                    <div className="flex flex-wrap gap-1">
-                      {Object.entries(member.permissions)
-                        .filter(([_, hasPermission]) => hasPermission)
-                        .slice(0, 2)
-                        .map(([perm, _]) => (
-                          <Badge key={perm} className="bg-blue-50 text-blue-700 text-xs">
-                            {perm.replace('_', ' ')}
-                          </Badge>
-                        ))}
-                      {Object.entries(member.permissions).filter(([_, hasPermission]) => hasPermission).length > 2 && (
-                        <Badge className="bg-gray-50 text-gray-700 text-xs">
-                          +{Object.entries(member.permissions).filter(([_, hasPermission]) => hasPermission).length - 2}
+            <>
+              {/* Mobile Card Layout */}
+              <div className="block lg:hidden space-y-4">
+                {filteredStaff.map((member) => (
+                  <div key={member.id} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium text-t-primary">{member.name}</h3>
+                        <p className="text-sm text-t-secondary">{member.email}</p>
+                      </div>
+                      <div className="flex flex-col items-end gap-2">
+                        <Badge className={getRoleColor(member.role)}>
+                          {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
                         </Badge>
-                      )}
+                        <Badge className={getStatusColor(member.active ? "active" : "inactive")}>
+                          {member.active ? "Active" : "Inactive"}
+                        </Badge>
+                      </div>
                     </div>
-                  </td>
-                  <td>
-                    <div className="flex gap-2">
-                      <Button>
+
+                    {/* Last Active */}
+                    <div>
+                      <p className="text-sm text-t-secondary">Last Active</p>
+                      <p className="text-t-primary">{new Date(member.lastActive).toLocaleDateString()}</p>
+                    </div>
+
+                    {/* Permissions */}
+                    <div>
+                      <p className="text-sm text-t-secondary mb-2">Permissions</p>
+                      <div className="flex flex-wrap gap-1">
+                        {Object.entries(member.permissions)
+                          .filter(([_, hasPermission]) => hasPermission)
+                          .slice(0, 3)
+                          .map(([perm, _]) => (
+                            <Badge key={perm} className="bg-blue-50 text-blue-700 text-xs">
+                              {perm.replace('_', ' ')}
+                            </Badge>
+                          ))}
+                        {Object.entries(member.permissions).filter(([_, hasPermission]) => hasPermission).length > 3 && (
+                          <Badge className="bg-gray-50 text-gray-700 text-xs">
+                            +{Object.entries(member.permissions).filter(([_, hasPermission]) => hasPermission).length - 3}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-2 pt-2 border-t border-gray-100">
+                      <Button className="flex-1">
                         Edit
                       </Button>
                       {member.active && member.role !== "admin" && (
-                        <Button>
+                        <Button className="flex-1">
                           Deactivate
                         </Button>
                       )}
                     </div>
-                  </td>
-                </TableRow>
-              ))}
-            </Table>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table Layout */}
+              <div className="hidden lg:block">
+                <div className="overflow-x-auto">
+                  <Table
+                    cellsThead={
+                      <>
+                        <th className="text-left">Name</th>
+                        <th className="text-left">Email</th>
+                        <th className="text-left">Role</th>
+                        <th className="text-left">Status</th>
+                        <th className="text-left">Last Active</th>
+                        <th className="text-left">Permissions</th>
+                        <th className="text-left">Actions</th>
+                      </>
+                    }
+                  >
+                    {filteredStaff.map((member) => (
+                      <TableRow key={member.id}>
+                        <td className="font-medium">{member.name}</td>
+                        <td className="text-gray-600">{member.email}</td>
+                        <td>
+                          <Badge className={getRoleColor(member.role)}>
+                            {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
+                          </Badge>
+                        </td>
+                        <td>
+                          <Badge className={getStatusColor(member.active ? "active" : "inactive")}>
+                            {member.active ? "Active" : "Inactive"}
+                          </Badge>
+                        </td>
+                        <td className="text-gray-600">
+                          {new Date(member.lastActive).toLocaleDateString()}
+                        </td>
+                        <td>
+                          <div className="flex flex-wrap gap-1">
+                            {Object.entries(member.permissions)
+                              .filter(([_, hasPermission]) => hasPermission)
+                              .slice(0, 2)
+                              .map(([perm, _]) => (
+                                <Badge key={perm} className="bg-blue-50 text-blue-700 text-xs">
+                                  {perm.replace('_', ' ')}
+                                </Badge>
+                              ))}
+                            {Object.entries(member.permissions).filter(([_, hasPermission]) => hasPermission).length > 2 && (
+                              <Badge className="bg-gray-50 text-gray-700 text-xs">
+                                +{Object.entries(member.permissions).filter(([_, hasPermission]) => hasPermission).length - 2}
+                              </Badge>
+                            )}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="flex gap-2">
+                            <Button>
+                              Edit
+                            </Button>
+                            {member.active && member.role !== "admin" && (
+                              <Button>
+                                Deactivate
+                              </Button>
+                            )}
+                          </div>
+                        </td>
+                      </TableRow>
+                    ))}
+                  </Table>
+                </div>
+              </div>
+            </>
           )}
 
           {filteredStaff.length === 0 && !loading && (

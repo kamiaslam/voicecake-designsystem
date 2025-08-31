@@ -12,6 +12,7 @@ import ThemeButton from "@/components/ThemeButton";
 
 const LandingPage = () => {
     const [email, setEmail] = useState("");
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const whyVoicecakeFeatures = [
         {
@@ -127,74 +128,73 @@ const LandingPage = () => {
     const comparisonData = [
         {
             platform: "Voicecake.io",
-            phoneVoice: "Yes",
-            webChat: "Yes",
-            visualAutomation: "Yes, Sim AI",
-            gptAssisted: "Yes",
-            arabicGcc: "Yes",
-            voiceLibrary: "Yes",
-            approach: "All in one suite for voice, chat and automations"
+            phoneVoice: "✓",
+            webChat: "✓",
+            visualAutomation: "✓",
+            gptAssisted: "✓",
+            arabicGcc: "✓",
+            voiceLibrary: "✓",
+            approach: "All-in-one platform"
         },
         {
             platform: "Bland.ai",
-            phoneVoice: "Yes",
-            webChat: "Not primary on site",
-            visualAutomation: "API and workflow concepts, often paired with external tools",
-            gptAssisted: "Prompting and Pathways, dev led",
-            arabicGcc: "Not advertised as GCC focused",
-            voiceLibrary: "Not stated, $0.09 per minute headline pricing",
-            approach: "AI phone agents focused on calls."
+            phoneVoice: "✓",
+            webChat: "Partial",
+            visualAutomation: "✗",
+            gptAssisted: "Partial",
+            arabicGcc: "✗",
+            voiceLibrary: "✗",
+            approach: "Phone calls only"
         },
         {
             platform: "Vapi",
-            phoneVoice: "Yes, API first",
-            webChat: "Via integrations",
-            visualAutomation: "No native visual studio on homepage, developer centric",
-            gptAssisted: "Developer led",
-            arabicGcc: "Not advertised as GCC focused",
-            voiceLibrary: "Not stated",
-            approach: "Platform for developers to build voice agents."
+            phoneVoice: "✓",
+            webChat: "✗",
+            visualAutomation: "✗",
+            gptAssisted: "✗",
+            arabicGcc: "✗",
+            voiceLibrary: "✗",
+            approach: "Developer API"
         },
         {
             platform: "Retell AI",
-            phoneVoice: "Yes, plus chat",
-            webChat: "Yes",
-            visualAutomation: "No end to end studio shown, often paired with other tools",
-            gptAssisted: "Limited",
-            arabicGcc: "Not advertised as GCC focused",
-            voiceLibrary: "$0.07+ per minute listed",
-            approach: "Pay as you go, self serve."
+            phoneVoice: "✓",
+            webChat: "✓",
+            visualAutomation: "✗",
+            gptAssisted: "Partial",
+            arabicGcc: "✗",
+            voiceLibrary: "✗",
+            approach: "Basic voice & chat"
         },
-
         {
             platform: "ElevenLabs",
-            phoneVoice: "Conversational agents and calls",
-            webChat: "Widget options, agent tooling",
-            visualAutomation: "No native visual automation studio stated",
-            gptAssisted: "Agent tools, API",
-            arabicGcc: "Not advertised as GCC focused",
-            voiceLibrary: "Credit based voice pricing on plans",
-            approach: "Voice and agent capabilities with tiered credits."
+            phoneVoice: "Partial",
+            webChat: "Partial",
+            visualAutomation: "✗",
+            gptAssisted: "Partial",
+            arabicGcc: "✗",
+            voiceLibrary: "✗",
+            approach: "Voice generation"
         },
         {
             platform: "n8n",
-            phoneVoice: "No",
-            webChat: "No",
-            visualAutomation: "Yes",
-            gptAssisted: "Yes via nodes",
-            arabicGcc: "N/A",
-            voiceLibrary: "N/A",
-            approach: "Generic automation platform, not voice native."
+            phoneVoice: "✗",
+            webChat: "✗",
+            visualAutomation: "✓",
+            gptAssisted: "✓",
+            arabicGcc: "✗",
+            voiceLibrary: "✗",
+            approach: "Automation only"
         },
         {
             platform: "Make.com",
-            phoneVoice: "No",
-            webChat: "No",
-            visualAutomation: "Yes",
-            gptAssisted: "Yes via modules",
-            arabicGcc: "N/A",
-            voiceLibrary: "N/A",
-            approach: "Generic no code automation, not voice native."
+            phoneVoice: "✗",
+            webChat: "✗",
+            visualAutomation: "✓",
+            gptAssisted: "✓",
+            arabicGcc: "✗",
+            voiceLibrary: "✗",
+            approach: "Automation only"
         }
     ];
 
@@ -223,10 +223,11 @@ const LandingPage = () => {
         <div className="min-h-screen bg-gray-50">
             {/* Header/Navigation */}
             <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
-                <div className="max-w-7xl mx-auto px-6 py-4">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
                     <div className="flex items-center justify-between">
-                        <Logo className="w-auto h-12" />
+                        <Logo className="w-auto h-8 sm:h-12" />
                         
+                        {/* Desktop Navigation */}
                         <nav className="hidden md:flex items-center space-x-8">
                             <Link href="/products" className="text-t-primary hover:text-t-secondary transition-colors">
                                 Product
@@ -245,7 +246,8 @@ const LandingPage = () => {
                             </Link>
                         </nav>
 
-                        <div className="flex items-center space-x-4">
+                        {/* Desktop Actions */}
+                        <div className="hidden md:flex items-center space-x-4">
                             <Link href="/login" className="text-t-primary hover:text-t-secondary transition-colors">
                                 Sign in
                             </Link>
@@ -253,66 +255,129 @@ const LandingPage = () => {
                                 Book a demo
                             </Button>
                         </div>
+
+                        {/* Mobile Menu Button */}
+                        <button
+                            className="md:hidden p-2"
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        >
+                            <Icon name={mobileMenuOpen ? "close" : "menu"} className="w-6 h-6 fill-t-primary" />
+                        </button>
                     </div>
+
+                    {/* Mobile Menu */}
+                    {mobileMenuOpen && (
+                        <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
+                            <nav className="flex flex-col space-y-4 mt-4">
+                                <Link 
+                                    href="/products" 
+                                    className="text-t-primary hover:text-t-secondary transition-colors py-2"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    Product
+                                </Link>
+                                <Link 
+                                    href="/customers" 
+                                    className="text-t-primary hover:text-t-secondary transition-colors py-2"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    Solutions
+                                </Link>
+                                <Link 
+                                    href="/billing" 
+                                    className="text-t-primary hover:text-t-secondary transition-colors py-2"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    Pricing
+                                </Link>
+                                <Link 
+                                    href="/support" 
+                                    className="text-t-primary hover:text-t-secondary transition-colors py-2"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    Resources
+                                </Link>
+                                <Link 
+                                    href="/team" 
+                                    className="text-t-primary hover:text-t-secondary transition-colors py-2"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    Company
+                                </Link>
+                            </nav>
+                            <div className="flex flex-col space-y-3 mt-4 pt-4 border-t border-gray-200">
+                                <Link 
+                                    href="/login" 
+                                    className="text-t-primary hover:text-t-secondary transition-colors py-2"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    Sign in
+                                </Link>
+                                <Button className="w-full">
+                                    Book a demo
+                                </Button>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </header>
 
                         {/* Hero Section */}
-            <section className="hero-section pt-40 md:pt-48 pb-20" style={{ backgroundColor: '#040508' }}>
-                <div className="max-w-7xl mx-auto px-4 md:px-6 text-center lg:mt-24 -mt-37">
-                    <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight">
+            <section className="hero-section pt-20 md:pt-32 lg:pt-40 pb-20" style={{ backgroundColor: '#000000' }}>
+                <div className="max-w-7xl mx-auto px-4 md:px-6 text-center">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight">
                         Turn every call and click into revenue, with AI voice, chat and automations in one platform
                     </h1>
-                    <p className="text-base md:text-lg text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
+                    <p className="text-sm sm:text-base md:text-lg text-gray-300 mb-6 md:mb-8 max-w-4xl mx-auto leading-relaxed px-4">
                         Launch human sounding voice bots and website chat that solve, sell and support, across your phone lines and your site, anywhere in the world. Go live in minutes, integrate with your stack in a few clicks, and scale globally, including native Arabic across major GCC dialects plus English. Speak to the bot on this page any time for a live demo and quick answers.
                     </p>
                     
                     {/* Animation after text */}
-                    <div className="flex justify-center mb-8">
-                        <div className="w-80 h-80 max-w-sm max-h-sm -mt-25">
+                    <div className="flex justify-center mb-6 md:mb-8">
+                        <div style={{ height: '150px', width: '150px' }}>
                             <video
                                 autoPlay
                                 loop
                                 muted
                                 playsInline
-                                className="w-full h-full object-cover opacity-80 rounded-full"
+                                className="w-full h-full object-cover rounded-full"
                             >
                                 <source src="/images/animations/01.mp4" type="video/mp4" />
                             </video>
                         </div>
                     </div>
                     
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                        <Button className="text-base md:text-lg px-6 md:px-8 py-3 md:py-4 h-12 md:h-14 bg-white text-gray-900 hover:bg-gray-100">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6 md:mb-8 px-4">
+                        <Button className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 h-10 sm:h-12 md:h-14 bg-white text-gray-900 hover:bg-gray-100">
                             Get Started
                         </Button>
-                        <Button className="text-base md:text-lg px-6 md:px-8 py-3 md:py-4 h-12 md:h-14 bg-transparent border-2 border-white text-white hover:bg-white hover:text-gray-900">
+                        <Button className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 h-10 sm:h-12 md:h-14 bg-transparent border-2 border-white text-white hover:bg-white hover:text-gray-900">
                             Book a Demo
                         </Button>
                     </div>
 
-                    <div className="text-center mb-16">
-                        <p className="text-sm md:text-base text-gray-300 mb-2">VoiceCake.io</p>
+                    <div className="text-center mb-12 md:mb-16">
+                        <p className="text-xs sm:text-sm md:text-base text-gray-300 mb-2">VoiceCake.io</p>
                     </div>
                 </div>
             </section>
 
             {/* Why Voicecake Section */}
-            <section className="py-20 bg-gray-50">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold text-t-primary mb-4">
+            <section className="py-12 sm:py-16 md:py-20 bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6">
+                    <div className="text-center mb-12 sm:mb-16">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-t-primary mb-4">
                             Why Voicecake.io
                         </h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {whyVoicecakeFeatures.map((feature, index) => (
-                            <div key={index} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-                                <h3 className="text-lg font-semibold text-t-primary mb-3">
+                            <div key={index} className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
+                                <h3 className="text-base sm:text-lg font-semibold text-t-primary mb-2 sm:mb-3">
                                     {feature.title}
                                 </h3>
-                                <p className="text-sm text-t-secondary leading-relaxed">
+                                <p className="text-xs sm:text-sm text-t-secondary leading-relaxed">
                                     {feature.description}
                                 </p>
                             </div>
@@ -322,29 +387,29 @@ const LandingPage = () => {
             </section>
 
             {/* Agent Suite Section */}
-            <section className="py-20 bg-white">
-                <div className="max-w-7xl mx-auto px-6">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold text-t-primary mb-4">
+            <section className="py-12 sm:py-16 md:py-20 bg-white">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6">
+                    <div className="text-center mb-12 sm:mb-16">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-t-primary mb-4">
                             Meet the Voicecake Agent Suite
                         </h2>
                     </div>
 
-                    <div className="space-y-8">
+                    <div className="space-y-6 sm:space-y-8">
                         {agentSuite.map((agent, index) => (
-                            <div key={index} className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
-                                <div className="flex items-start gap-6">
-                                    <div className="w-16 h-16 bg-primary-02 rounded-full flex items-center justify-center">
-                                        <span className="text-white font-bold text-xl">{agent.name.charAt(0)}</span>
+                            <div key={index} className="bg-white rounded-xl p-4 sm:p-6 md:p-8 shadow-sm border border-gray-100">
+                                <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
+                                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary-02 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <span className="text-white font-bold text-lg sm:text-xl">{agent.name.charAt(0)}</span>
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="text-2xl font-semibold text-t-primary mb-2">
+                                        <h3 className="text-xl sm:text-2xl font-semibold text-t-primary mb-2">
                                             {agent.name}
                                         </h3>
-                                        <p className="text-lg text-t-secondary mb-4 font-medium">
+                                        <p className="text-base sm:text-lg text-t-secondary mb-3 sm:mb-4 font-medium">
                                             {agent.subtitle}
                                         </p>
-                                        <p className="text-sm text-t-secondary leading-relaxed">
+                                        <p className="text-xs sm:text-sm text-t-secondary leading-relaxed">
                                             {agent.description}
                                         </p>
                                     </div>
@@ -564,7 +629,7 @@ const LandingPage = () => {
                             Voicecake vs point solutions
                         </h2>
                         <p className="text-lg text-t-secondary max-w-3xl mx-auto">
-                            Below is a high level view based on public information as at 31 August 2025. Always check each vendor's latest site for specifics.
+                            See how Voicecake compares to other solutions. We provide everything you need in one platform - no more juggling multiple tools.
                         </p>
                                 </div>
 
@@ -574,12 +639,12 @@ const LandingPage = () => {
                                 <thead className="bg-gray-50">
                                     <tr>
                                         <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Platform</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Phone voice agents</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Web chat or widget</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Built in visual automation</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">GPT assisted flow building</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Native Arabic GCC dialects</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Voice library included without extras</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Phone Voice</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Web Chat</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Visual Automation</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">GPT Assisted</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Arabic GCC</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Voice Library</th>
                                         <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Approach</th>
                                     </tr>
                                 </thead>

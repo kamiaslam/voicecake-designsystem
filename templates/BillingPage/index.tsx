@@ -373,42 +373,89 @@ const BillingPage = () => {
                     <div className="flex items-center justify-between mb-4">
                         <span className="text-xs text-t-tertiary">{audit.length} events</span>
                     </div>
-                    <Table
-                        cellsThead={
-                            <>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">When</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Actor</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Scope</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Account</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Change</th>
-                            </>
-                        }
-                    >
+                    
+                    {/* Mobile Card Layout */}
+                    <div className="block lg:hidden space-y-4">
                         {audit.map((e, i) => (
-                            <TableRow key={i}>
-                                <td className="py-4 px-4 text-t-primary">{new Date(e.at).toLocaleString()}</td>
-                                <td className="py-4 px-4 text-t-primary">{e.actor}</td>
-                                <td className="py-4 px-4">
+                            <div key={i} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                                {/* Header */}
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="font-medium text-t-primary">{e.actor}</p>
+                                        <p className="text-sm text-t-secondary">{new Date(e.at).toLocaleString()}</p>
+                                    </div>
                                     <Badge className={e.scope === "global" ? "bg-[#6366F1]/20 text-[#6366F1] border border-[#6366F1]/30" : "bg-t-tertiary/20 text-t-tertiary border border-t-tertiary/30"}>
                                         {e.scope}
                                     </Badge>
-                                </td>
-                                <td className="py-4 px-4 text-t-primary">{e.account || "-"}</td>
-                                <td className="py-4 px-4 text-xs text-t-primary">
-                                    {Object.keys(e.to).map(k => {
-                                        const before = e.from[k as keyof typeof e.from];
-                                        const after = e.to[k as keyof typeof e.to];
-                                        if (before === after) return null;
-                                        return (
-                                            <div key={k}>
-                                                <span className="uppercase">{k}</span>: {fmtMoney(Number(before))} → {fmtMoney(Number(after))}
-                                            </div>
-                                        );
-                                    })}
-                                </td>
-                            </TableRow>
+                                </div>
+
+                                {/* Details */}
+                                <div className="space-y-2">
+                                    <div>
+                                        <p className="text-sm text-t-secondary">Account</p>
+                                        <p className="text-t-primary">{e.account || "-"}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-t-secondary">Changes</p>
+                                        <div className="text-xs text-t-primary">
+                                            {Object.keys(e.to).map(k => {
+                                                const before = e.from[k as keyof typeof e.from];
+                                                const after = e.to[k as keyof typeof e.to];
+                                                if (before === after) return null;
+                                                return (
+                                                    <div key={k} className="mt-1">
+                                                        <span className="uppercase">{k}</span>: {fmtMoney(Number(before))} → {fmtMoney(Number(after))}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         ))}
-                    </Table>
+                    </div>
+
+                    {/* Desktop Table Layout */}
+                    <div className="hidden lg:block">
+                        <div className="overflow-x-auto">
+                            <Table
+                                cellsThead={
+                                    <>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">When</th>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Actor</th>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Scope</th>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Account</th>
+                                        <th className="text-left py-3 px-4 font-medium text-t-secondary">Change</th>
+                                    </>
+                                }
+                            >
+                                {audit.map((e, i) => (
+                                    <TableRow key={i}>
+                                        <td className="py-4 px-4 text-t-primary">{new Date(e.at).toLocaleString()}</td>
+                                        <td className="py-4 px-4 text-t-primary">{e.actor}</td>
+                                        <td className="py-4 px-4">
+                                            <Badge className={e.scope === "global" ? "bg-[#6366F1]/20 text-[#6366F1] border border-[#6366F1]/30" : "bg-t-tertiary/20 text-t-tertiary border border-t-tertiary/30"}>
+                                                {e.scope}
+                                            </Badge>
+                                        </td>
+                                        <td className="py-4 px-4 text-t-primary">{e.account || "-"}</td>
+                                        <td className="py-4 px-4 text-xs text-t-primary">
+                                            {Object.keys(e.to).map(k => {
+                                                const before = e.from[k as keyof typeof e.from];
+                                                const after = e.to[k as keyof typeof e.to];
+                                                if (before === after) return null;
+                                                return (
+                                                    <div key={k}>
+                                                        <span className="uppercase">{k}</span>: {fmtMoney(Number(before))} → {fmtMoney(Number(after))}
+                                                    </div>
+                                                );
+                                            })}
+                                        </td>
+                                    </TableRow>
+                                ))}
+                            </Table>
+                        </div>
+                    </div>
                 </Card>
 
                 {/* Detailed Invoices Table */}
@@ -434,44 +481,93 @@ const BillingPage = () => {
                     {loading ? (
                         <div className="text-center py-8 text-t-tertiary">Loading invoices...</div>
                     ) : (
-                        <Table
-                            cellsThead={
-                                <>
-                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Invoice ID</th>
-                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Client</th>
-                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Period</th>
-                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Amount</th>
-                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Status</th>
-                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Actions</th>
-                                </>
-                            }
-                        >
-                            {filteredInvoices.map((invoice) => (
-                                <TableRow key={invoice.id}>
-                                    <td className="py-4 px-4 font-medium text-t-primary">{invoice.id}</td>
-                                    <td className="py-4 px-4 text-t-primary">{invoice.client}</td>
-                                    <td className="py-4 px-4 text-t-primary">{invoice.period}</td>
-                                    <td className="py-4 px-4 font-medium text-t-primary">{fmtMoney(invoice.amount)}</td>
-                                    <td className="py-4 px-4">
-                                        <Badge className={getStatusColor(invoice.status)}>
-                                            {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
-                                        </Badge>
-                                    </td>
-                                    <td className="py-4 px-4">
-                                        <div className="flex gap-2">
-                                            <Button isStroke>
+                        <>
+                            {/* Mobile Card Layout */}
+                            <div className="block lg:hidden space-y-4">
+                                {filteredInvoices.map((invoice) => (
+                                    <div key={invoice.id} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                                        {/* Header */}
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium text-t-primary">{invoice.id}</p>
+                                                <p className="text-sm text-t-secondary">{invoice.client}</p>
+                                            </div>
+                                            <Badge className={getStatusColor(invoice.status)}>
+                                                {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                                            </Badge>
+                                        </div>
+
+                                        {/* Details */}
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-sm text-t-secondary">Period</p>
+                                                <p className="text-t-primary">{invoice.period}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm text-t-secondary">Amount</p>
+                                                <p className="font-medium text-t-primary">{fmtMoney(invoice.amount)}</p>
+                                            </div>
+                                        </div>
+
+                                        {/* Actions */}
+                                        <div className="flex gap-2 pt-2 border-t border-gray-100">
+                                            <Button isStroke className="flex-1">
                                                 View
                                             </Button>
                                             {invoice.status === "draft" && (
-                                                <Button>
+                                                <Button className="flex-1">
                                                     Send
                                                 </Button>
                                             )}
                                         </div>
-                                    </td>
-                                </TableRow>
-                            ))}
-                        </Table>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {/* Desktop Table Layout */}
+                            <div className="hidden lg:block">
+                                <div className="overflow-x-auto">
+                                    <Table
+                                        cellsThead={
+                                            <>
+                                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Invoice ID</th>
+                                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Client</th>
+                                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Period</th>
+                                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Amount</th>
+                                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Status</th>
+                                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Actions</th>
+                                            </>
+                                        }
+                                    >
+                                        {filteredInvoices.map((invoice) => (
+                                            <TableRow key={invoice.id}>
+                                                <td className="py-4 px-4 font-medium text-t-primary">{invoice.id}</td>
+                                                <td className="py-4 px-4 text-t-primary">{invoice.client}</td>
+                                                <td className="py-4 px-4 text-t-primary">{invoice.period}</td>
+                                                <td className="py-4 px-4 font-medium text-t-primary">{fmtMoney(invoice.amount)}</td>
+                                                <td className="py-4 px-4">
+                                                    <Badge className={getStatusColor(invoice.status)}>
+                                                        {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
+                                                    </Badge>
+                                                </td>
+                                                <td className="py-4 px-4">
+                                                    <div className="flex gap-2">
+                                                        <Button isStroke>
+                                                            View
+                                                        </Button>
+                                                        {invoice.status === "draft" && (
+                                                            <Button>
+                                                                Send
+                                                            </Button>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                            </TableRow>
+                                        ))}
+                                    </Table>
+                                </div>
+                            </div>
+                        </>
                     )}
 
                     {filteredInvoices.length === 0 && !loading && (

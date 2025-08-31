@@ -78,9 +78,9 @@ const SecurityPage = () => {
 
   return (
     <Layout title="Security">
-                  <div className="space-y-3">
+      <div className="space-y-6">
         {/* Summary Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card title="High Risk Events" className="p-6">
             <div className="text-2xl font-bold text-t-primary">{highRiskEvents}</div>
             <div className="text-xs text-gray-500">require attention</div>
@@ -128,40 +128,81 @@ const SecurityPage = () => {
           {loading ? (
             <div className="text-center py-8 text-gray-500">Loading security events...</div>
           ) : (
-            <Table
-              cellsThead={
-                <>
-                  <th className="text-left">Time</th>
-                  <th className="text-left">Actor</th>
-                  <th className="text-left">Action</th>
-                  <th className="text-left">Risk Level</th>
-                  <th className="text-right">Actions</th>
-                </>
-              }
-            >
-              {filteredEvents.map((event, index) => (
-                <TableRow key={index}>
-                  <td className="text-sm font-mono">{event.time}</td>
-                  <td className="font-medium">{event.actor}</td>
-                  <td className="text-gray-600">{event.action}</td>
-                  <td>
-                    <Badge className={getRiskColor(event.risk)}>
-                      {event.risk === "med" ? "Medium" : event.risk.charAt(0).toUpperCase() + event.risk.slice(1)}
-                    </Badge>
-                  </td>
-                  <td className="text-right">
-                    <div className="flex gap-2 justify-end">
-                      <Button isStroke>
+            <>
+              {/* Mobile Card Layout */}
+              <div className="block lg:hidden space-y-4">
+                {filteredEvents.map((event, index) => (
+                  <div key={index} className="border border-gray-200 rounded-lg p-4 space-y-3">
+                    {/* Header */}
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-t-primary">{event.actor}</p>
+                        <p className="text-sm text-t-secondary">{event.time}</p>
+                      </div>
+                      <Badge className={getRiskColor(event.risk)}>
+                        {event.risk === "med" ? "Medium" : event.risk.charAt(0).toUpperCase() + event.risk.slice(1)}
+                      </Badge>
+                    </div>
+
+                    {/* Action */}
+                    <div>
+                      <p className="text-sm text-t-secondary">Action</p>
+                      <p className="text-t-primary">{event.action}</p>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-2 pt-2 border-t border-gray-100">
+                      <Button isStroke className="flex-1">
                         View
                       </Button>
-                      <Button isStroke>
+                      <Button isStroke className="flex-1">
                         Investigate
                       </Button>
                     </div>
-                  </td>
-                </TableRow>
-              ))}
-            </Table>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table Layout */}
+              <div className="hidden lg:block">
+                <div className="overflow-x-auto">
+                  <Table
+                    cellsThead={
+                      <>
+                        <th className="text-left">Time</th>
+                        <th className="text-left">Actor</th>
+                        <th className="text-left">Action</th>
+                        <th className="text-left">Risk Level</th>
+                        <th className="text-right">Actions</th>
+                      </>
+                    }
+                  >
+                    {filteredEvents.map((event, index) => (
+                      <TableRow key={index}>
+                        <td className="text-sm font-mono">{event.time}</td>
+                        <td className="font-medium">{event.actor}</td>
+                        <td className="text-gray-600">{event.action}</td>
+                        <td>
+                          <Badge className={getRiskColor(event.risk)}>
+                            {event.risk === "med" ? "Medium" : event.risk.charAt(0).toUpperCase() + event.risk.slice(1)}
+                          </Badge>
+                        </td>
+                        <td className="text-right">
+                          <div className="flex gap-2 justify-end">
+                            <Button isStroke>
+                              View
+                            </Button>
+                            <Button isStroke>
+                              Investigate
+                            </Button>
+                          </div>
+                        </td>
+                      </TableRow>
+                    ))}
+                  </Table>
+                </div>
+              </div>
+            </>
           )}
 
           {filteredEvents.length === 0 && !loading && (
@@ -172,7 +213,7 @@ const SecurityPage = () => {
         </Card>
 
         {/* Security Metrics */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card title="Threat Detection" className="p-6">
             <div className="space-y-3">
               <div className="flex justify-between">
