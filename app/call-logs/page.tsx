@@ -151,7 +151,7 @@ const CallLogsPage = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         <Search
                             value={searchTerm}
-                            onChange={setSearchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Search call ID, assistant, phone..."
                         />
                         
