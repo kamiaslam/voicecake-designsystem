@@ -28,9 +28,8 @@ const Overview = ({}) => {
 
     return (
         <Card
-            className="max-lg:overflow-hidden"
+            className="max-lg:overflow-hidden mb-3"
             title="Overview"
-            style={{ marginBottom: '12px' }}
             headContent={
                 <>
                     <Tabs

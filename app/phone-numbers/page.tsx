@@ -19,12 +19,12 @@ const PhoneNumbersPage = () => {
         label: "",
         smsEnabled: true,
         inboundAssistant: { id: 1, name: "UXPENDIT-Male" },
-        inboundWorkflow: null,
+        inboundWorkflow: { id: 1, name: "Default Workflow" },
         fallbackDestination: "",
         outboundType: "one-number",
         outboundNumber: "",
-        outboundAssistant: null,
-        outboundWorkflow: null
+        outboundAssistant: { id: 1, name: "UXPENDIT-Male" },
+        outboundWorkflow: { id: 1, name: "Default Workflow" }
     });
 
     const handleSave = () => {
@@ -83,7 +83,7 @@ const PhoneNumbersPage = () => {
                     {/* Search */}
                     <Search
                         value={searchTerm}
-                        onChange={setSearchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Search name, number, SIP..."
                         className="mb-4"
                     />
@@ -213,8 +213,8 @@ const PhoneNumbersPage = () => {
                                     onChange={(value) => setPhoneNumberData({...phoneNumberData, inboundWorkflow: value})}
                                     placeholder="Select Workflow..."
                                     options={[
-                                        { id: "workflow1", name: "Default Workflow" },
-                                        { id: "workflow2", name: "Support Workflow" }
+                                        { id: 1, name: "Default Workflow" },
+                                        { id: 2, name: "Support Workflow" }
                                     ]}
                                 />
                                 
@@ -304,8 +304,8 @@ const PhoneNumbersPage = () => {
                                     onChange={(value) => setPhoneNumberData({...phoneNumberData, outboundAssistant: value})}
                                     placeholder="Select Assistant..."
                                     options={[
-                                        { id: "assistant1", name: "UXPENDIT-Male" },
-                                        { id: "assistant2", name: "UXPENDIT-Female" }
+                                        { id: 1, name: "UXPENDIT-Male" },
+                                        { id: 2, name: "UXPENDIT-Female" }
                                     ]}
                                 />
                                 
@@ -321,8 +321,8 @@ const PhoneNumbersPage = () => {
                                         onChange={(value) => setPhoneNumberData({...phoneNumberData, outboundWorkflow: value})}
                                         placeholder="Select Workflow..."
                                         options={[
-                                            { id: "workflow1", name: "Default Workflow" },
-                                            { id: "workflow2", name: "Support Workflow" }
+                                            { id: 1, name: "Default Workflow" },
+                                            { id: 2, name: "Support Workflow" }
                                         ]}
                                     />
                                 </div>
