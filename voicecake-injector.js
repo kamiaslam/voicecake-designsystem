@@ -392,3 +392,4 @@ observer.observe(document.body, {
 
 // Export for manual re-application
 window.reapplyVoiceCakeTheme = injectVoiceCakeStyles;
+

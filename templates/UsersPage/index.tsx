@@ -105,7 +105,7 @@ const UsersPage = () => {
         <Layout title="Users & Accounts">
             <div className="space-y-6">
                 {/* Header with stats */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4" style={{ marginBottom: '0' }}>
                     <Card className="p-6" title="Total Users">
                         <div className="flex items-center justify-between">
                             <div>

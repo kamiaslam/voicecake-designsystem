@@ -55,6 +55,11 @@ export const navigation = [
         href: "/phone-numbers",
     },
     {
+        title: "Call Logs",
+        icon: "chart",
+        href: "/call-logs",
+    },
+    {
         title: "Security",
         icon: "chain-think",
         href: "/security",

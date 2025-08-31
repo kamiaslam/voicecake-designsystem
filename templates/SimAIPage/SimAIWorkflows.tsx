@@ -256,3 +256,4 @@ export const SimAIWorkflows = ({ workflows, workspaceId, onWorkflowCreate }: Pro
         </div>
     );
 };
+

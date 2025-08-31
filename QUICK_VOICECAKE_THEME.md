@@ -284,3 +284,4 @@ If the theme gets reset (e.g., after page refresh), just run the same code again
 This console injection method bypasses all container and file system issues and applies the theme directly to the running application. You should see immediate visual changes!
 
 **Try it now and let me know how it looks!** 🎉
+

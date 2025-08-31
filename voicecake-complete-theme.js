@@ -428,3 +428,4 @@
   console.log('🌙 Use the theme switcher in the top-right corner to switch between light and dark modes');
   console.log('🔄 Theme preference is saved and will persist across sessions');
 })();
+

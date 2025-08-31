@@ -56,3 +56,4 @@ else
     echo "❌ Failed to restart Sim AI container"
     exit 1
 fi
+

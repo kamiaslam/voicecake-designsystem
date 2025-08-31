@@ -83,3 +83,4 @@ When you visit http://localhost:3001, Sim AI now has:
 The VoiceCake theme is now permanently applied to Sim AI. The application looks and feels like a natural extension of VoiceCake's design system, with consistent colors, typography, and styling throughout.
 
 **No more console injection or bookmarklets needed!** 🎉
+

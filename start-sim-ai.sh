@@ -23,3 +23,4 @@ echo ""
 
 # Start Sim AI on port 3001
 npx simstudio --port 3001
+
