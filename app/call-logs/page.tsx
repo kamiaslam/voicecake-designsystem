@@ -219,7 +219,7 @@ const CallLogsPage = () => {
                 {/* Call Logs Table */}
                 <Card title={`Call Logs (${filteredCallLogs.length} results)`} className="p-6">
                     <Table
-                        headers={
+                        cellsThead={
                             <>
                                 <th className="text-left py-3 px-4 font-medium text-t-secondary">Call ID</th>
                                 <th className="text-left py-3 px-4 font-medium text-t-secondary">Assistant</th>
