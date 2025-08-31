@@ -9,27 +9,13 @@ import DeleteItems from "@/components/DeleteItems";
 import ShareProduct from "@/components/ShareProduct";
 import { ProductMarket } from "@/types/product";
 
-const tableHead = ["Product", "Status", "Price", "Sales", "Views", "Like"];
+const tableHead = ["Customer", "Status", "Price", "Plan", "No of calls"];
 
 type MarketProps = {
     items: ProductMarket[];
 };
 
-const Cell = ({ value, percentage }: { value: string; percentage: number }) => (
-    <td className="max-lg:hidden">
-        <div className="inline-flex items-center gap-2">
-            <div className="min-w-8">{value}</div>
-            <div className="relative w-11 h-1.5">
-                <div
-                    className="absolute top-0 left-0 bottom-0 rounded-[2px] bg-shade-07/40"
-                    style={{
-                        width: `${percentage}%`,
-                    }}
-                />
-            </div>
-        </div>
-    </td>
-);
+
 
 const Market = ({ items }: MarketProps) => {
     const router = useRouter();
@@ -66,7 +52,7 @@ const Market = ({ items }: MarketProps) => {
                                     displayType="text"
                                     prefix="$"
                                 />
-                                <Percentage value={item.sales.percentage} />
+                                <span className="text-sm text-gray-600">{item.plan || "Basic"}</span>
                             </>
                         }
                     >
@@ -101,26 +87,15 @@ const Market = ({ items }: MarketProps) => {
                         />
                     </td>
                     <td className="max-lg:hidden">
-                        <div className="inline-flex items-center gap-2">
-                            <NumericFormat
-                                className="min-w-13"
-                                value={item.sales.value}
-                                thousandSeparator=","
-                                fixedDecimalScale
-                                displayType="text"
-                                prefix="$"
-                            />
-                            <Percentage value={item.sales.percentage} />
-                        </div>
+                        <span className="text-sm font-medium text-gray-700">
+                            {item.plan || "Basic"}
+                        </span>
                     </td>
-                    <Cell
-                        value={item.views.value}
-                        percentage={item.views.percentage}
-                    />
-                    <Cell
-                        value={item.likes.value}
-                        percentage={item.likes.percentage}
-                    />
+                    <td className="max-lg:hidden">
+                        <span className="text-sm font-medium text-gray-700">
+                            {item.calls || item.sales?.value || "0"}
+                        </span>
+                    </td>
                 </TableRow>
             ))}
         </Table>

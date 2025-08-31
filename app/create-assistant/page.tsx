@@ -12,6 +12,7 @@ import Badge from "@/components/Badge";
 import Range from "@/components/Range";
 import Search from "@/components/Search";
 import { Link } from "react-scroll";
+import CallTranscriptPanel from "@/components/CallTranscriptPanel";
 
 const ElementWithOffset = ({
     className,
@@ -34,6 +35,12 @@ const ElementWithOffset = ({
 };
 
 const CreateAssistantPage = () => {
+    // Call Transcript Panel
+    const [isCallPanelOpen, setIsCallPanelOpen] = useState(false);
+
+    // System Prompt expandable state
+    const [isSystemPromptExpanded, setIsSystemPromptExpanded] = useState(false);
+
     // Performance Metrics
     const [costRange, setCostRange] = useState([0, 50]);
     const [latencyRange, setLatencyRange] = useState([0, 100]);
@@ -73,12 +80,14 @@ const CreateAssistantPage = () => {
         "Miscalled → Whatsapp"
     ];
 
-    // Integrations
-    const integrations = [
-        { name: "Hubspot", icon: "link" },
-        { name: "Google Sheet", icon: "link" },
-        { name: "Whatsapp", icon: "link" },
-        { name: "Salesforce", icon: "link" }
+    // Share Options
+    const shareOptions = [
+        { name: "Assistant Link", icon: "link" },
+        { name: "WhatsApp", icon: "whatsapp" },
+        { name: "Email", icon: "email" },
+        { name: "Facebook", icon: "facebook" },
+        { name: "Twitter", icon: "twitter" },
+        { name: "Instagram", icon: "instagram" }
     ];
 
     const navigation = [
@@ -119,10 +128,10 @@ const CreateAssistantPage = () => {
             to: "assignments",
         },
         {
-            title: "Integrations",
-            icon: "link",
-            description: "Connect external services",
-            to: "integrations",
+            title: "Share",
+            icon: "share",
+            description: "Share assistant with others",
+            to: "share",
         },
     ];
 
@@ -181,15 +190,26 @@ const CreateAssistantPage = () => {
                     {/* Performance Metrics */}
                     <ElementWithOffset name="performance">
                         <Card title="Performance Metrics" className="p-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <div className="space-y-4">
-                                    <div className="text-sm text-t-secondary">Cost: -0.09 / min (est.)</div>
-                                    <div className="w-full h-2 bg-gradient-to-r from-purple-500 to-green-500 rounded-full"></div>
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="flex-1">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <div className="space-y-4">
+                                            <div className="text-sm text-t-secondary">Cost: -0.09 / min (est.)</div>
+                                            <div className="w-full h-2 bg-gradient-to-r from-purple-500 to-green-500 rounded-full"></div>
+                                        </div>
+                                        <div className="space-y-4">
+                                            <div className="text-sm text-t-secondary">Latency: -0.09 / min (est.)</div>
+                                            <div className="w-full h-2 bg-gradient-to-r from-purple-500 to-green-500 rounded-full"></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="space-y-4">
-                                    <div className="text-sm text-t-secondary">Latency: -0.09 / min (est.)</div>
-                                    <div className="w-full h-2 bg-gradient-to-r from-purple-500 to-green-500 rounded-full"></div>
-                                </div>
+                                <Button 
+                                    className="ml-4"
+                                    onClick={() => setIsCallPanelOpen(true)}
+                                >
+                                    <Icon name="play" className="w-4 h-4 mr-2" />
+                                    Test Assistant
+                                </Button>
                             </div>
                         </Card>
                     </ElementWithOffset>
@@ -308,12 +328,28 @@ const CreateAssistantPage = () => {
                     {/* System Prompt */}
                     <ElementWithOffset name="system-prompt">
                         <Card title="System Prompt" className="p-6">
-                            <Field
-                                placeholder="Describe Assistant Role Boundaries tone"
-                                value={systemPrompt}
-                                onChange={(e) => setSystemPrompt(e.target.value)}
-                                textarea
-                            />
+                            <div className="space-y-3">
+                                <Field
+                                    placeholder="Describe Assistant Role Boundaries tone"
+                                    value={systemPrompt}
+                                    onChange={(e) => setSystemPrompt(e.target.value)}
+                                    textarea
+                                    classInput={isSystemPromptExpanded ? "h-72" : "h-24"}
+                                />
+                                <div className="flex justify-end">
+                                    <Button
+                                        onClick={() => setIsSystemPromptExpanded(!isSystemPromptExpanded)}
+                                        className="text-sm"
+                                        isStroke
+                                    >
+                                        <Icon 
+                                            name={isSystemPromptExpanded ? "chevron-up" : "chevron-down"} 
+                                            className="w-4 h-4 mr-2" 
+                                        />
+                                        {isSystemPromptExpanded ? "Show less" : "Show more"}
+                                    </Button>
+                                </div>
+                            </div>
                         </Card>
                     </ElementWithOffset>
 
@@ -367,18 +403,18 @@ const CreateAssistantPage = () => {
                         </div>
                     </ElementWithOffset>
 
-                    {/* Integrations */}
-                    <ElementWithOffset name="integrations">
-                        <Card title="Integrations" className="p-6">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                {integrations.map((integration, index) => (
+                    {/* Share */}
+                    <ElementWithOffset name="share">
+                        <Card title="Share" className="p-6">
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {shareOptions.map((option, index) => (
                                     <Button
                                         key={index}
                                         className="flex flex-col items-center gap-2 p-4 h-auto"
                                         isStroke
                                     >
-                                        <Icon name={integration.icon} className="w-6 h-6" />
-                                        <span className="text-sm">{integration.name}</span>
+                                        <Icon name={option.icon} className="w-6 h-6" />
+                                        <span className="text-sm">{option.name}</span>
                                     </Button>
                                 ))}
                             </div>
@@ -391,12 +427,18 @@ const CreateAssistantPage = () => {
                             Cancel
                         </Button>
                         <Button className="flex items-center gap-2">
-                            <Icon name="plus" className="w-4 h-4" />
-                            Create Assistant
+                            <Icon name="save" className="w-4 h-4" />
+                            Save changes
                         </Button>
                     </div>
                 </div>
             </div>
+
+            {/* Call Transcript Panel */}
+            <CallTranscriptPanel 
+                isOpen={isCallPanelOpen}
+                onClose={() => setIsCallPanelOpen(false)}
+            />
         </Layout>
     );
 };

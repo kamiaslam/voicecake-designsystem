@@ -5,6 +5,8 @@ export interface ProductMarket {
     details: string;
     active: boolean;
     price: number;
+    plan?: string;
+    calls?: number;
     sales: {
         value: number;
         percentage: number;
