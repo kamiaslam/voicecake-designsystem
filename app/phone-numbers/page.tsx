@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Element } from "react-scroll";
 import Layout from "@/components/Layout";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
@@ -10,6 +11,27 @@ import Search from "@/components/Search";
 import Select from "@/components/Select";
 import Switch from "@/components/Switch";
 import Badge from "@/components/Badge";
+import { Link } from "react-scroll";
+
+const ElementWithOffset = ({
+    className,
+    name,
+    children,
+}: {
+    className?: string;
+    name: string;
+    children: React.ReactNode;
+}) => {
+    return (
+        <div className="relative">
+            <Element
+                className={`absolute -top-21 left-0 right-0 ${className || ""}`}
+                name={name}
+            ></Element>
+            {children}
+        </div>
+    );
+};
 
 const PhoneNumbersPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -26,6 +48,27 @@ const PhoneNumbersPage = () => {
         outboundAssistant: { id: 1, name: "UXPENDIT-Male" },
         outboundWorkflow: { id: 1, name: "Default Workflow" }
     });
+
+    const navigation = [
+        {
+            title: "Phone Number Details",
+            icon: "phone",
+            description: "Basic phone number information",
+            to: "phone-details",
+        },
+        {
+            title: "Inbound Settings",
+            icon: "inbox",
+            description: "Configure incoming call settings",
+            to: "inbound-settings",
+        },
+        {
+            title: "Outbound Settings",
+            icon: "outbox",
+            description: "Configure outgoing call settings",
+            to: "outbound-settings",
+        },
+    ];
 
     const handleSave = () => {
         // Handle save logic
@@ -44,9 +87,9 @@ const PhoneNumbersPage = () => {
 
     return (
         <Layout title="Phone Numbers">
-            <div className="flex h-full">
-                {/* Left Sidebar */}
-                <div className="w-80 bg-white border-r border-gray-200 p-6">
+            <div className="flex items-start max-lg:block">
+                {/* Custom Left Sidebar */}
+                <div className="card sticky top-22 shrink-0 w-120 max-3xl:w-100 max-2xl:w-74 max-lg:hidden">
                     {/* Tabs */}
                     <div className="flex space-x-1 mb-6">
                         <button
@@ -82,54 +125,85 @@ const PhoneNumbersPage = () => {
 
                     {/* Search */}
                     <Search
+                        className="mb-3"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search name, number, SIP..."
-                        className="mb-4"
+                        placeholder="Search phone numbers..."
+                        isGray
                     />
 
+                    {/* Navigation Menu */}
+                    <div className="flex flex-col gap-1">
+                        {navigation.map((item, index) => (
+                            <Link
+                                className="group relative flex items-center h-18 px-3 cursor-pointer"
+                                activeClass="[&_.box-hover]:!visible [&_.box-hover]:!opacity-100"
+                                key={index}
+                                to={item.to}
+                                smooth={true}
+                                duration={500}
+                                isDynamic={true}
+                                spy={true}
+                                offset={-5.5}
+                            >
+                                <div className="box-hover"></div>
+                                <div className="relative z-2 flex justify-center items-center shrink-0 !size-11 rounded-full bg-b-surface1">
+                                    <Icon
+                                        className="fill-t-secondary"
+                                        name={item.icon}
+                                    />
+                                </div>
+                                <div className="relative z-2 w-[calc(100%-2.75rem)] pl-4">
+                                    <div className="text-button">{item.title}</div>
+                                    <div className="mt-1 truncate text-caption text-t-secondary">
+                                        {item.description}
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+
                     {/* Phone Numbers List */}
-                    <div className="space-y-2">
-                        {/* This would be populated with actual phone numbers */}
+                    <div className="mt-6 space-y-2">
                         <div className="text-sm text-gray-500 text-center py-8">
                             No phone numbers found
                         </div>
                     </div>
                 </div>
 
-                {/* Right Content Area */}
-                <div className="flex-1 p-6 bg-gray-50">
-                    <div className="max-w-4xl space-y-3">
-                        {/* Header */}
-                        <div className="flex items-start justify-between mb-6">
-                            <div className="flex items-center gap-3">
-                                <div>
-                                    <h1 className="text-2xl font-bold text-t-primary mb-1">
-                                        +1 (908) 680 8723
-                                    </h1>
-                                    <p className="text-sm text-t-secondary">
-                                        This number was imported from your Twilio account.
-                                    </p>
-                                </div>
-                                <Icon name="warning" className="w-5 h-5 text-orange-500" />
+                {/* Main Content Area */}
+                <div className="flex flex-col gap-3 w-[calc(100%-30rem)] pl-3 max-3xl:w-[calc(100%-25rem)] max-2xl:w-[calc(100%-18.5rem)] max-lg:w-full max-lg:pl-0">
+                    {/* Header */}
+                    <div className="flex items-start justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                            <div>
+                                <h1 className="text-2xl font-bold text-t-primary mb-1">
+                                    +1 (908) 680 8723
+                                </h1>
+                                <p className="text-sm text-t-secondary">
+                                    This number was imported from your Twilio account.
+                                </p>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <div className="flex items-center gap-2 text-sm text-t-secondary">
-                                    <span>126ad19-1768-..</span>
-                                    <button className="hover:text-t-primary">
-                                        <Icon name="copy" className="w-4 h-4" />
-                                    </button>
-                                </div>
-                                <button className="p-2 hover:bg-gray-100 rounded-md">
-                                    <Icon name="more" className="w-4 h-4 text-t-secondary" />
-                                </button>
-                                <Button onClick={handleSave}>
-                                    Save
-                                </Button>
-                            </div>
+                            <Icon name="warning" className="w-5 h-5 text-orange-500" />
                         </div>
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2 text-sm text-t-secondary">
+                                <span>126ad19-1768-..</span>
+                                <button className="hover:text-t-primary">
+                                    <Icon name="copy" className="w-4 h-4" />
+                                </button>
+                            </div>
+                            <button className="p-2 hover:bg-gray-100 rounded-md">
+                                <Icon name="more" className="w-4 h-4 text-t-secondary" />
+                            </button>
+                            <Button onClick={handleSave}>
+                                Save
+                            </Button>
+                        </div>
+                    </div>
 
-                        {/* Phone Number Details Section */}
+                    {/* Phone Number Details Section */}
+                    <ElementWithOffset name="phone-details">
                         <Card title="Phone Number Details" className="p-6">
                             <p className="text-sm text-t-secondary mb-4">
                                 Give your phone number a descriptive name to help identify it in your list.
@@ -161,8 +235,10 @@ const PhoneNumbersPage = () => {
                                 </div>
                             </div>
                         </Card>
+                    </ElementWithOffset>
 
-                        {/* Inbound Settings Section */}
+                    {/* Inbound Settings Section */}
+                    <ElementWithOffset name="inbound-settings">
                         <Card title="Inbound Settings" className="p-6">
                             <p className="text-sm text-t-secondary mb-4">
                                 You can assign an assistant to the phone number so that whenever someone calls this phone number, the assistant will automatically be assigned to the call.
@@ -197,11 +273,7 @@ const PhoneNumbersPage = () => {
                                         <div className="flex items-center gap-2">
                                             <Icon name="warning" className="w-4 h-4 text-yellow-600" />
                                             <span className="text-sm text-yellow-800">
-                                                No squads available.{" "}
-                                                <button className="underline hover:no-underline">
-                                                    Create a squad
-                                                </button>{" "}
-                                                to enable this feature.
+                                                No squads available. Create a squad to assign to this phone number.
                                             </span>
                                         </div>
                                     </div>
@@ -241,8 +313,10 @@ const PhoneNumbersPage = () => {
                                 </div>
                             </div>
                         </Card>
+                    </ElementWithOffset>
 
-                        {/* Outbound Settings Section */}
+                    {/* Outbound Settings Section */}
+                    <ElementWithOffset name="outbound-settings">
                         <Card title="Outbound Settings" className="p-6">
                             <p className="text-sm text-t-secondary mb-4">
                                 You can assign an outbound phone number, set up a fallback and set up a squad to be called if the assistant is not available.
@@ -341,7 +415,7 @@ const PhoneNumbersPage = () => {
                                 </div>
                             </div>
                         </Card>
-                    </div>
+                    </ElementWithOffset>
                 </div>
             </div>
 
