@@ -3,14 +3,15 @@ import Icon from "@/components/Icon";
 
 type ThemeButtonProps = {
     className?: string;
+    rowProps?: string;
 };
 
-const ThemeButton = ({ className }: ThemeButtonProps) => {
+const ThemeButton = ({ className, rowProps }: ThemeButtonProps) => {
     const { setTheme, theme } = useTheme();
 
     return (
         <div
-            className={`group flex flex-col gap-1 w-12 p-1.5 bg-b-surface2 rounded-full cursor-pointer transition-all hover:shadow-depth dark:bg-linear-to-b dark:from-[#2A2A2A] dark:to-[#202020] ${
+            className={`group flex ${rowProps} flex-col gap-1 w-12 p-1.5 bg-b-surface2 rounded-full cursor-pointer transition-all hover:shadow-depth dark:bg-linear-to-b dark:from-[#2A2A2A] dark:to-[#202020] ${
                 className || ""
             }`}
             onClick={() => setTheme(theme === "light" ? "dark" : "light")}

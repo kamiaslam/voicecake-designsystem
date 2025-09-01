@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Button from "@/components/Button";
-import Field from "@/components/Field";
+import Button from "../../Button";
+import Field from "../../Field";
 
 type SignInProps = {
     handleSignUp: () => void;
