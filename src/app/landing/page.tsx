@@ -248,7 +248,7 @@ const LandingPage = () => {
 
                         {/* Desktop Actions */}
                         <div className="hidden md:flex items-center space-x-4">
-                            <Link href="/login" className="text-t-primary hover:text-t-secondary transition-colors">
+                            <Link href="/auth/signin" className="text-t-primary hover:text-t-secondary transition-colors">
                                 Sign in
                             </Link>
                             <Button>
@@ -307,7 +307,7 @@ const LandingPage = () => {
                             </nav>
                             <div className="flex flex-col space-y-3 mt-4 pt-4 border-t border-gray-200">
                                 <Link 
-                                    href="/login" 
+                                    href="/auth/signin" 
                                     className="text-t-primary hover:text-t-secondary transition-colors py-2"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
@@ -348,9 +348,11 @@ const LandingPage = () => {
                     </div>
                     
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6 md:mb-8 px-4">
-                        <Button className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 h-10 sm:h-12 md:h-14 bg-white text-gray-900 hover:bg-gray-100">
-                            Get Started
-                        </Button>
+                        <Link href="/auth/signup">
+                            <Button className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 h-10 sm:h-12 md:h-14 bg-white text-gray-900 hover:bg-gray-100">
+                                Get Started
+                            </Button>
+                        </Link>
                         <Button className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 h-10 sm:h-12 md:h-14 bg-transparent border-2 border-white text-white hover:bg-white hover:text-gray-900">
                             Book a Demo
                         </Button>
@@ -767,12 +769,14 @@ const LandingPage = () => {
                         Give your customers the conversational experience they deserve, global by design, Arabic when you need it, and measurable value from day one.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                    <Button className="text-lg px-8 py-4 h-14">
-                            Start your free pilot with Conversa, Empth or Sahla
-                        </Button>
+                        <Link href="/auth/signup">
+                            <Button className="text-lg px-8 py-4 h-14">
+                                Start your free pilot with Conversa, Empth or Sahla
+                            </Button>
+                        </Link>
                         <Button isStroke className="text-lg px-8 py-4 h-14">
                             Book a 20 minute walkthrough now
-                    </Button>
+                        </Button>
                     </div>
                     <p className="text-sm text-t-secondary mt-4">
                         Or speak to the bot on this page for a live demo.

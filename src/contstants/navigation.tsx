@@ -2,7 +2,7 @@ export const navigation = [
     {
         title: "Dashboard",
         icon: "dashboard",
-        href: "/",
+        href: "/dashboard",
     },
     {
         title: "Products",
@@ -42,7 +42,7 @@ export const navigation = [
     {
         title: "Landing",
         icon: "home",
-        href: "/landing",
+        href: "/",
     },
     {
         title: "Telephony",
