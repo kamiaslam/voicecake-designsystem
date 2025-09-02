@@ -4,9 +4,12 @@ import { useState } from "react";
 import Field from "@/components/Field";
 import Icon from "@/components/Icon";
 
-const WebhookConfig = () => {
-    const [webhookSecret, setWebhookSecret] = useState("your_webhook_secret_key");
+interface WebhookConfigProps {
+    webhookSecret: string;
+    setWebhookSecret: (value: string) => void;
+}
 
+const WebhookConfig = ({ webhookSecret, setWebhookSecret }: WebhookConfigProps) => {
     return (
         <div className="space-y-3">
             {/* Webhook Secret */}

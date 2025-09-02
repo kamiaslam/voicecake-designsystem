@@ -133,7 +133,7 @@ export default function RootLayout({
             </head>
             <body
                 className={`${interDisplay.variable} bg-b-surface1 font-mono text-body-1 text-t-primary antialiased`}
-            >
+            suppressHydrationWarning>
                 <Providers>{children}</Providers>
             </body>
         </html>

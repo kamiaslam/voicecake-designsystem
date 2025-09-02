@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Card from "@/components/Card";
 import Percentage from "@/components/Percentage";
 import Tabs from "@/components/Tabs";
-
-import { productActivity } from "@/mocks/products";
+import Loader from "@/components/Loader";
+import { agentsService } from "@/services/agent";
+import { Agent } from "@/types/agent";
+import { toast } from "sonner";
 
 const durations = [
     { id: 1, name: "Last 2 weeks" },
@@ -12,109 +14,221 @@ const durations = [
 ];
 
 const categories = [
-    { id: 1, name: "Product" },
-    { id: 2, name: "Views" },
-    { id: 3, name: "Likes" },
+    { id: 1, name: "Name" },
+    { id: 2, name: "Status" },
+    { id: 3, name: "Type" },
 ];
 
 const ProductActivity = ({}) => {
     const [duration, setDuration] = useState(durations[0]);
     const [category, setCategory] = useState(categories[0]);
+    const [agents, setAgents] = useState<Agent[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // Fetch agents from API
+    useEffect(() => {
+        const fetchAgents = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const agentsData = await agentsService.getAgents();
+                setAgents(agentsData);
+            } catch (err: any) {
+                console.error("Error fetching agents:", err);
+                setError(err.message || "Failed to fetch agents");
+                toast.error("Failed to load agents");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAgents();
+    }, []);
 
     return (
         <Card
-            className="p-6 mb-0"
-            title="Customer activities"
+            className="p-6 mb-0 h-[325px] flex flex-col"
+            title="Your Agents"
             selectValue={duration}
             selectOnChange={setDuration}
             selectOptions={durations}
         >
             <Tabs
-                className="hidden px-3 max-md:flex"
+                className="hidden px-3 max-md:flex mb-4"
                 classButton="flex-1"
                 items={categories}
                 value={category}
                 setValue={setCategory}
             />
-            <div className="p-5 pb-0 max-md:pt-4 max-lg:px-3">
-                <div className="flex items-center gap-3 h-14 text-caption text-t-tertiary/80">
-                    <div className="flex-1">Week</div>
-                    <div
-                        className={`flex-1 ${
-                            category.id === 1 ? "max-md:block" : "max-md:hidden"
-                        }`}
-                    >
-                        Products
+            
+            {loading ? (
+                <div className="flex-1 flex flex-col">
+                    {/* Fixed Header */}
+                    <div className="flex items-center gap-3 h-10 text-caption text-t-tertiary/80 border-b border-s-subtle">
+                        <div className="flex-1 font-medium">Agent</div>
+                        <div
+                            className={`flex-1 font-medium ${
+                                category.id === 1 ? "max-md:block" : "max-md:hidden"
+                            }`}
+                        >
+                            Name
+                        </div>
+                        <div
+                            className={`flex-1 font-medium ${
+                                category.id === 2 ? "max-md:block" : "max-md:hidden"
+                            }`}
+                        >
+                            Status
+                        </div>
+                        <div
+                            className={`flex-1 font-medium ${
+                                category.id === 3 ? "max-md:block" : "max-md:hidden"
+                            }`}
+                        >
+                            Type
+                        </div>
+                        <div className="flex-1 max-2xl:hidden font-medium">Sessions</div>
                     </div>
-                    <div
-                        className={`flex-1 ${
-                            category.id === 2 ? "max-md:block" : "max-md:hidden"
-                        }`}
-                    >
-                        Views
+                    
+                    {/* Skeleton Loading Rows */}
+                    <div className="h-40 overflow-hidden">
+                        {[...Array(4)].map((_, index) => (
+                            <div
+                                key={index}
+                                className="flex items-center gap-3 h-12 border-b border-s-subtle"
+                            >
+                                <div className="flex items-center flex-1 px-2">
+                                    <div className="h-4 bg-gray-200 rounded animate-pulse w-24"></div>
+                                </div>
+                                <div
+                                    className={`flex items-center gap-2 flex-1 px-2 ${
+                                        category.id === 1
+                                            ? "max-md:flex"
+                                            : "max-md:hidden"
+                                    }`}
+                                >
+                                    <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
+                                </div>
+                                <div
+                                    className={`flex items-center gap-2 flex-1 px-2 ${
+                                        category.id === 2
+                                            ? "max-md:flex"
+                                            : "max-md:hidden"
+                                    }`}
+                                >
+                                    <div className="h-5 bg-gray-200 rounded-full animate-pulse w-16"></div>
+                                </div>
+                                <div
+                                    className={`flex items-center gap-2 flex-1 px-2 ${
+                                        category.id === 3
+                                            ? "max-md:flex"
+                                            : "max-md:hidden"
+                                    }`}
+                                >
+                                    <div className="h-4 bg-gray-200 rounded animate-pulse w-12"></div>
+                                </div>
+                                <div className="flex items-center gap-2 flex-1 px-2 max-2xl:hidden">
+                                    <div className="h-4 bg-gray-200 rounded animate-pulse w-8"></div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                    <div
-                        className={`flex-1 ${
-                            category.id === 3 ? "max-md:block" : "max-md:hidden"
-                        }`}
-                    >
-                        Likes
-                    </div>
-                    <div className="flex-1 max-2xl:hidden">Comments</div>
                 </div>
-                {productActivity.map((item) => (
-                    <div
-                        className="flex items-center gap-3 h-17 border-t border-s-subtle text-body-2 last:h-19"
-                        key={item.id}
-                    >
-                        <div className="flex items-center flex-1">
-                            {item.week}
-                        </div>
-                        <div
-                            className={`flex items-center gap-2 flex-1 ${
-                                category.id === 1
-                                    ? "max-md:flex"
-                                    : "max-md:hidden"
-                            }`}
-                        >
-                            {item.products.counter}
-                            {item.products.percentage && (
-                                <Percentage value={item.products.percentage} />
-                            )}
-                        </div>
-                        <div
-                            className={`flex items-center gap-2 flex-1 ${
-                                category.id === 2
-                                    ? "max-md:flex"
-                                    : "max-md:hidden"
-                            }`}
-                        >
-                            {item.views.counter}
-                            {item.views.percentage && (
-                                <Percentage value={item.views.percentage} />
-                            )}
-                        </div>
-                        <div
-                            className={`flex items-center gap-2 flex-1 ${
-                                category.id === 3
-                                    ? "max-md:flex"
-                                    : "max-md:hidden"
-                            }`}
-                        >
-                            {item.likes.counter}
-                            {item.likes.percentage && (
-                                <Percentage value={item.likes.percentage} />
-                            )}
-                        </div>
-                        <div className="flex items-center gap-2 flex-1 max-2xl:hidden">
-                            {item.comments.counter}
-                            {item.comments.percentage && (
-                                <Percentage value={item.comments.percentage} />
-                            )}
-                        </div>
+            ) : error ? (
+                <div className="flex-1 flex items-center justify-center text-red-500">
+                    <div className="text-center">
+                        <p className="text-base">Error loading agents</p>
+                        <p className="text-xs">{error}</p>
                     </div>
-                ))}
-            </div>
+                </div>
+            ) : agents.length === 0 ? (
+                <div className="flex-1 flex items-center justify-center text-t-tertiary">
+                    <div className="text-center">
+                        <p className="text-base">No agents found</p>
+                        <p className="text-xs">Create your first agent to get started</p>
+                    </div>
+                </div>
+            ) : (
+                <div className="flex-1 flex flex-col">
+                    {/* Fixed Header */}
+                    <div className="flex items-center gap-3 h-10 text-caption text-t-tertiary/80 border-b border-s-subtle">
+                        <div className="flex-1 font-medium">Agent</div>
+                        <div
+                            className={`flex-1 font-medium ${
+                                category.id === 1 ? "max-md:block" : "max-md:hidden"
+                            }`}
+                        >
+                            Name
+                        </div>
+                        <div
+                            className={`flex-1 font-medium ${
+                                category.id === 2 ? "max-md:block" : "max-md:hidden"
+                            }`}
+                        >
+                            Status
+                        </div>
+                        <div
+                            className={`flex-1 font-medium ${
+                                category.id === 3 ? "max-md:block" : "max-md:hidden"
+                            }`}
+                        >
+                            Type
+                        </div>
+                        <div className="flex-1 max-2xl:hidden font-medium">Sessions</div>
+                    </div>
+                    
+                    {/* Scrollable Table Body with Fixed Height */}
+                    <div className="h-40 overflow-y-auto">
+                        {agents.map((agent) => (
+                            <div
+                                className="flex items-center gap-3 h-12 border-b border-s-subtle text-body-2 hover:bg-b-surface2 transition-colors"
+                                key={agent.id}
+                            >
+                                <div className="flex items-center flex-1 px-2">
+                                    {agent.name}
+                                </div>
+                                <div
+                                    className={`flex items-center gap-2 flex-1 px-2 ${
+                                        category.id === 1
+                                            ? "max-md:flex"
+                                            : "max-md:hidden"
+                                    }`}
+                                >
+                                    {agent.name}
+                                </div>
+                                <div
+                                    className={`flex items-center gap-2 flex-1 px-2 ${
+                                        category.id === 2
+                                            ? "max-md:flex"
+                                            : "max-md:hidden"
+                                    }`}
+                                >
+                                    <span className={`px-2 py-0.5 rounded text-xs ${
+                                        agent.status === 'active' ? 'bg-green-100 text-green-800' :
+                                        agent.status === 'inactive' ? 'bg-gray-100 text-gray-800' :
+                                        'bg-yellow-100 text-yellow-800'
+                                    }`}>
+                                        {agent.status}
+                                    </span>
+                                </div>
+                                <div
+                                    className={`flex items-center gap-2 flex-1 px-2 ${
+                                        category.id === 3
+                                            ? "max-md:flex"
+                                            : "max-md:hidden"
+                                    }`}
+                                >
+                                    {agent.type || 'Empth'}
+                                </div>
+                                <div className="flex items-center gap-2 flex-1 px-2 max-2xl:hidden">
+                                    {agent.total_sessions}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </Card>
     );
 };

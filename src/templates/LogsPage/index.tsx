@@ -10,6 +10,7 @@ import Badge from "@/components/Badge";
 import Search from "@/components/Search";
 import Select from "@/components/Select";
 import Icon from "@/components/Icon";
+import Loader from "@/components/Loader";
 import { SelectOption } from "@/types/select";
 
 // Mock data types
@@ -218,7 +219,9 @@ const LogsPage = () => {
           </div>
 
           {loading ? (
-            <div className="text-center py-8 text-gray-500">Loading logs...</div>
+            <div className="text-center py-8">
+              <Loader text="Loading logs..." />
+            </div>
           ) : (
             <Table
               cellsThead={

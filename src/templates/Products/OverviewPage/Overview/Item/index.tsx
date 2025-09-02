@@ -11,6 +11,9 @@ type ItemProps = {
         tooltip: string;
         counter: string;
         percentage: number;
+        trend?: string;
+        iconBgColor?: string;
+        cardColor?: string;
         dataChart: {
             name: string;
             amt: number;
@@ -19,7 +22,7 @@ type ItemProps = {
 };
 
 const Item = ({ value }: ItemProps) => (
-    <div className="flex-1 pr-6 border-r border-shade-07/10 last:border-r-0 max-4xl:nth-3:hidden max-2xl:last:pr-0 max-lg:flex-auto max-lg:shrink-0 max-lg:w-66">
+    <div className="flex-1 pr-6 border-r border-shade-07/10 last:border-r-0 max-2xl:last:pr-0 max-lg:flex-auto max-lg:shrink-0 max-lg:w-66">
         <div className="flex items-center gap-3 mb-2">
             <div className="flex items-center justify-center size-16 rounded-full" style={{ backgroundColor: '#05b4669e' }}>
                 <Icon
@@ -48,7 +51,7 @@ const Item = ({ value }: ItemProps) => (
                 <div className="flex items-center gap-2">
                     <Percentage value={value.percentage} />
                     <div className="text-body-2 text-t-tertiary text-nowrap">
-                        vs last year
+                        {value.trend || "vs last year"}
                     </div>
                 </div>
             </div>

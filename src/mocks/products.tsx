@@ -56,154 +56,59 @@ export const bestMatch = [
 export const overview = [
     {
         id: 1,
-        title: "Earning",
-        icon: "wallet",
-        tooltip: "Maximum 100 characters. No HTML or emoji allowed",
-        counter: "128k",
-        percentage: 36.8,
+        title: "Total Agents",
+        icon: "profile",
+        tooltip: "Total number of agents in your system",
+        counter: "12",
+        percentage: 0,
+        trend: "Empth 7. Conversa 5",
+        iconBgColor: "#FF6692",
+        cardColor: "#FFD9E4",
         dataChart: [
-            {
-                name: "Apr",
-                amt: 2000,
-            },
-            {
-                name: "May",
-                amt: 3300,
-            },
-            {
-                name: "Jun",
-                amt: 6100,
-            },
-            {
-                name: "Jul",
-                amt: 4300,
-            },
-            {
-                name: "Aug",
-                amt: 6400,
-            },
-            {
-                name: "Sep",
-                amt: 2000,
-            },
-            {
-                name: "Oct",
-                amt: 3400,
-            },
+            { name: "Jan", amt: 8 },
+            { name: "Feb", amt: 9 },
+            { name: "Mar", amt: 10 },
+            { name: "Apr", amt: 11 },
+            { name: "May", amt: 12 },
+            { name: "Jun", amt: 12 },
         ],
     },
     {
         id: 2,
-        title: "Customer",
-        icon: "profile",
-        tooltip: "Maximum 100 characters. No HTML or emoji allowed",
-        counter: "512",
-        percentage: -24.2,
+        title: "Automation Active",
+        icon: "chart",
+        tooltip: "Number of active automations",
+        counter: "27",
+        percentage: 0,
+        trend: "Empth 7. Conversa 5",
+        iconBgColor: "#8965E5",
+        cardColor: "#E7E2F3",
         dataChart: [
-            {
-                name: "Apr",
-                amt: 2000,
-            },
-            {
-                name: "May",
-                amt: 4300,
-            },
-            {
-                name: "Jun",
-                amt: 6100,
-            },
-            {
-                name: "Jul",
-                amt: 4400,
-            },
-            {
-                name: "Aug",
-                amt: 2200,
-            },
-            {
-                name: "Sep",
-                amt: 2000,
-            },
-            {
-                name: "Oct",
-                amt: 1400,
-            },
+            { name: "Jan", amt: 20 },
+            { name: "Feb", amt: 22 },
+            { name: "Mar", amt: 24 },
+            { name: "Apr", amt: 25 },
+            { name: "May", amt: 26 },
+            { name: "Jun", amt: 27 },
         ],
     },
     {
         id: 3,
-        title: "Sales",
-        icon: "product-think",
-        tooltip: "Maximum 100 characters. No HTML or emoji allowed",
-        counter: "6812",
-        percentage: 12.5,
+        title: "Minutes Remaining",
+        icon: "clock",
+        tooltip: "TTS Tokens remaining",
+        counter: "300",
+        percentage: 0,
+        trend: "TTS Tokens",
+        iconBgColor: "#00CEB6",
+        cardColor: "#BAFAF2",
         dataChart: [
-            {
-                name: "Apr",
-                amt: 4300,
-            },
-            {
-                name: "May",
-                amt: 2300,
-            },
-            {
-                name: "Jun",
-                amt: 5100,
-            },
-            {
-                name: "Jul",
-                amt: 2500,
-            },
-            {
-                name: "Aug",
-                amt: 4400,
-            },
-            {
-                name: "Sep",
-                amt: 5000,
-            },
-            {
-                name: "Oct",
-                amt: 6200,
-            },
-        ],
-    },
-    {
-        id: 4,
-        title: "Payout",
-        icon: "arrow",
-        tooltip: "Maximum 100 characters. No HTML or emoji allowed",
-        counter: "256k",
-        percentage: 41.5,
-        dataChart: [
-            {
-                name: "Apr",
-                amt: 2300,
-            },
-            {
-                name: "May",
-                amt: 4300,
-            },
-            {
-                name: "Jun",
-                amt: 3100,
-            },
-            {
-                name: "Jul",
-                amt: 3500,
-            },
-            {
-                name: "Aug",
-                amt: 2400,
-            },
-            {
-                name: "Sep",
-                amt: 3000,
-            },
-            {
-                name: "Oct",
-                amt: 4200,
-            },
+            { name: "Jan", amt: 500 },
+            { name: "Feb", amt: 450 },
+            { name: "Mar", amt: 400 },
+            { name: "Apr", amt: 350 },
+            { name: "May", amt: 320 },
+            { name: "Jun", amt: 300 },
         ],
     },
 ];

@@ -1,5 +1,12 @@
+"use client";
+
 import UsersPage from "@/templates/UsersPage";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function Users() {
-    return <UsersPage />;
+    return (
+        <ProtectedRoute>
+            <UsersPage />
+        </ProtectedRoute>
+    );
 }

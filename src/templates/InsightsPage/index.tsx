@@ -5,6 +5,7 @@ import Layout from "@/components/Layout";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
 import Select from "@/components/Select";
+import Loader from "@/components/Loader";
 import { SelectOption } from "@/types/select";
 import {
   ResponsiveContainer,
@@ -196,7 +197,9 @@ const InsightsPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
           <Card title="Revenue Trends" className="p-6">
             {loading ? (
-              <div className="text-center py-8 text-gray-500">Loading chart...</div>
+              <div className="text-center py-8">
+                <Loader text="Loading chart..." />
+              </div>
             ) : (
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">

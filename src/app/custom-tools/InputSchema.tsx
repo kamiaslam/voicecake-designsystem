@@ -6,47 +6,25 @@ import Button from "@/components/Button";
 import Icon from "@/components/Icon";
 import Checkbox from "@/components/Checkbox";
 
-interface Property {
-    id: number;
+interface SchemaProperty {
+    id?: string;
     name: string;
-    type: string;
+    type: 'string' | 'number' | 'boolean' | 'object' | 'array';
     description: string;
     required: boolean;
+    format?: string;
+    enum?: string[];
 }
 
-const InputSchema = () => {
-    const [properties, setProperties] = useState<Property[]>([
-        {
-            id: 1,
-            name: "property_name",
-            type: "String",
-            description: "Property description",
-            required: false,
-        },
-    ]);
+interface InputSchemaProps {
+    properties: SchemaProperty[];
+    addProperty: () => void;
+    updateProperty: (index: number, field: keyof SchemaProperty, value: any) => void;
+    removeProperty: (index: number) => void;
+}
 
-    const typeOptions = ["String", "Number", "Boolean", "Array", "Object"];
-
-    const addProperty = () => {
-        const newProperty: Property = {
-            id: Date.now(),
-            name: "",
-            type: "String",
-            description: "",
-            required: false,
-        };
-        setProperties([...properties, newProperty]);
-    };
-
-    const removeProperty = (id: number) => {
-        setProperties(properties.filter(prop => prop.id !== id));
-    };
-
-    const updateProperty = (id: number, field: keyof Property, value: any) => {
-        setProperties(properties.map(prop => 
-            prop.id === id ? { ...prop, [field]: value } : prop
-        ));
-    };
+const InputSchema = ({ properties, addProperty, updateProperty, removeProperty }: InputSchemaProps) => {
+    const typeOptions = ["string", "number", "boolean", "array", "object"];
 
     return (
         <div className="space-y-3">
@@ -64,14 +42,14 @@ const InputSchema = () => {
 
             {/* Properties List */}
             <div className="space-y-3">
-                {properties.map((property) => (
-                    <div key={property.id} className="p-4 border border-s-stroke2 rounded-3xl bg-b-surface2">
+                {properties.map((property, index) => (
+                    <div key={property.id || index} className="p-4 border border-s-stroke2 rounded-3xl bg-b-surface2">
                         <div className="flex items-center justify-between mb-4">
-                            <h4 className="text-button text-t-primary">Property {property.id}</h4>
+                            <h4 className="text-button text-t-primary">Property {index + 1}</h4>
                             <Button 
                                 className="flex items-center gap-2 text-red-600 hover:text-red-700"
                                 isStroke
-                                onClick={() => removeProperty(property.id)}
+                                onClick={() => removeProperty(index)}
                             >
                                 <Icon name="trash" className="w-4 h-4" />
                                 Remove Property
@@ -84,7 +62,7 @@ const InputSchema = () => {
                                 label="Property Name*"
                                 placeholder="property_name"
                                 value={property.name}
-                                onChange={(e) => updateProperty(property.id, 'name', e.target.value)}
+                                onChange={(e) => updateProperty(index, 'name', e.target.value)}
                             />
 
                             {/* Type */}
@@ -93,7 +71,7 @@ const InputSchema = () => {
                                 <select
                                     className="w-full h-12 px-4.5 border border-s-stroke2 rounded-full text-body-2 text-t-primary outline-none transition-colors hover:border-s-highlight focus:border-s-highlight bg-b-surface2"
                                     value={property.type}
-                                    onChange={(e) => updateProperty(property.id, 'type', e.target.value)}
+                                    onChange={(e) => updateProperty(index, 'type', e.target.value as any)}
                                 >
                                     {typeOptions.map((type) => (
                                         <option key={type} value={type}>
@@ -110,7 +88,7 @@ const InputSchema = () => {
                                 label="Description*"
                                 placeholder="Property description"
                                 value={property.description}
-                                onChange={(e) => updateProperty(property.id, 'description', e.target.value)}
+                                onChange={(e) => updateProperty(index, 'description', e.target.value)}
                             />
                         </div>
 
@@ -119,7 +97,7 @@ const InputSchema = () => {
                             <Checkbox
                                 label="Required"
                                 checked={property.required}
-                                onChange={(checked) => updateProperty(property.id, 'required', checked)}
+                                onChange={(checked) => updateProperty(index, 'required', checked)}
                             />
                         </div>
                     </div>

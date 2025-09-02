@@ -1,17 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Field from "@/components/Field";
 import Switch from "@/components/Switch";
 
-const BasicInfo = () => {
-    const [toolName, setToolName] = useState("BookingTool");
-    const [description, setDescription] = useState("Books appointments for customers with validation and confirmation");
-    const [webhookUrl, setWebhookUrl] = useState("https://your-api.com/booking-webhook");
-    const [timeout, setTimeout] = useState("");
-    const [maxRetries, setMaxRetries] = useState("3");
-    const [isActive, setIsActive] = useState(true);
-    const [isPublic, setIsPublic] = useState(false);
+interface BasicInfoProps {
+    formData: {
+        name: string;
+        description: string;
+        webhook_url: string;
+        timeout: number | null;
+        max_retries: number;
+        is_active: boolean;
+        is_public: boolean;
+    };
+    setFormData: React.Dispatch<React.SetStateAction<any>>;
+}
+
+const BasicInfo = ({ formData, setFormData }: BasicInfoProps) => {
+    const updateFormData = (field: string, value: any) => {
+        setFormData((prev: any) => ({
+            ...prev,
+            [field]: value
+        }));
+    };
 
     return (
         <div className="space-y-3">
@@ -19,8 +31,8 @@ const BasicInfo = () => {
             <Field
                 label="Tool Name*"
                 placeholder="BookingTool"
-                value={toolName}
-                onChange={(e) => setToolName(e.target.value)}
+                value={formData.name}
+                onChange={(e) => updateFormData('name', e.target.value)}
                 tooltip="Alphanumeric characters and underscores only"
             />
 
@@ -28,8 +40,8 @@ const BasicInfo = () => {
             <Field
                 label="Description*"
                 placeholder="Books appointments for customers with validation and confirmation"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                value={formData.description}
+                onChange={(e) => updateFormData('description', e.target.value)}
                 textarea
             />
 
@@ -37,16 +49,16 @@ const BasicInfo = () => {
             <Field
                 label="Webhook URL*"
                 placeholder="https://your-api.com/booking-webhook"
-                value={webhookUrl}
-                onChange={(e) => setWebhookUrl(e.target.value)}
+                value={formData.webhook_url}
+                onChange={(e) => updateFormData('webhook_url', e.target.value)}
             />
 
             {/* Timeout */}
             <Field
                 label="Timeout (seconds)*"
                 placeholder="Enter timeout in seconds (10-300)"
-                value={timeout}
-                onChange={(e) => setTimeout(e.target.value)}
+                value={formData.timeout?.toString() || ''}
+                onChange={(e) => updateFormData('timeout', e.target.value ? parseInt(e.target.value) : null)}
                 tooltip="Must be between 10 and 300 seconds"
             />
 
@@ -54,8 +66,8 @@ const BasicInfo = () => {
             <Field
                 label="Max Retries*"
                 placeholder="3"
-                value={maxRetries}
-                onChange={(e) => setMaxRetries(e.target.value)}
+                value={formData.max_retries.toString()}
+                onChange={(e) => updateFormData('max_retries', parseInt(e.target.value) || 3)}
             />
 
             {/* Toggle Switches */}
@@ -63,16 +75,16 @@ const BasicInfo = () => {
                 <div className="flex items-center gap-3">
                     <span className="text-button text-t-primary">Active</span>
                     <Switch
-                        checked={isActive}
-                        onChange={setIsActive}
+                        checked={formData.is_active}
+                        onChange={(checked) => updateFormData('is_active', checked)}
                     />
                 </div>
 
                 <div className="flex items-center gap-3">
                     <span className="text-button text-t-primary">Public</span>
                     <Switch
-                        checked={isPublic}
-                        onChange={setIsPublic}
+                        checked={formData.is_public}
+                        onChange={(checked) => updateFormData('is_public', checked)}
                     />
                 </div>
             </div>

@@ -1,198 +1,413 @@
 "use client";
 
-import { useState } from "react";
-import { Element } from "react-scroll";
+import { useState, useEffect, useCallback } from "react";
 import Layout from "@/components/Layout";
-import Card from "@/components/Card";
 import Button from "@/components/Button";
 import Icon from "@/components/Icon";
-import Search from "@/components/Search";
+import { useAuth } from "@/context/authContext";
+import { Tool, FormData } from "./types";
+import { useTools } from "./hooks/useTools";
+import { useToolForm } from "./hooks/useToolForm";
+import { Sidebar } from "./components/Sidebar";
+import { ToolsList } from "./components/ToolsList";
+import { ToolForm } from "./components/ToolForm";
+import { navigation } from "./constants";
 import BasicInfo from "./BasicInfo";
 import InputSchema from "./InputSchema";
 import WebhookConfig from "./WebhookConfig";
-import { Link } from "react-scroll";
-
-const ElementWithOffset = ({
-    className,
-    name,
-    children,
-}: {
-    className?: string;
-    name: string;
-    children: React.ReactNode;
-}) => {
-    return (
-        <div className="relative">
-            <Element
-                className={`absolute -top-21 left-0 right-0 ${className || ""}`}
-                name={name}
-            ></Element>
-            {children}
-        </div>
-    );
-};
+import { SchemaProperty } from "./types";
+import Loader from "@/components/Loader";
 
 const CustomToolsPage = () => {
-    const [activeTab, setActiveTab] = useState(1);
-    const [searchTerm, setSearchTerm] = useState("");
+  const { token, user } = useAuth();
+  const [activeTab, setActiveTab] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [editingTool, setEditingTool] = useState<Tool | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-    const navigation = [
-        {
-            title: "Basic Info",
-            icon: "settings",
-            description: "Tool name, description, and basic settings",
-            to: "basic-info",
-            tabId: 1,
-        },
-        {
-            title: "Input Schema",
-            icon: "file",
-            description: "Define input properties and types",
-            to: "input-schema",
-            tabId: 2,
-        },
-        {
-            title: "Webhook Config",
-            icon: "link",
-            description: "Webhook settings and integration",
-            to: "webhook-config",
-            tabId: 3,
-        },
-    ];
+  // Custom hooks
+  const { tools, loading, error, setError: originalSetError, loadTools, saveTool, deleteTool } = useTools(token || '');
+  const { 
+    formData, 
+    setFormData: originalSetFormData, 
+    inputProperties, 
+    setInputProperties: originalSetInputProperties, 
+    resetForm, 
+    addInputProperty, 
+    updateInputProperty, 
+    removeInputProperty, 
+    buildSchema, 
+    validateForm, 
+    populateForm 
+  } = useToolForm();
 
-    const renderTabContent = () => {
-        switch (activeTab) {
-            case 1:
-                return <BasicInfo />;
-            case 2:
-                return <InputSchema />;
-            case 3:
-                return <WebhookConfig />;
-            default:
-                return <BasicInfo />;
-        }
+  // Wrapper for setFormData to prevent server-side rendering issues
+  const setFormData = useCallback((updater: React.SetStateAction<FormData>) => {
+    if (mounted) {
+      originalSetFormData(updater);
+    }
+  }, [mounted, originalSetFormData]);
+
+  // Wrapper for setInputProperties to prevent server-side rendering issues
+  const setInputProperties = useCallback((updater: React.SetStateAction<any[]>) => {
+    if (mounted) {
+      originalSetInputProperties(updater);
+    }
+  }, [mounted, originalSetInputProperties]);
+
+  // Wrapper for setError to prevent server-side rendering issues
+  const setError = useCallback((error: string | null) => {
+    if (mounted) {
+      originalSetError(error);
+    }
+  }, [mounted, originalSetError]);
+
+  // Wrapper for setSuccess to prevent server-side rendering issues
+  const setSuccessMessage = useCallback((success: string | null) => {
+    if (mounted) {
+      setSuccess(success);
+    }
+  }, [mounted]);
+
+  // Wrapper for setSearchTerm to prevent server-side rendering issues
+  const setSearchTermSafe = useCallback((value: string) => {
+    if (mounted) {
+      setSearchTerm(value);
+    }
+  }, [mounted]);
+
+  // Wrapper for setShowForm to prevent server-side rendering issues
+  const setShowFormSafe = useCallback((value: boolean) => {
+    if (mounted) {
+      setShowForm(value);
+    }
+  }, [mounted]);
+
+  // Wrapper for setEditingTool to prevent server-side rendering issues
+  const setEditingToolSafe = useCallback((value: Tool | null) => {
+    if (mounted) {
+      setEditingTool(value);
+    }
+  }, [mounted]);
+
+  // Wrapper for setActiveTab to prevent server-side rendering issues
+  const setActiveTabSafe = useCallback((value: number) => {
+    if (mounted) {
+      setActiveTab(value);
+    }
+  }, [mounted]);
+
+  // Wrapper for resetForm to prevent server-side rendering issues
+  const resetFormSafe = useCallback(() => {
+    if (mounted) {
+      resetForm();
+    }
+  }, [mounted, resetForm]);
+
+  // Wrapper for populateForm to prevent server-side rendering issues
+  const populateFormSafe = useCallback((tool: Tool) => {
+    if (mounted) {
+      populateForm(tool);
+    }
+  }, [mounted, populateForm]);
+
+  // Wrapper for addInputProperty to prevent server-side rendering issues
+  const addInputPropertySafe = useCallback(() => {
+    if (mounted) {
+      addInputProperty();
+    }
+  }, [mounted, addInputProperty]);
+
+  // Wrapper for updateInputProperty to prevent server-side rendering issues
+  const updateInputPropertySafe = useCallback((index: number, field: keyof SchemaProperty, value: any) => {
+    if (mounted) {
+      updateInputProperty(index, field, value);
+    }
+  }, [mounted, updateInputProperty]);
+
+  // Wrapper for removeInputProperty to prevent server-side rendering issues
+  const removeInputPropertySafe = useCallback((index: number) => {
+    if (mounted) {
+      removeInputProperty(index);
+    }
+  }, [mounted, removeInputProperty]);
+
+  // Wrapper for buildSchema to prevent server-side rendering issues
+  const buildSchemaSafe = useCallback((properties: SchemaProperty[]) => {
+    if (mounted) {
+      return buildSchema(properties);
+    }
+    return { type: 'object' as const, properties: {}, required: [] };
+  }, [mounted, buildSchema]);
+
+  // Wrapper for validateForm to prevent server-side rendering issues
+  const validateFormSafe = useCallback((): string | null => {
+    if (mounted) {
+      return validateForm();
+    }
+    return null;
+  }, [mounted, validateForm]);
+
+  // Wrapper for loadTools to prevent server-side rendering issues
+  const loadToolsSafe = useCallback(() => {
+    if (mounted) {
+      loadTools();
+    }
+  }, [mounted, loadTools]);
+
+  // Wrapper for saveTool to prevent server-side rendering issues
+  const saveToolSafe = useCallback(async (toolData: FormData, editingTool: Tool | null) => {
+    if (mounted) {
+      return await saveTool(toolData, editingTool);
+    }
+    return false;
+  }, [mounted, saveTool]);
+
+  // Wrapper for deleteTool to prevent server-side rendering issues
+  const deleteToolSafe = useCallback((toolId: string | number) => {
+    if (mounted) {
+      deleteTool(toolId);
+    }
+  }, [mounted, deleteTool]);
+
+  // Wrapper for handleCreateTool to prevent server-side rendering issues
+  const handleCreateToolSafe = useCallback(() => {
+    if (mounted) {
+      resetFormSafe();
+      setShowFormSafe(true);
+      setActiveTabSafe(1);
+      setEditingToolSafe(null);
+    }
+  }, [mounted, resetFormSafe, setShowFormSafe, setActiveTabSafe, setEditingToolSafe]);
+
+  // Wrapper for handleEditTool to prevent server-side rendering issues
+  const handleEditToolSafe = useCallback((tool: Tool) => {
+    if (mounted) {
+      setEditingToolSafe(tool);
+      setShowFormSafe(true);
+      setActiveTabSafe(1);
+      populateFormSafe(tool);
+    }
+  }, [mounted, setEditingToolSafe, setShowFormSafe, setActiveTabSafe, populateFormSafe]);
+
+  // Wrapper for handleDeleteTool to prevent server-side rendering issues
+  const handleDeleteToolSafe = useCallback((toolId: string | number) => {
+    if (mounted && confirm('Are you sure you want to delete this tool?')) {
+      deleteToolSafe(toolId);
+    }
+  }, [mounted, deleteToolSafe]);
+
+  // Wrapper for handleSaveTool to prevent server-side rendering issues
+  const handleSaveToolSafe = useCallback(async () => {
+    if (!mounted) return;
+
+    const validationError = validateFormSafe();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    const toolData = {
+      ...formData,
+      input_schema: buildSchemaSafe(inputProperties.filter(p => p.name.trim())),
+      output_schema: {
+        type: 'object' as const,
+        properties: {
+          result: {
+            type: 'object',
+            description: 'Response from the third-party service'
+          }
+        },
+        required: ['result']
+      }
     };
 
-    const handleTabClick = (tabId: number) => {
-        setActiveTab(tabId);
-    };
+    const success = await saveToolSafe(toolData, editingTool);
+    if (success) {
+      setSuccessMessage(editingTool ? 'Tool updated successfully' : 'Tool created successfully');
+      resetFormSafe();
+      setShowFormSafe(false);
+      setEditingToolSafe(null);
+      setActiveTabSafe(1);
+    }
+  }, [mounted, validateFormSafe, formData, inputProperties, buildSchemaSafe, saveToolSafe, editingTool, setSuccessMessage, resetFormSafe, setShowFormSafe, setEditingToolSafe, setActiveTabSafe]);
 
+  // Wrapper for handleResetForm to prevent server-side rendering issues
+  const handleResetFormSafe = useCallback(() => {
+    if (mounted) {
+      resetFormSafe();
+      setShowFormSafe(false);
+      setEditingToolSafe(null);
+      setActiveTabSafe(1);
+      setError(null);
+      setSuccessMessage(null);
+    }
+  }, [mounted, resetFormSafe, setShowFormSafe, setEditingToolSafe, setActiveTabSafe, setError, setSuccessMessage]);
+
+  // Wrapper for handleTabClick to prevent server-side rendering issues
+  const handleTabClickSafe = useCallback((tabId: number) => {
+    if (mounted) {
+      setActiveTabSafe(tabId);
+    }
+  }, [mounted, setActiveTabSafe]);
+
+  // Ensure component is mounted on client
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Load tools when component mounts and auth is available
+  useEffect(() => {
+    if (mounted && token && user) {
+      loadToolsSafe();
+    }
+  }, [mounted, token, user, loadToolsSafe]);
+
+  const renderTabContent = () => {
+    if (!showForm) {
+      return (
+        <BasicInfo 
+          formData={formData}
+          setFormData={setFormData}
+        />
+      );
+    }
+
+    switch (activeTab) {
+      case 1:
+        return (
+          <BasicInfo 
+            formData={formData}
+            setFormData={setFormData}
+          />
+        );
+      case 2:
+        return (
+          <InputSchema 
+            properties={inputProperties}
+            addProperty={addInputPropertySafe}
+            updateProperty={updateInputPropertySafe}
+            removeProperty={removeInputPropertySafe}
+          />
+        );
+      case 3:
+        return (
+          <WebhookConfig 
+            webhookSecret={formData.webhook_secret}
+            setWebhookSecret={(value: string) => setFormData(prev => ({ ...prev, webhook_secret: value }))}
+          />
+        );
+      default:
+        return <BasicInfo formData={formData} setFormData={setFormData} />;
+    }
+  };
+
+  // Show loading state until mounted
+  if (!mounted) {
     return (
-        <Layout title="Custom Tools">
-            <div className="flex items-start max-lg:block">
-                {/* Sidebar Navigation */}
-                <div className="card sticky top-22 shrink-0 w-120 max-3xl:w-100 max-2xl:w-74 max-lg:hidden">
-                    {/* Header */}
-                    <div className="mb-6">
-                        <h2 className="text-h6 text-t-primary mb-2">Custom Tools</h2>
-                        <p className="text-caption text-t-secondary">Create and manage custom tools for your AI agents.</p>
-                    </div>
-
-                    {/* Create Tool Button */}
-                    <Button 
-                        className="w-full mb-4"
-                        onClick={() => console.log("Create tool clicked")}
-                    >
-                        <Icon name="plus" className="w-4 h-4 mr-2" />
-                        Create Tool
-                    </Button>
-
-                    {/* Search */}
-                    <Search
-                        className="mb-3"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search tools..."
-                        isGray
-                    />
-
-                    {/* Navigation Menu */}
-                    <div className="flex flex-col gap-1">
-                        {navigation.map((item, index) => (
-                            <button
-                                key={index}
-                                className={`group relative flex items-center h-18 px-3 cursor-pointer text-left ${
-                                    activeTab === item.tabId 
-                                        ? "[&_.box-hover]:!visible [&_.box-hover]:!opacity-100" 
-                                        : ""
-                                }`}
-                                onClick={() => handleTabClick(item.tabId)}
-                            >
-                                <div className="box-hover"></div>
-                                <div className="relative z-2 flex justify-center items-center shrink-0 !size-11 rounded-full bg-b-surface1">
-                                    <Icon
-                                        className={`fill-t-secondary ${
-                                            activeTab === item.tabId ? "fill-t-primary" : ""
-                                        }`}
-                                        name={item.icon}
-                                    />
-                                </div>
-                                <div className="relative z-2 w-[calc(100%-2.75rem)] pl-4">
-                                    <div className={`text-button ${
-                                        activeTab === item.tabId ? "text-t-primary" : ""
-                                    }`}>{item.title}</div>
-                                    <div className="mt-1 truncate text-caption text-t-secondary">
-                                        {item.description}
-                                    </div>
-                                </div>
-                            </button>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Main Content Area */}
-                <div className="flex flex-col gap-3 w-[calc(100%-30rem)] pl-3 max-3xl:w-[calc(100%-25rem)] max-2xl:w-[calc(100%-18.5rem)] max-lg:w-full max-lg:pl-0">
-                    {/* Header */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                        <div>
-                            <h1 className="text-2xl font-bold text-t-primary">Custom Tools</h1>
-                            <p className="text-gray-600">Create and manage custom tools for your AI agents.</p>
-                        </div>
-                        <Button className="flex items-center gap-2">
-                            <Icon name="plus" className="w-4 h-4" />
-                            Create Tool
-                        </Button>
-                    </div>
-
-                    {/* Tab Content */}
-                    <Card className="p-6">
-                        {/* Tab Navigation (Mobile/Tablet) */}
-                        <div className="flex gap-1 mb-8 lg:hidden">
-                            {navigation.map((item) => (
-                                <button
-                                    key={item.tabId}
-                                    className={`flex items-center h-12 px-5.5 rounded-full border text-button transition-colors hover:text-t-primary ${
-                                        activeTab === item.tabId
-                                            ? "border-s-stroke2 text-white bg-black dark:bg-white dark:text-black"
-                                            : "border-transparent text-t-secondary"
-                                    }`}
-                                    onClick={() => handleTabClick(item.tabId)}
-                                >
-                                    {item.title}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Content */}
-                        <div className="pt-3">
-                            {renderTabContent()}
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="flex justify-end gap-3 mt-8 pt-6 border-t border-s-subtle">
-                            <Button isStroke>
-                                Cancel
-                            </Button>
-                            <Button className="flex items-center gap-2">
-                                <Icon name="plus" className="w-4 h-4" />
-                                Create Tool
-                            </Button>
-                        </div>
-                    </Card>
-                </div>
-            </div>
-        </Layout>
+      <Layout title="Custom Tools">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <Loader text="Loading Custom Tools..." />
+          </div>
+        </div>
+      </Layout>
     );
+  }
+
+  // Show loading state if not authenticated
+  if (!token || !user) {
+    return (
+      <Layout title="Custom Tools">
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <p className="text-lg text-gray-600">Please sign in to access Custom Tools.</p>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
+  return (
+    <Layout title="Custom Tools">
+      <div className="flex items-start max-lg:block">
+        {/* Sidebar Navigation */}
+        <Sidebar
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTermSafe}
+          onCreateTool={handleCreateToolSafe}
+          showForm={showForm}
+          editingTool={editingTool}
+          activeTab={activeTab}
+          onTabClick={handleTabClickSafe}
+          navigation={navigation}
+        />
+
+        {/* Main Content Area */}
+        <div className="flex flex-col gap-3 w-[calc(100%-30rem)] pl-3 max-3xl:w-[calc(100%-25rem)] max-2xl:w-[calc(100%-18.5rem)] max-lg:w-full max-lg:pl-0">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold text-t-primary">
+                {editingTool ? `Edit ${editingTool.name}` : 'Custom Tools'}
+              </h1>
+              <p className="text-gray-600">
+                {editingTool ? 'Modify your tool configuration' : 'Create and manage custom tools for your AI agents.'}
+              </p>
+            </div>
+            {!showForm && (
+              <Button 
+                className="flex items-center gap-2" 
+                onClick={handleCreateToolSafe}
+              >
+                <Icon name="plus" className="w-4 h-4" />
+                Create Tool
+              </Button>
+            )}
+          </div>
+
+          {/* Error/Success Messages */}
+          {error && (
+            <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
+              {success}
+            </div>
+          )}
+
+          {/* Content */}
+          <div className="space-y-4">
+            {!showForm ? (
+              <ToolsList
+                tools={tools}
+                loading={loading}
+                searchTerm={searchTerm}
+                onCreateTool={handleCreateToolSafe}
+                onEditTool={handleEditToolSafe}
+                onDeleteTool={handleDeleteToolSafe}
+              />
+            ) : (
+              <ToolForm
+                activeTab={activeTab}
+                onTabClick={handleTabClickSafe}
+                onReset={handleResetFormSafe}
+                onSave={handleSaveToolSafe}
+                loading={loading}
+                editingTool={editingTool}
+                navigation={navigation}
+                renderTabContent={renderTabContent}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+    </Layout>
+  );
 };
 
 export default CustomToolsPage;

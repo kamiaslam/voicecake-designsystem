@@ -4,31 +4,31 @@ export const navigation = [
         icon: "dashboard",
         href: "/dashboard",
     },
-    {
-        title: "Products",
-        icon: "product",
-        href: "/products",
-    },
-    {
-        title: "Users & Accounts",
-        icon: "profile",
-        href: "/users",
-    },
+    // {
+    //     title: "Products",
+    //     icon: "product",
+    //     href: "/products",
+    // },
+    // {
+    //     title: "Users & Accounts",
+    //     icon: "profile",
+    //     href: "/users",
+    // },
     {
         title: "Agents & Bots",
         icon: "product-think",
         href: "/agents",
     },
-    {
-        title: "Billing",
-        icon: "income",
-        href: "/billing",
-    },
-    {
-        title: "Workflows",
-        icon: "promote",
-        href: "/workflows",
-    },
+    // {
+    //     title: "Billing",
+    //     icon: "income",
+    //     href: "/billing",
+    // },
+    // {
+    //     title: "Workflows",
+    //     icon: "promote",
+    //     href: "/workflows",
+    // },
     {
         title: "Custom Tools",
         icon: "product",
@@ -39,21 +39,21 @@ export const navigation = [
         icon: "plus",
         href: "/create-assistant",
     },
-    {
-        title: "Landing",
-        icon: "home",
-        href: "/",
-    },
+    // {
+    //     title: "Landing",
+    //     icon: "home",
+    //     href: "/",
+    // },
     {
         title: "Telephony",
         icon: "wallet",
         href: "/telephony",
     },
-    {
-        title: "Phone Numbers",
-        icon: "phone",
-        href: "/phone-numbers",
-    },
+    // {
+    //     title: "Phone Numbers",
+    //     icon: "telephone",
+    //     href: "/phone-numbers",
+    // },
     {
         title: "Call Logs",
         icon: "chart",

@@ -1,5 +1,12 @@
+"use client";
+
 import OverviewPage from "@/templates/Products/OverviewPage";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function DashboardPage() {
-    return <OverviewPage />;
+    return (
+        <ProtectedRoute>
+            <OverviewPage />
+        </ProtectedRoute>
+    );
 }

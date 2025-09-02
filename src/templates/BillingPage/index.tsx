@@ -10,6 +10,7 @@ import Badge from "@/components/Badge";
 import Search from "@/components/Search";
 import Select from "@/components/Select";
 import Icon from "@/components/Icon";
+import Loader from "@/components/Loader";
 import { fmtMoney, type Invoice } from "@/lib/data";
 import { type SelectOption } from "@/types/select";
 import {
@@ -479,7 +480,9 @@ const BillingPage = () => {
                     </div>
 
                     {loading ? (
-                        <div className="text-center py-8 text-t-tertiary">Loading invoices...</div>
+                        <div className="text-center py-8">
+                            <Loader text="Loading invoices..." />
+                        </div>
                     ) : (
                         <>
                             {/* Mobile Card Layout */}
