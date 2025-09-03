@@ -19,13 +19,21 @@ import { SchemaProperty } from "./types";
 import Loader from "@/components/Loader";
 
 const CustomToolsPage = () => {
-  const { token, user } = useAuth();
+  const { token, user, isInitialized } = useAuth();
   const [activeTab, setActiveTab] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [editingTool, setEditingTool] = useState<Tool | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+
+  // Debug logging
+  useEffect(() => {
+    console.log("CustomToolsPage - Mounted:", mounted);
+    console.log("CustomToolsPage - Auth initialized:", isInitialized);
+    console.log("CustomToolsPage - Token:", !!token);
+    console.log("CustomToolsPage - User:", !!user);
+  }, [mounted, isInitialized, token, user]);
 
   // Custom hooks
   const { tools, loading, error, setError: originalSetError, loadTools, saveTool, deleteTool } = useTools(token || '');
@@ -304,8 +312,8 @@ const CustomToolsPage = () => {
     }
   };
 
-  // Show loading state until mounted
-  if (!mounted) {
+  // Show loading state until mounted and auth is initialized
+  if (!mounted || !isInitialized) {
     return (
       <Layout title="Custom Tools">
         <div className="flex items-center justify-center min-h-screen">
@@ -353,7 +361,7 @@ const CustomToolsPage = () => {
               <h1 className="text-2xl font-bold text-t-primary">
                 {editingTool ? `Edit ${editingTool.name}` : 'Custom Tools'}
               </h1>
-              <p className="text-gray-600">
+              <p className="text-lg text-gray-600">
                 {editingTool ? 'Modify your tool configuration' : 'Create and manage custom tools for your AI agents.'}
               </p>
             </div>

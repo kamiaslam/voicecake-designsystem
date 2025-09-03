@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 import ThemeButton from "@/components/ThemeButton";
+
 type LayoutProps = {
     title?: string;
     children: React.ReactNode;
@@ -11,8 +12,11 @@ type LayoutProps = {
 
 const Layout = ({ title, children, newProduct, hideSidebar }: LayoutProps) => {
     const [visibleSidebar, setVisibleSidebar] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
+        
         const scrollWidth =
             window.innerWidth - document.documentElement.clientWidth;
         document.documentElement.style.setProperty(
@@ -24,6 +28,20 @@ const Layout = ({ title, children, newProduct, hideSidebar }: LayoutProps) => {
             document.documentElement.style.removeProperty("--scrollbar-width");
         };
     }, []);
+
+    // Prevent hydration mismatch by not rendering until mounted
+    if (!mounted) {
+        return (
+            <div className="min-h-screen bg-b-surface1">
+                <div className="flex items-center justify-center min-h-screen">
+                    <div className="text-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-t-primary mx-auto mb-4"></div>
+                        <p className="text-t-secondary">Loading...</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div

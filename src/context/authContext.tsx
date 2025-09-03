@@ -18,6 +18,7 @@ interface AuthContextType {
   requestPasswordReset: (email: string) => Promise<any>;
   resetPassword: (token: string, newPassword: string) => Promise<any>;
   isAuthenticated: boolean;
+  isInitialized: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -35,30 +36,13 @@ const removeCookie = (name: string) => {
 };
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Initialize state with values from localStorage to prevent flash of unauthenticated state
-  const [user, setUser] = useState<User | null>(() => {
-    if (typeof window !== 'undefined') {
-      const storedUser = localStorage.getItem("user");
-      return storedUser ? JSON.parse(storedUser) : null;
-    }
-    return null;
-  });
-  
-  const [token, setToken] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem("authToken");
-    }
-    return null;
-  });
-  
-  const [refreshToken, setRefreshToken] = useState<string | null>(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem("refreshToken");
-    }
-    return null;
-  });
+  // Initialize state with null values to prevent hydration mismatch
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // Initialize auth state from localStorage on mount and set cookies for middleware
+  // Initialize auth state from localStorage only on client side
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const storedToken = localStorage.getItem("authToken");
@@ -66,16 +50,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const storedUser = localStorage.getItem("user");
       
       if (storedToken && storedRefreshToken && storedUser) {
-        // Set cookie for middleware access immediately
-        setCookie("authToken", storedToken);
-        
-        // Update state if not already set (in case of hydration mismatch)
-        if (!token) setToken(storedToken);
-        if (!refreshToken) setRefreshToken(storedRefreshToken);
-        if (!user) setUser(JSON.parse(storedUser));
+        try {
+          // Set cookie for middleware access immediately
+          setCookie("authToken", storedToken);
+          
+          // Update state
+          setToken(storedToken);
+          setRefreshToken(storedRefreshToken);
+          setUser(JSON.parse(storedUser));
+        } catch (error) {
+          console.error("Error parsing stored user data:", error);
+          // Clear invalid data
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("refreshToken");
+          localStorage.removeItem("user");
+        }
       }
+      setIsInitialized(true);
     }
-  }, [token, refreshToken, user]);
+  }, []);
 
   const login = async (username: string, password: string) => {
     try {
@@ -92,9 +85,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(userData);
       
       // Store in localStorage
-      localStorage.setItem("authToken", access_token);
-      localStorage.setItem("refreshToken", refresh_token);
-      localStorage.setItem("user", JSON.stringify(userData));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("authToken", access_token);
+        localStorage.setItem("refreshToken", refresh_token);
+        localStorage.setItem("user", JSON.stringify(userData));
+      }
       
       // Store in cookies for middleware access
       setCookie("authToken", access_token);
@@ -121,9 +116,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(userData);
       
       // Store in localStorage
-      localStorage.setItem("authToken", access_token);
-      localStorage.setItem("refreshToken", refresh_token);
-      localStorage.setItem("user", JSON.stringify(userData));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("authToken", access_token);
+        localStorage.setItem("refreshToken", refresh_token);
+        localStorage.setItem("user", JSON.stringify(userData));
+      }
       
       // Store in cookies for middleware access
       setCookie("authToken", access_token);
@@ -137,7 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const refreshAccessToken = async (): Promise<boolean> => {
     try {
-      const currentRefreshToken = refreshToken || localStorage.getItem("refreshToken");
+      const currentRefreshToken = refreshToken || (typeof window !== 'undefined' ? localStorage.getItem("refreshToken") : null);
       
       if (!currentRefreshToken) {
         console.log("❌ No refresh token available for refresh");
@@ -156,8 +153,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setRefreshToken(refresh_token);
       
       // Update localStorage
-      localStorage.setItem("authToken", access_token);
-      localStorage.setItem("refreshToken", refresh_token);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("authToken", access_token);
+        localStorage.setItem("refreshToken", refresh_token);
+      }
       
       // Update cookie for middleware access
       setCookie("authToken", access_token);
@@ -175,12 +174,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(null);
       setRefreshToken(null);
       setUser(null);
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("user");
-      localStorage.removeItem("userId");
-      localStorage.removeItem("username");
-      localStorage.removeItem("email");
+      
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("username");
+        localStorage.removeItem("email");
+      }
       
       // Clear cookies
       removeCookie("authToken");
@@ -197,7 +199,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async (): Promise<void> => {
     try {
-      const currentRefreshToken = refreshToken || localStorage.getItem("refreshToken");
+      const currentRefreshToken = refreshToken || (typeof window !== 'undefined' ? localStorage.getItem("refreshToken") : null);
       
       console.log("🔐 Starting logout process...");
       console.log("📝 Refresh token exists:", !!currentRefreshToken);
@@ -220,12 +222,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(null);
       setRefreshToken(null);
       setUser(null);
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("refreshToken");
-      localStorage.removeItem("user");
-      localStorage.removeItem("userId");
-      localStorage.removeItem("username");
-      localStorage.removeItem("email");
+      
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("username");
+        localStorage.removeItem("email");
+      }
       
       // Clear cookies
       removeCookie("authToken");
@@ -265,7 +270,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       refreshAccessToken,
       requestPasswordReset, 
       resetPassword,
-      isAuthenticated: !!token
+      isAuthenticated: !!token,
+      isInitialized
     }}>
       {children}
     </AuthContext.Provider>

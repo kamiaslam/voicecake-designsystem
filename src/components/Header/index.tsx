@@ -34,6 +34,7 @@ const Header = ({
     const pathname = usePathname();
     const [hasOverflowHidden, setHasOverflowHidden] = useState(false);
     const [visibleSearch, setVisibleSearch] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     const isHideCreateButton =
         pathname.includes("/customers/customer-list/") ||
@@ -42,6 +43,8 @@ const Header = ({
         pathname.includes("/notifications");
 
     useEffect(() => {
+        setMounted(true);
+        
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.attributeName === "style") {
@@ -61,6 +64,25 @@ const Header = ({
 
         return () => observer.disconnect();
     }, []);
+
+    // Prevent hydration mismatch by not rendering until mounted
+    if (!mounted) {
+        return (
+            <header className="fixed top-0 right-0 z-20 bg-b-surface1 left-0 max-lg:!right-0">
+                <div className="flex items-center h-22 max-md:h-18 center max-w-full">
+                    <div className="animate-pulse flex items-center gap-3">
+                        <div className="h-8 w-24 bg-b-surface2 rounded"></div>
+                        <div className="h-8 w-8 bg-b-surface2 rounded-full"></div>
+                    </div>
+                    <div className="ml-auto flex items-center gap-3">
+                        <div className="h-8 w-8 bg-b-surface2 rounded-full"></div>
+                        <div className="h-8 w-8 bg-b-surface2 rounded-full"></div>
+                        <div className="h-8 w-8 bg-b-surface2 rounded-full"></div>
+                    </div>
+                </div>
+            </header>
+        );
+    }
 
     return (
         <header
