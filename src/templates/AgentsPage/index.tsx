@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Layout from "@/components/Layout";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
@@ -13,6 +14,7 @@ import Badge from "@/components/Badge";
 import { agentsService } from "@/services/agent";
 import { Agent } from "@/types/agent";
 import { toast } from "sonner";
+import { CreateAgentModal } from "@/components/CreateAgentModal";
 
 const typeOptions = [
     { id: 1, name: "All Types" },
@@ -21,10 +23,13 @@ const typeOptions = [
 ];
 
 const AgentsPage = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [typeFilter, setTypeFilter] = useState(typeOptions[0]);
+    const router = useRouter();
     const [agents, setAgents] = useState<Agent[]>([]);
     const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [typeFilter, setTypeFilter] = useState({ id: 1, name: "All" });
+    const [isCreateAgentModalOpen, setIsCreateAgentModalOpen] = useState(false);
+    const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     // Fetch agents from API
@@ -81,6 +86,70 @@ const AgentsPage = () => {
     const activeAgents = agents.filter(agent => agent.status === 'active').length;
     const avgSessions = agents.length > 0 ? Math.round(agents.reduce((sum, agent) => sum + agent.total_sessions, 0) / agents.length) : 0;
     const totalSessions = agents.reduce((sum, agent) => sum + agent.total_sessions, 0);
+
+    const handleCreateAgent = (agentData: any) => {
+        console.log("Agent created - Raw data:", agentData);
+        console.log("Agent created - Data type:", typeof agentData);
+        console.log("Agent created - Data keys:", agentData ? Object.keys(agentData) : "No data");
+        
+        // Check if agentData has the expected structure
+        if (!agentData || typeof agentData !== 'object') {
+            console.error("Invalid agent data received:", agentData);
+            toast.error("Invalid agent data received");
+            return;
+        }
+        
+        // Ensure the agent has required properties for display
+        const newAgent = {
+            id: agentData.id || Date.now(), // Fallback ID if not provided
+            name: agentData.name || "Unnamed Agent",
+            description: agentData.description || "",
+            agent_type: agentData.agent_type || agentData.type || "SPEECH", // Handle both field names
+            status: agentData.status || "active",
+            total_sessions: agentData.total_sessions || 0,
+            voice_provider: agentData.voice_provider || "",
+            voice_id: agentData.voice_id || "",
+            model_provider: agentData.model_provider || "",
+            model_resource: agentData.model_resource || "",
+            custom_instructions: agentData.custom_instructions || "",
+            created_at: agentData.created_at || new Date().toISOString(),
+            updated_at: agentData.updated_at || new Date().toISOString(),
+            last_used: agentData.last_used || null,
+            tool_ids: agentData.tool_ids || []
+        };
+        
+        console.log("Formatted agent data:", newAgent);
+        
+        // Add the new agent to the list
+        setAgents(prev => [...prev, newAgent]);
+        toast.success("Agent created successfully!");
+        
+        // Close the modal
+        setIsCreateAgentModalOpen(false);
+    };
+
+    const handleEditAgent = (agent: Agent) => {
+        setEditingAgent(agent);
+        setIsCreateAgentModalOpen(true);
+    };
+
+    const handleUpdateAgent = (updatedAgentData: any) => {
+        console.log("Agent updated:", updatedAgentData);
+        
+        // Update the agent in the list
+        setAgents(prev => prev.map(agent => 
+            agent.id === editingAgent?.id ? updatedAgentData : agent
+        ));
+        
+        toast.success("Agent updated successfully!");
+        setEditingAgent(null);
+        setIsCreateAgentModalOpen(false);
+    };
+
+    const handleCloseEditModal = () => {
+        setEditingAgent(null);
+        setIsCreateAgentModalOpen(false);
+    };
 
     return (
         <Layout title="Agents & Bots">
@@ -151,9 +220,9 @@ const AgentsPage = () => {
                                 onChange={setTypeFilter}
                                 className="min-w-[150px]"
                             />
-                            <Button>
+                            <Button onClick={() => setIsCreateAgentModalOpen(true)}>
                                 <Icon name="plus" className="w-4 h-4 mr-2" />
-                                Deploy Agent
+                                Add Agent
                             </Button>
                         </div>
                     </div>
@@ -355,9 +424,13 @@ const AgentsPage = () => {
                                                 <Icon name="edit" className="w-4 h-4 fill-t-secondary" />
                                                 Edit
                                             </Button>
-                                            <Button isStroke className="flex-1">
-                                                <Icon name="profile" className="w-4 h-4 fill-t-secondary" />
-                                                Profile
+                                            <Button 
+                                                isStroke 
+                                                className="flex-1"
+                                                onClick={() => router.push(`/inference/${agent.id}`)}
+                                            >
+                                                <Icon name="play" className="w-4 h-4 fill-t-secondary" />
+                                                Test
                                             </Button>
                                             <Button isStroke>
                                                 <Icon name="dots" className="w-4 h-4 fill-t-secondary" />
@@ -436,13 +509,19 @@ const AgentsPage = () => {
                                                     </div>
                                                     {/* Actions */}
                                                     <div className="flex items-center gap-2">
-                                                        <button className="w-8 h-8 p-1 border rounded-3xl border-gray-300 rounded hover:bg-gray-100 flex items-center justify-center transition-colors">
-                                                            <Icon name="edit" className="w-4 h-4 fill-t-secondary" />
+                                                        <button 
+                                                          onClick={() => handleEditAgent(agent)}
+                                                          className="w-8 h-8 p-1 border rounded-3xl border-gray-300 rounded hover:bg-gray-100 hover:text-primary-01 flex items-center justify-center transition-colors"
+                                                        >
+                                                             <Icon name="edit" className="w-4 h-4 fill-t-secondary" />
+                                                         </button>
+                                                        <button 
+                                                          onClick={() => router.push(`/inference/${agent.id}`)}
+                                                          className="w-8 h-8 p-1 border rounded-3xl border-gray-300 rounded hover:bg-gray-100 hover:text-primary-01 flex items-center justify-center transition-colors"
+                                                        >
+                                                            <Icon name="play" className="w-4 h-4 fill-t-secondary" />
                                                         </button>
-                                                        <button className="w-8 h-8 p-1 border rounded-3xl border-gray-300 rounded hover:bg-gray-100 flex items-center justify-center transition-colors">
-                                                            <Icon name="profile" className="w-4 h-4 fill-t-secondary" />
-                                                        </button>
-                                                        <button className="w-8 h-8 p-1 border rounded-3xl border-gray-300 rounded hover:bg-gray-100 flex items-center justify-center transition-colors">
+                                                        <button className="w-8 h-8 p-1 border rounded-3xl border-gray-300 rounded hover:bg-gray-100 hover:text-primary-01 flex items-center justify-center transition-colors">
                                                             <Icon name="dots" className="w-4 h-4 fill-t-secondary" />
                                                         </button>
                                                     </div>
@@ -553,6 +632,13 @@ const AgentsPage = () => {
                     </Card>
                 </div>
             </div>
+            <CreateAgentModal 
+                    isOpen={isCreateAgentModalOpen} 
+                    onClose={handleCloseEditModal}
+                    onSubmit={handleCreateAgent}
+                    editAgent={editingAgent}
+                    onUpdate={handleUpdateAgent}
+                />
         </Layout>
     );
 };

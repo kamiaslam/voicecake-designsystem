@@ -13,6 +13,7 @@ import Range from "@/components/Range";
 import Search from "@/components/Search";
 import { Link } from "react-scroll";
 import CallTranscriptPanel from "@/components/CallTranscriptPanel";
+import { CreateAgentModal } from "@/components/CreateAgentModal";
 
 const ElementWithOffset = ({
     className,
@@ -37,6 +38,9 @@ const ElementWithOffset = ({
 const CreateAssistantPage = () => {
     // Call Transcript Panel
     const [isCallPanelOpen, setIsCallPanelOpen] = useState(false);
+
+    // Create Agent Modal
+    const [isCreateAgentModalOpen, setIsCreateAgentModalOpen] = useState(false);
 
     // System Prompt expandable state
     const [isSystemPromptExpanded, setIsSystemPromptExpanded] = useState(false);
@@ -142,6 +146,12 @@ const CreateAssistantPage = () => {
         }
     };
 
+    const handleCreateAgent = (agentData: any) => {
+        console.log("Agent created:", agentData);
+        // Handle the created agent data here
+        // You can redirect to the agents page or show a success message
+    };
+
     return (
         <Layout title="Create Assistant">
             <div className="flex items-start max-lg:block">
@@ -187,6 +197,18 @@ const CreateAssistantPage = () => {
 
                 {/* Main Content Area */}
                 <div className="flex flex-col gap-3 w-[calc(100%-30rem)] pl-3 max-3xl:w-[calc(100%-25rem)] max-2xl:w-[calc(100%-18.5rem)] max-lg:w-full max-lg:pl-0">
+                    {/* Header with Create Agent Button */}
+                    <div className="flex items-center justify-between mb-4">
+                        <h1 className="text-2xl font-bold">Create New Agent</h1>
+                        <Button 
+                            onClick={() => setIsCreateAgentModalOpen(true)}
+                            className="flex items-center gap-2"
+                        >
+                            <Icon name="plus" className="w-4 h-4" />
+                            Create Agent
+                        </Button>
+                    </div>
+
                     {/* Performance Metrics */}
                     <ElementWithOffset name="performance">
                         <Card title="Performance Metrics" className="p-6">
@@ -438,6 +460,13 @@ const CreateAssistantPage = () => {
             <CallTranscriptPanel 
                 isOpen={isCallPanelOpen}
                 onClose={() => setIsCallPanelOpen(false)}
+            />
+
+            {/* Create Agent Modal */}
+            <CreateAgentModal
+                isOpen={isCreateAgentModalOpen}
+                onClose={() => setIsCreateAgentModalOpen(false)}
+                onSubmit={handleCreateAgent}
             />
         </Layout>
     );
