@@ -115,8 +115,8 @@ export const ToolsList = ({
                 <tr key={tool.id} className="border-b border-s-subtle hover:bg-b-surface2 transition-colors">
                   <td className="py-4 px-4 w-30">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-primary-02 to-primary-01 rounded-lg flex items-center justify-center text-white font-semibold">
-                        <Icon name="robot" className="w-5 h-5 fill-white" />
+                      <div className="w-10 h-10 min-w-[40px] min-h-[40px] max-w-[40px] max-h-[40px] bg-gradient-to-br from-primary-02 to-primary-01 rounded-lg flex items-center justify-center text-white font-semibold">
+                        <Icon name="tools" className="w-5 h-5 min-w-[20px] min-h-[20px] max-w-[20px] max-h-[20px] fill-white" />
                       </div>
                       <div>
                         <p className="font-medium text-t-primary">{tool.name}</p>

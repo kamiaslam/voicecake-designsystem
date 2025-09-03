@@ -16,8 +16,13 @@ export const navigation = [
     // },
     {
         title: "Agents & Bots",
-        icon: "product-think",
+        icon: "robot",
         href: "/agents",
+    },
+    {
+        title: "Add Agent",
+        icon: "plus",
+        href: "/add-agent",
     },
     // {
     //     title: "Billing",
