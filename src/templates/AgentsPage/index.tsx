@@ -220,7 +220,7 @@ const AgentsPage = () => {
                                 onChange={setTypeFilter}
                                 className="min-w-[150px]"
                             />
-                            <Button onClick={() => setIsCreateAgentModalOpen(true)}>
+                            <Button onClick={() => router.push('/add-agent')}>
                                 <Icon name="plus" className="w-4 h-4 mr-2" />
                                 Add Agent
                             </Button>

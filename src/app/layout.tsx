@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import Providers from "./providers";
+import AppProtection from "@/components/AppProtection";
 import "./globals.css";
 
 const interDisplay = localFont({
@@ -43,6 +44,9 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
+                {/* Favicon */}
+                <link rel="icon" href="/favicon.ico" sizes="any" />
+                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
                 {/* Google Fonts - Inter, Roboto Condensed & JetBrains Mono */}
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -134,7 +138,11 @@ export default function RootLayout({
             <body
                 className={`${interDisplay.variable} bg-b-surface1 font-mono text-body-1 text-t-primary antialiased`}
             suppressHydrationWarning>
-                <Providers>{children}</Providers>
+                <Providers>
+                    <AppProtection>
+                        {children}
+                    </AppProtection>
+                </Providers>
             </body>
         </html>
     );

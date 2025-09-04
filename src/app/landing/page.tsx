@@ -220,9 +220,9 @@ const LandingPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-b-surface1">
             {/* Header/Navigation */}
-            <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
+            <header className="fixed top-0 left-0 right-0 z-50 bg-b-surface1/80 backdrop-blur-md border-b border-s-border">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
                     <div className="flex items-center justify-between">
                         <Logo className="w-auto h-8 sm:h-12" />
@@ -248,6 +248,7 @@ const LandingPage = () => {
 
                         {/* Desktop Actions */}
                         <div className="hidden md:flex items-center space-x-4">
+                            <ThemeButton className="flex-row w-22"/>
                             <Link href="/auth/signin" className="text-t-primary hover:text-t-secondary transition-colors">
                                 Sign in
                             </Link>
@@ -267,7 +268,7 @@ const LandingPage = () => {
 
                     {/* Mobile Menu */}
                     {mobileMenuOpen && (
-                        <div className="md:hidden mt-4 pb-4 border-t border-gray-200">
+                        <div className="md:hidden mt-4 pb-4 border-t border-s-border">
                             <nav className="flex flex-col space-y-4 mt-4">
                                 <Link 
                                     href="/products" 
@@ -305,7 +306,10 @@ const LandingPage = () => {
                                     Company
                                 </Link>
                             </nav>
-                            <div className="flex flex-col space-y-3 mt-4 pt-4 border-t border-gray-200">
+                            <div className="flex flex-col space-y-3 mt-4 pt-4 border-t border-s-border">
+                                <div className="flex justify-center">
+                                    <ThemeButton />
+                                </div>
                                 <Link 
                                     href="/auth/signin" 
                                     className="text-t-primary hover:text-t-secondary transition-colors py-2"
@@ -365,7 +369,7 @@ const LandingPage = () => {
             </section>
 
             {/* Why Voicecake Section */}
-            <section className="py-12 sm:py-16 md:py-20 bg-gray-50">
+            <section className="py-12 sm:py-16 md:py-20 bg-b-surface2">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="text-center mb-12 sm:mb-16">
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-t-primary mb-4">
@@ -375,7 +379,7 @@ const LandingPage = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {whyVoicecakeFeatures.map((feature, index) => (
-                            <div key={index} className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
+                            <div key={index} className="bg-b-surface1 rounded-xl p-4 sm:p-6 shadow-sm border border-s-border">
                                 <h3 className="text-base sm:text-lg font-semibold text-t-primary mb-2 sm:mb-3">
                                     {feature.title}
                                 </h3>
@@ -389,7 +393,7 @@ const LandingPage = () => {
             </section>
 
             {/* Agent Suite Section */}
-            <section className="py-12 sm:py-16 md:py-20 bg-white">
+            <section className="py-12 sm:py-16 md:py-20 bg-b-surface1">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6">
                     <div className="text-center mb-12 sm:mb-16">
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-t-primary mb-4">
@@ -399,7 +403,7 @@ const LandingPage = () => {
 
                     <div className="space-y-6 sm:space-y-8">
                         {agentSuite.map((agent, index) => (
-                            <div key={index} className="bg-white rounded-xl p-4 sm:p-6 md:p-8 shadow-sm border border-gray-100">
+                            <div key={index} className="bg-b-surface1 rounded-xl p-4 sm:p-6 md:p-8 shadow-sm border border-s-border">
                                 <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
                                     <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary-02 rounded-full flex items-center justify-center flex-shrink-0">
                                         <span className="text-white font-bold text-lg sm:text-xl">{agent.name.charAt(0)}</span>
@@ -423,7 +427,7 @@ const LandingPage = () => {
             </section>
 
             {/* Sim AI Section */}
-            <section className="py-20 bg-gray-50">
+            <section className="py-20 bg-b-surface2">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold text-t-primary mb-4">
@@ -435,7 +439,7 @@ const LandingPage = () => {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border">
                             <h3 className="text-lg font-semibold text-t-primary mb-4">
                                 Design powerful flows with clicks, conditions and actions, then publish instantly
                             </h3>
@@ -444,7 +448,7 @@ const LandingPage = () => {
                             </p>
                         </div>
                         
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border">
                             <h3 className="text-lg font-semibold text-t-primary mb-4">
                                 Connect your systems with secure webhooks and native connectors
                                 </h3>
@@ -460,7 +464,7 @@ const LandingPage = () => {
             </section>
 
             {/* How it Works Section */}
-            <section className="py-20 bg-white">
+            <section className="py-20 bg-b-surface1">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold text-t-primary mb-4">
@@ -470,7 +474,7 @@ const LandingPage = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                         {howItWorks.map((step, index) => (
-                            <div key={index} className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+                            <div key={index} className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border text-center">
                                 <div className="w-12 h-12 bg-primary-02 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <span className="text-white font-bold text-lg">{step.step}</span>
                                 </div>
@@ -487,7 +491,7 @@ const LandingPage = () => {
             </section>
 
             {/* Voice Demo Section */}
-            <section className="py-20 bg-gray-50">
+            <section className="py-20 bg-b-surface2">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold text-t-primary mb-4">
@@ -499,17 +503,17 @@ const LandingPage = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+                        <div className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border text-center">
                             <h3 className="text-base font-semibold text-t-primary mb-3">
                                 Try male and female voices across accents and languages
                             </h3>
                                 </div>
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+                        <div className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border text-center">
                             <h3 className="text-base font-semibold text-t-primary mb-3">
                                 Switch styles from warm concierge to efficient agent with a single prompt
                             </h3>
                         </div>
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 text-center">
+                        <div className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border text-center">
                             <h3 className="text-base font-semibold text-t-primary mb-3">
                                 Use the same voice across phone and web for a consistent brand feel
                             </h3>
@@ -525,7 +529,7 @@ const LandingPage = () => {
             </section>
 
             {/* Use Cases Section */}
-            <section className="py-20 bg-white">
+            <section className="py-20 bg-b-surface1">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold text-t-primary mb-4">
@@ -535,7 +539,7 @@ const LandingPage = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {useCases.map((useCase, index) => (
-                            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div key={index} className="bg-b-surface1 rounded-xl shadow-sm border border-s-border overflow-hidden">
                                 <div className="h-48 bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
                                     <Image
                                         src={`/images/use-cases/${useCase.title.toLowerCase().replace(/\s+/g, '-')}.png`}
@@ -575,7 +579,7 @@ const LandingPage = () => {
             </section>
 
             {/* Agencies Section */}
-            <section className="py-20 bg-gray-50">
+            <section className="py-20 bg-b-surface2">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold text-t-primary mb-4">
@@ -587,7 +591,7 @@ const LandingPage = () => {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border">
                             <h3 className="text-base font-semibold text-t-primary mb-3">
                                 Multi client delivery
                             </h3>
@@ -595,7 +599,7 @@ const LandingPage = () => {
                                 Set up separate workspaces and projects per client with clean separation
                             </p>
                         </div>
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border">
                             <h3 className="text-base font-semibold text-t-primary mb-3">
                                 Speed to value
                             </h3>
@@ -603,7 +607,7 @@ const LandingPage = () => {
                                 Launch agents and automations in days, not months
                             </p>
                         </div>
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border">
                             <h3 className="text-base font-semibold text-t-primary mb-3">
                                 Templates and cloning
                             </h3>
@@ -611,7 +615,7 @@ const LandingPage = () => {
                                 Reuse successful flows across accounts
                             </p>
                         </div>
-                        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+                        <div className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border">
                             <h3 className="text-base font-semibold text-t-primary mb-3">
                                 Billing that suits your model
                             </h3>
@@ -624,7 +628,7 @@ const LandingPage = () => {
             </section>
 
             {/* Comparison Table Section */}
-            <section className="py-20 bg-gray-50">
+            <section className="py-20 bg-b-surface2">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold text-t-primary mb-4">
@@ -635,46 +639,46 @@ const LandingPage = () => {
                         </p>
                                 </div>
 
-                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="bg-b-surface1 rounded-xl shadow-sm border border-s-border overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="w-full">
-                                <thead className="bg-gray-50">
+                                <thead className="bg-b-surface2">
                                     <tr>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Platform</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Phone Voice</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Web Chat</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Visual Automation</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">GPT Assisted</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Arabic GCC</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Voice Library</th>
-                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-gray-200">Approach</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-s-border">Platform</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-s-border">Phone Voice</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-s-border">Web Chat</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-s-border">Visual Automation</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-s-border">GPT Assisted</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-s-border">Arabic GCC</th>
+                                        <th className="px-6 py-4 text-left text-sm font-semibold text-t-primary border-b border-s-border">Voice Library</th>
+                                        <th className="px-4 py-4 text-left text-sm font-semibold text-t-primary border-b border-s-border">Approach</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {comparisonData.map((row, index) => (
-                                        <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                                            <td className="px-6 py-4 text-sm font-semibold text-t-primary border-b border-gray-200">
+                                        <tr key={index} className={index % 2 === 0 ? 'bg-b-surface1' : 'bg-b-surface2'}>
+                                            <td className="px-6 py-4 text-sm font-semibold text-t-primary border-b border-s-border">
                                                 {row.platform}
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-gray-200">
+                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-s-border">
                                                 {row.phoneVoice}
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-gray-200">
+                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-s-border">
                                                 {row.webChat}
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-gray-200">
+                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-s-border">
                                                 {row.visualAutomation}
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-gray-200">
+                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-s-border">
                                                 {row.gptAssisted}
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-gray-200">
+                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-s-border">
                                                 {row.arabicGcc}
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-gray-200">
+                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-s-border">
                                                 {row.voiceLibrary}
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-gray-200">
+                                            <td className="px-6 py-4 text-sm text-t-secondary border-b border-s-border">
                                                 {row.approach}
                                             </td>
                                         </tr>
@@ -723,7 +727,7 @@ const LandingPage = () => {
             </section>
 
             {/* FAQ Section */}
-            <section className="py-20 bg-white">
+            <section className="py-20 bg-b-surface1">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="text-center mb-16">
                         <h2 className="text-4xl font-bold text-t-primary mb-4">
@@ -733,10 +737,10 @@ const LandingPage = () => {
 
                     <div className="max-w-4xl mx-auto space-y-4">
                         {faqs.map((faq, index) => (
-                            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div key={index} className="bg-b-surface1 rounded-xl shadow-sm border border-s-border overflow-hidden">
                                 <button
                                     onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                                    className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                                    className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-b-surface2 transition-colors"
                                 >
                                     <h3 className="text-lg font-semibold text-t-primary">
                                     {faq.question}
@@ -760,7 +764,7 @@ const LandingPage = () => {
             </section>
 
             {/* Final CTA Section */}
-            <section className="py-20 bg-gray-50">
+            <section className="py-20 bg-b-surface2">
                 <div className="max-w-7xl mx-auto px-6 text-center">
                     <h2 className="text-4xl font-bold text-t-primary mb-4">
                         Get started
@@ -785,7 +789,7 @@ const LandingPage = () => {
             </section>
 
             {/* Footer */}
-            <footer className="bg-gray-900 text-white py-16">
+            <footer className="bg-b-surface3 py-16">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
                         {/* Newsletter */}
@@ -797,7 +801,7 @@ const LandingPage = () => {
                                     placeholder="Enter your email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    className="flex-1 px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-02"
+                                    className="flex-1 px-4 py-2 rounded-lg border border-s-border bg-b-surface2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-02"
                                 />
                                 <Button>
                                     Subscribe
@@ -809,8 +813,8 @@ const LandingPage = () => {
                         <div>
                             <h4 className="font-semibold mb-4">Company</h4>
                             <ul className="space-y-2">
-                                <li><Link href="/about" className="text-gray-300 hover:text-white transition-colors text-sm">About Us</Link></li>
-                                <li><Link href="/careers" className="text-gray-300 hover:text-white transition-colors text-sm">Careers</Link></li>
+                                <li><Link href="/about" className="text-t-secondary hover:text-white transition-colors text-sm">About Us</Link></li>
+                                <li><Link href="/careers" className="text-t-secondary hover:text-white transition-colors text-sm">Careers</Link></li>
                             </ul>
                         </div>
 
@@ -818,22 +822,22 @@ const LandingPage = () => {
                         <div>
                             <h4 className="font-semibold mb-4">Resources</h4>
                             <ul className="space-y-2">
-                                <li><Link href="/blog" className="text-gray-300 hover:text-white transition-colors text-sm">Blog</Link></li>
-                                <li><Link href="/pricing" className="text-gray-300 hover:text-white transition-colors text-sm">Pricing</Link></li>
+                                <li><Link href="/blog" className="text-t-secondary hover:text-white transition-colors text-sm">Blog</Link></li>
+                                <li><Link href="/pricing" className="text-t-secondary hover:text-white transition-colors text-sm">Pricing</Link></li>
                             </ul>
                         </div>
                     </div>
 
-                    <div className="border-t border-gray-700 pt-8">
+                    <div className="border-t border-s-border pt-8">
                         <div className="flex flex-col md:flex-row justify-between items-center">
                             <div className="flex items-center space-x-4 mb-4 md:mb-0">
                                 <Logo className="w-auto h-12" />
-                                <span className="text-gray-300 text-sm">© 2024 Voicecake. All rights reserved.</span>
+                                <span className="text-t-secondary text-sm">© 2024 Voicecake. All rights reserved.</span>
                             </div>
                             <div className="flex space-x-4">
-                                <Link href="/terms" className="text-gray-300 hover:text-white transition-colors text-sm">Terms of Service</Link>
-                                <Link href="/privacy" className="text-gray-300 hover:text-white transition-colors text-sm">Privacy Policy</Link>
-                                <Link href="/faq" className="text-gray-300 hover:text-white transition-colors text-sm">FAQ</Link>
+                                <Link href="/terms" className="text-t-secondary hover:text-white transition-colors text-sm">Terms of Service</Link>
+                                <Link href="/privacy" className="text-t-secondary hover:text-white transition-colors text-sm">Privacy Policy</Link>
+                                <Link href="/faq" className="text-t-secondary hover:text-white transition-colors text-sm">FAQ</Link>
                             </div>
                         </div>
                     </div>

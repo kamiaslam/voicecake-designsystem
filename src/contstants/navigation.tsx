@@ -19,11 +19,11 @@ export const navigation = [
         icon: "robot",
         href: "/agents",
     },
-    {
-        title: "Add Agent",
-        icon: "plus",
-        href: "/add-agent",
-    },
+    // {
+    //     title: "Add Agent",
+    //     icon: "plus",
+    //     href: "/add-agent",
+    // },
     // {
     //     title: "Billing",
     //     icon: "income",
@@ -39,11 +39,11 @@ export const navigation = [
         icon: "product",
         href: "/custom-tools",
     },
-    {
-        title: "Create Assistant",
-        icon: "plus",
-        href: "/create-assistant",
-    },
+    // {
+    //     title: "Create Assistant",
+    //     icon: "plus",
+    //     href: "/create-assistant",
+    // },
     // {
     //     title: "Landing",
     //     icon: "home",

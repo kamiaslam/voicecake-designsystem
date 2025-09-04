@@ -2,12 +2,15 @@
 
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "@/context/authContext";
+import { FinanceProvider } from "@/context/financeContext";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
     return (
         <ThemeProvider disableTransitionOnChange>
             <AuthProvider>
-                {children}
+                <FinanceProvider>
+                    {children}
+                </FinanceProvider>
             </AuthProvider>
         </ThemeProvider>
     );
