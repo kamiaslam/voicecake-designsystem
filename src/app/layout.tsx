@@ -56,7 +56,7 @@ export default function RootLayout({
                 />
                 {/* Product Name */}
                 <meta
-                    name="product-name"
+                    name="voiceckae.io"
                     content="Dashboard"
                 />
                 {/* Twitter Card data */}

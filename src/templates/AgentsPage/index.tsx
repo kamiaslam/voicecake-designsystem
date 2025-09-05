@@ -544,7 +544,7 @@ const AgentsPage = () => {
                             
                             {filteredAgents.length === 0 && (
                                 <div className="text-center py-8">
-                                    <p className="text-t-secondary">No agents found matching your criteria.</p>
+                                    <p className="text-t-secondary">No agents found.</p>
                                 </div>
                             )}
                         </>

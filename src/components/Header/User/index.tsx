@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -138,8 +137,8 @@ const User = ({}) => {
                     <div className="text-xs text-t-secondary">{user?.email}</div>
                 </div>
                 
-                {navigationUser.map((link, index) => (
-                    <MenuItem key={index}>
+                {navigationUser.map((link) => (
+                    <MenuItem key={link.href}>
                         <Link
                             className={`group/item relative flex items-center h-12 px-3 text-button text-t-secondary transition-colors data-[focus]:text-t-primary before:absolute before:inset-0 before:rounded-[16px] before:bg-linear-to-b before:from-shade-09 before:to-[#ebebeb] before:opacity-0 before:transition-opacity after:absolute after:inset-0.25 after:bg-b-pop after:rounded-[15px] after:opacity-0 after:transition-opacity ${
                                 link.title === "Upgrade to Pro"
