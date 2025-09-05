@@ -86,15 +86,13 @@ export default function VoiceCloneItem({
             />
             <Badge 
               variant={getStatusColor(voice.status || "ready")}
-              className="text-xs"
             >
               {voice.status || "ready"}
             </Badge>
           </div>
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
-              variant="ghost"
-              size="sm"
+              isStroke
               className="h-8 w-8 p-0"
               onClick={handlePlay}
               disabled={isPlaying}
@@ -106,8 +104,7 @@ export default function VoiceCloneItem({
             </Button>
             {onDelete && (
               <Button
-                variant="ghost"
-                size="sm"
+                isStroke
                 className="h-8 w-8 p-0 text-primary-05 hover:text-primary-05"
                 onClick={handleDelete}
                 disabled={isDeleting}

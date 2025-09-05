@@ -38,6 +38,7 @@ export interface VoiceCloneResponse extends VoiceCloneBase {
   provider_voice_id: string;
   provider?: VoiceCloneProvider;
   language: VoiceCloneLanguage;
+  status?: "training" | "ready" | "failed";
   created_at: string;
   updated_at: string;
 }

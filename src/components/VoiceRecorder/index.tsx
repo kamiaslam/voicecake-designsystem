@@ -228,8 +228,7 @@ export default function VoiceRecorder({
           {isRecording && (
             <Button
               onClick={stopRecording}
-              variant="destructive"
-              className="gap-2"
+              className="gap-2 bg-primary-05 hover:bg-primary-05/90 text-white"
             >
               <Icon name="stop" className="w-4 h-4" />
               Stop Recording
@@ -240,7 +239,7 @@ export default function VoiceRecorder({
             <>
               <Button
                 onClick={playRecording}
-                variant="outline"
+                isStroke
                 className="gap-2"
               >
                 <Icon name="play" className="w-4 h-4" />
@@ -248,7 +247,7 @@ export default function VoiceRecorder({
               </Button>
               <Button
                 onClick={resetRecording}
-                variant="ghost"
+                isStroke
                 className="gap-2"
               >
                 <Icon name="refresh" className="w-4 h-4" />

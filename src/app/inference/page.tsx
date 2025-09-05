@@ -8,7 +8,7 @@ import Button from "@/components/Button";
 import Icon from "@/components/Icon";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
-const InferencePage = () => {
+export default function InferencePage() {
   const router = useRouter();
 
   useEffect(() => {
@@ -44,6 +44,4 @@ const InferencePage = () => {
       </Layout>
     </ProtectedRoute>
   );
-};
-
-export default InferencePage;
+}
