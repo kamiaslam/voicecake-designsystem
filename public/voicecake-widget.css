@@ -1,0 +1,521 @@
+/* VoiceCake Widget Styles */
+* {
+    box-sizing: border-box;
+}
+
+.voicecake-widget-hidden {
+    display: none !important;
+}
+
+/* Floating Widget Button */
+.voicecake-widget-button {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: none;
+    outline: none;
+}
+
+.voicecake-widget-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+}
+
+.voicecake-widget-button:active {
+    transform: scale(0.95);
+}
+
+.voicecake-widget-icon {
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.voicecake-widget-pulse {
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    opacity: 0.3;
+    animation: voicecake-pulse 2s infinite;
+}
+
+@keyframes voicecake-pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.3;
+    }
+}
+
+/* Widget Overlay */
+.voicecake-widget-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.voicecake-widget-overlay.voicecake-widget-show {
+    opacity: 1;
+}
+
+/* Widget Popup */
+.voicecake-widget-popup {
+    position: fixed;
+    bottom: 90px;
+    left: 20px;
+    width: 400px;
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 120px);
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    transform: translateY(20px) scale(0.95);
+    opacity: 0;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.voicecake-widget-popup.voicecake-widget-show {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+}
+
+/* Widget Header */
+.voicecake-widget-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.voicecake-widget-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.voicecake-widget-avatar {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.voicecake-widget-title-text h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.voicecake-widget-title-text p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.voicecake-widget-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.voicecake-widget-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Widget Content */
+.voicecake-widget-content {
+    padding: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.voicecake-widget-state {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Initial State */
+.voicecake-widget-welcome {
+    text-align: center;
+}
+
+.voicecake-widget-welcome-icon {
+    color: #667eea;
+    margin-bottom: 16px;
+}
+
+.voicecake-widget-welcome h3 {
+    margin: 0 0 8px 0;
+    font-size: 20px;
+    color: #333;
+}
+
+.voicecake-widget-welcome p {
+    margin: 0 0 24px 0;
+    color: #666;
+    line-height: 1.5;
+}
+
+.voicecake-widget-start-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+.voicecake-widget-start-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}
+
+.voicecake-widget-start-btn:active {
+    transform: translateY(0);
+}
+
+/* Connecting State */
+.voicecake-widget-connecting {
+    text-align: center;
+}
+
+.voicecake-widget-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: voicecake-spin 1s linear infinite;
+    margin: 0 auto 16px;
+}
+
+@keyframes voicecake-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.voicecake-widget-connecting h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.voicecake-widget-connecting p {
+    margin: 0;
+    color: #666;
+}
+
+/* Active State */
+.voicecake-widget-active {
+    width: 100%;
+}
+
+.voicecake-widget-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.voicecake-widget-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #333;
+}
+
+.voicecake-widget-status-dot {
+    width: 8px;
+    height: 8px;
+    background: #28a745;
+    border-radius: 50%;
+    animation: voicecake-blink 2s infinite;
+}
+
+@keyframes voicecake-blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+}
+
+.voicecake-widget-timer {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Audio Visualizer */
+.voicecake-widget-audio-visualizer {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.voicecake-widget-wave {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 40px;
+}
+
+.voicecake-widget-wave-bar {
+    width: 4px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+    animation: voicecake-wave 1.5s ease-in-out infinite;
+}
+
+.voicecake-widget-wave-bar:nth-child(1) { animation-delay: 0s; }
+.voicecake-widget-wave-bar:nth-child(2) { animation-delay: 0.1s; }
+.voicecake-widget-wave-bar:nth-child(3) { animation-delay: 0.2s; }
+.voicecake-widget-wave-bar:nth-child(4) { animation-delay: 0.3s; }
+.voicecake-widget-wave-bar:nth-child(5) { animation-delay: 0.4s; }
+.voicecake-widget-wave-bar:nth-child(6) { animation-delay: 0.5s; }
+.voicecake-widget-wave-bar:nth-child(7) { animation-delay: 0.6s; }
+.voicecake-widget-wave-bar:nth-child(8) { animation-delay: 0.7s; }
+
+@keyframes voicecake-wave {
+    0%, 100% { height: 8px; }
+    50% { height: 32px; }
+}
+
+/* Controls */
+.voicecake-widget-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.voicecake-widget-control-btn {
+    flex: 1;
+    background: white;
+    border: 2px solid #e9ecef;
+    color: #333;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.voicecake-widget-control-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.voicecake-widget-stop-btn {
+    border-color: #dc3545;
+    color: #dc3545;
+}
+
+.voicecake-widget-stop-btn:hover {
+    background: #dc3545;
+    color: white;
+}
+
+/* Transcription */
+.voicecake-widget-transcription {
+    border-top: 1px solid #e9ecef;
+    padding-top: 20px;
+}
+
+.voicecake-widget-transcription-header h4 {
+    margin: 0 0 12px 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.voicecake-widget-transcription-content {
+    max-height: 200px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+}
+
+.voicecake-widget-transcription-placeholder {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+}
+
+.voicecake-widget-transcription-entry {
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.voicecake-widget-transcription-entry.user {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-left: 20px;
+}
+
+.voicecake-widget-transcription-entry.ai {
+    background: #e9ecef;
+    color: #333;
+    margin-right: 20px;
+}
+
+.voicecake-widget-transcription-entry .speaker {
+    font-weight: 600;
+    font-size: 12px;
+    opacity: 0.8;
+    margin-bottom: 4px;
+}
+
+/* Error State */
+.voicecake-widget-error {
+    text-align: center;
+}
+
+.voicecake-widget-error-icon {
+    color: #dc3545;
+    margin-bottom: 16px;
+}
+
+.voicecake-widget-error h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.voicecake-widget-error p {
+    margin: 0 0 24px 0;
+    color: #666;
+    line-height: 1.5;
+}
+
+.voicecake-widget-retry-btn {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+}
+
+.voicecake-widget-retry-btn:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .voicecake-widget-popup {
+        left: 10px;
+        right: 10px;
+        width: auto;
+        bottom: 80px;
+    }
+    
+    .voicecake-widget-button {
+        bottom: 15px;
+        left: 15px;
+        width: 50px;
+        height: 50px;
+    }
+    
+    .voicecake-widget-content {
+        padding: 15px;
+    }
+    
+    .voicecake-widget-controls {
+        flex-direction: column;
+    }
+}
+
+/* Scrollbar Styling */
+.voicecake-widget-content::-webkit-scrollbar,
+.voicecake-widget-transcription-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.voicecake-widget-content::-webkit-scrollbar-track,
+.voicecake-widget-transcription-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.voicecake-widget-content::-webkit-scrollbar-thumb,
+.voicecake-widget-transcription-content::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.voicecake-widget-content::-webkit-scrollbar-thumb:hover,
+.voicecake-widget-transcription-content::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

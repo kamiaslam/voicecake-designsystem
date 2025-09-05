@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoiceCake Widget Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        .code-block {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+        .highlight {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .note {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 VoiceCake Widget</h1>
+        <p>Welcome to the VoiceCake Widget demonstration page. The widget should appear as a floating button in the bottom-left corner of your screen.</p>
+        
+        <div class="note">
+            <strong>Note:</strong> This is a demo page. In a real implementation, you would replace <span class="highlight">YOUR_AGENT_ID</span> with your actual VoiceCake agent ID.
+        </div>
+
+        <h2>How to Embed the Widget</h2>
+        <p>Add this script tag to your website's <code>&lt;head&gt;</code> section:</p>
+        
+        <div class="code-block">
+&lt;script 
+    src="https://your-domain.com/voicecake-widget-loader.js"
+    data-agent-id="YOUR_AGENT_ID"
+    data-api-url="https://voicecake-ame5ascacvgrgde6.canadacentral-01.azurewebsites.net/api/v1"
+    data-ws-url="wss://voicecake-ame5ascacvgrgde6.canadacentral-01.azurewebsites.net"
+    data-debug="false"
+    data-position="bottom-left"
+    data-theme="default"&gt;
+&lt;/script&gt;
+        </div>
+
+        <h2>Configuration Options</h2>
+        <div class="code-block">
+data-agent-id="YOUR_AGENT_ID"          // Required: Your VoiceCake agent ID
+data-api-url="https://..."             // Optional: API base URL
+data-ws-url="wss://..."                // Optional: WebSocket base URL  
+data-debug="true|false"                // Optional: Enable debug logging
+data-position="bottom-left|bottom-right" // Optional: Widget position
+data-theme="default|dark|light"        // Optional: Widget theme
+        </div>
+
+        <h2>Features</h2>
+        <ul style="text-align: left; max-width: 600px; margin: 0 auto;">
+            <li>🎤 Real-time voice conversation with AI</li>
+            <li>📱 Responsive design that works on all devices</li>
+            <li>🎨 Beautiful, modern UI with smooth animations</li>
+            <li>⏱️ Conversation timer and status indicators</li>
+            <li>📝 Live transcription of conversations</li>
+            <li>🔇 Mute/unmute functionality</li>
+            <li>🎵 Audio visualizer during conversations</li>
+            <li>⚡ Fast, lightweight, and easy to integrate</li>
+        </ul>
+
+        <div class="note">
+            <strong>Try it out:</strong> Click the floating microphone button in the bottom-left corner to start a voice conversation!
+        </div>
+    </div>
+
+    <!-- VoiceCake Widget - Replace YOUR_AGENT_ID with your actual agent ID -->
+    <script 
+        src="voicecake-widget-loader.js"
+        data-agent-id="YOUR_AGENT_ID"
+        data-api-url="https://voicecake-ame5ascacvgrgde6.canadacentral-01.azurewebsites.net/api/v1"
+        data-ws-url="wss://voicecake-ame5ascacvgrgde6.canadacentral-01.azurewebsites.net"
+        data-debug="true"
+        data-position="bottom-left"
+        data-theme="default">
+    </script>
+</body>
+</html>
