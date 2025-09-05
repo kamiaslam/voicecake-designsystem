@@ -277,7 +277,7 @@ const CreateAssistantPage = () => {
     const shareOptions = [
         { name: "Assistant Link", icon: "link" },
         { name: "WhatsApp", icon: "whatsapp" },
-        { name: "Email", icon: "email" },
+        { name: "Email", icon: "mail" },
         { name: "Facebook", icon: "facebook" },
         { name: "Twitter", icon: "twitter" },
         { name: "Instagram", icon: "instagram" }
@@ -513,6 +513,73 @@ const CreateAssistantPage = () => {
             toast.error(errorMessage);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    // Share functions
+    const handleShare = (platform: string) => {
+        if (!createdAgentId && !editingAgent?.id) {
+            toast.error("No agent available to share");
+            return;
+        }
+
+        const agentId = createdAgentId || editingAgent?.id;
+        const shareUrl = `${window.location.origin}/share/${agentId}`;
+        const shareText = `Try out ${formData.name || editingAgent?.name} - an AI voice agent: ${formData.description || editingAgent?.description}`;
+
+        const encodedUrl = encodeURIComponent(shareUrl);
+        const encodedText = encodeURIComponent(shareText);
+        
+        let shareLink = "";
+        
+        switch (platform) {
+            case "link":
+                // Copy to clipboard
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    toast.success("Link copied to clipboard!");
+                }).catch(() => {
+                    // Fallback for browsers that don't support clipboard API
+                    const textArea = document.createElement("textarea");
+                    textArea.value = shareUrl;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textArea);
+                    toast.success("Link copied to clipboard!");
+                });
+                return;
+            case "whatsapp":
+                shareLink = `https://wa.me/?text=${encodedText}%20${encodedUrl}`;
+                break;
+            case "email":
+                shareLink = `mailto:?subject=Check out this AI agent: ${formData.name || editingAgent?.name}&body=${encodedText}%0A%0A${encodedUrl}`;
+                break;
+            case "facebook":
+                shareLink = `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`;
+                break;
+            case "twitter":
+                shareLink = `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`;
+                break;
+            case "instagram":
+                // Instagram doesn't support direct sharing, so copy to clipboard
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    toast.success("Link copied to clipboard! You can paste it in your Instagram story or post.");
+                }).catch(() => {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = shareUrl;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textArea);
+                    toast.success("Link copied to clipboard! You can paste it in your Instagram story or post.");
+                });
+                return;
+            default:
+                return;
+        }
+        
+        if (shareLink) {
+            window.open(shareLink, "_blank", "width=600,height=400");
         }
     };
 
@@ -1119,6 +1186,7 @@ Be specific to ensure the agent provides helpful and consistent responses.`
                                 {shareOptions.map((option, index) => (
                                     <Button
                                         key={index}
+                                        onClick={() => handleShare(option.icon)}
                                         className="flex flex-col items-center gap-2 p-4 h-auto"
                                         isStroke
                                     >

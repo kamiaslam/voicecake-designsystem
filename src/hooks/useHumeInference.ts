@@ -538,7 +538,7 @@ const useHumeInference = ({
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `enhanced_transcription_${agentId || 'session'}.txt`;
+      a.download = `Transcription_${agentId || 'session'}.txt`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

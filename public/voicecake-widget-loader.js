@@ -78,9 +78,33 @@
                 </div>
 
                 <div class="voicecake-widget-content">
+                    <!-- Loading State -->
+                    <div id="voicecake-widget-loading" class="voicecake-widget-state">
+                        <div class="voicecake-widget-loading">
+                            <div class="voicecake-widget-spinner"></div>
+                            <h3>Loading Agent...</h3>
+                            <p>Fetching agent details</p>
+                        </div>
+                    </div>
+
                     <!-- Initial State -->
-                    <div id="voicecake-widget-initial" class="voicecake-widget-state">
+                    <div id="voicecake-widget-initial" class="voicecake-widget-state voicecake-widget-hidden">
                         <div class="voicecake-widget-welcome">
+                            <div class="voicecake-widget-agent-info">
+                                <div class="voicecake-widget-agent-avatar">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9M19 9H14V4H5V21H19V9Z" fill="currentColor"/>
+                                    </svg>
+                                </div>
+                                <div class="voicecake-widget-agent-details">
+                                    <h3 id="voicecake-widget-agent-name">Voice AI Assistant</h3>
+                                    <p id="voicecake-widget-agent-description">Powered by VoiceCake</p>
+                                    <div class="voicecake-widget-agent-badges">
+                                        <span id="voicecake-widget-agent-type" class="voicecake-widget-badge">Speech-to-Speech</span>
+                                        <span id="voicecake-widget-agent-status" class="voicecake-widget-badge voicecake-widget-badge-status">Active</span>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="voicecake-widget-welcome-icon">
                                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12 1C13.1 1 14 1.9 14 3V11C14 12.1 13.1 13 12 13C10.9 13 10 12.1 10 11V3C10 1.9 10.9 1 12 1Z" fill="currentColor"/>
@@ -88,7 +112,7 @@
                                 </svg>
                             </div>
                             <h3>Start Voice Conversation</h3>
-                            <p>Click the button below to begin talking with our AI assistant</p>
+                            <p>Click the button below to begin talking with <span id="voicecake-widget-agent-name-inline">our AI assistant</span></p>
                             <button id="voicecake-widget-start" class="voicecake-widget-start-btn">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
@@ -152,13 +176,25 @@
                                 </button>
                             </div>
 
-                            <div class="voicecake-widget-transcription">
-                                <div class="voicecake-widget-transcription-header">
-                                    <h4>Conversation</h4>
+                            <div class="voicecake-widget-conversation">
+                                <div class="voicecake-widget-conversation-header">
+                                    <h4>Voice Conversation</h4>
                                 </div>
-                                <div id="voicecake-widget-transcription-content" class="voicecake-widget-transcription-content">
-                                    <div class="voicecake-widget-transcription-placeholder">
-                                        <p>Start speaking to see the conversation here...</p>
+                                <div id="voicecake-widget-conversation-content" class="voicecake-widget-conversation-content">
+                                    <div class="voicecake-widget-conversation-placeholder">
+                                        <div class="voicecake-widget-conversation-icon">
+                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M12 1C13.1 1 14 1.9 14 3V11C14 12.1 13.1 13 12 13C10.9 13 10 12.1 10 11V3C10 1.9 10.9 1 12 1Z" fill="currentColor"/>
+                                                <path d="M19 10V11C19 15.42 15.42 19 11 19H13V21H11V19C6.58 19 3 15.42 3 11V10H5V11C5 14.31 7.69 17 11 17C14.31 17 17 14.31 17 11V10H19Z" fill="currentColor"/>
+                                            </svg>
+                                        </div>
+                                        <p>Start speaking to have a voice conversation with the AI assistant</p>
+                                        <div class="voicecake-widget-conversation-status">
+                                            <div class="voicecake-widget-status-indicator">
+                                                <div class="voicecake-widget-status-dot"></div>
+                                                <span>Ready to listen</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -175,12 +211,20 @@
                             </div>
                             <h3>Connection Failed</h3>
                             <p id="voicecake-widget-error-message">Unable to connect to the voice assistant. Please try again.</p>
-                            <button id="voicecake-widget-retry" class="voicecake-widget-retry-btn">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4C7.58 4 4 7.58 4 12S7.58 20 12 20C15.73 20 18.84 17.45 19.73 14H17.65C16.83 16.33 14.61 18 12 18C8.69 18 6 15.31 6 12S8.69 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.65 6.35Z" fill="currentColor"/>
-                                </svg>
-                                Try Again
-                            </button>
+                            <div class="voicecake-widget-error-actions">
+                                <button id="voicecake-widget-retry" class="voicecake-widget-retry-btn">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4C7.58 4 4 7.58 4 12S7.58 20 12 20C15.73 20 18.84 17.45 19.73 14H17.65C16.83 16.33 14.61 18 12 18C8.69 18 6 15.31 6 12S8.69 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.65 6.35Z" fill="currentColor"/>
+                                    </svg>
+                                    Try Again
+                                </button>
+                                <button id="voicecake-widget-reload" class="voicecake-widget-reload-btn">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4C7.58 4 4 7.58 4 12S7.58 20 12 20C15.73 20 18.84 17.45 19.73 14H17.65C16.83 16.33 14.61 18 12 18C8.69 18 6 15.31 6 12S8.69 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.65 6.35Z" fill="currentColor"/>
+                                    </svg>
+                                    Reload Agent
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
