@@ -55,10 +55,10 @@ const ProductView = ({ className }: ProductViewProps) => {
     return (
         <Card
             className={`p-6 mb-0 ${className || ""}`}
-            title="Customer views"
+            title="Usage Overview"
         >
             <div className="px-2 pb-3">
-                <div className="h-52">
+                <div className="h-100">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
                             width={150}

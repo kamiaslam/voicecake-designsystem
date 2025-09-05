@@ -236,6 +236,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeCookie("authToken");
       
       console.log("✅ Logout completed");
+      
+      // Redirect to home page after logout
+      if (typeof window !== 'undefined') {
+        console.log("🏠 Redirecting to home page...");
+        window.location.href = '/';
+      }
     }
   };
 

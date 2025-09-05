@@ -182,18 +182,23 @@ export default function PlanSelection() {
               <Card key={plan.id} className="hover:shadow-md transition-all">
                 <div className="p-6 space-y-4">
                   <div>
-                    <h3 className="text-xl font-bold">{plan.name}</h3>
+                    <h3 className="text-xl font-bold">{plan.name || 'Unnamed Plan'}</h3>
                     <p className="text-muted-foreground text-sm">
-                      {plan.minutes.toLocaleString()} minutes • 30 days
+                      {(plan.tts_minutes_included || plan.minutes || 0).toLocaleString()} minutes • 30 days
                     </p>
+                    {plan.automations_included && (
+                      <p className="text-muted-foreground text-sm">
+                        {plan.automations_included.toLocaleString()} automations included
+                      </p>
+                    )}
                   </div>
-                  <div className="text-3xl font-bold">${plan.price}</div>
+                  <div className="text-3xl font-bold">${plan.total_price || plan.price || 0}</div>
                   <Button
                     isBlack
                     className="w-full"
                     onClick={() => handleSelect(plan)}
                   >
-                    Select {plan.name}
+                    Select {plan.name || 'Plan'}
                   </Button>
                   {isSubscribed && (
                     <div className="mt-4">
@@ -203,7 +208,7 @@ export default function PlanSelection() {
                             You already have an active subscription for this plan.
                           </div>
                           <div className="mt-1 text-xs text-yellow-700 dark:text-yellow-300">
-                            Plan: <span className="font-bold">{activeSub.plan?.name}</span> • {activeSub.minutes_left.toLocaleString()} min left • Expires: {new Date(activeSub.expires_at).toLocaleDateString()}
+                            Plan: <span className="font-bold">{activeSub.plan?.name}</span> • {(activeSub.tts_minutes_left || activeSub.minutes_left || 0).toLocaleString()} min left • Expires: {new Date(activeSub.expires_at).toLocaleDateString()}
                           </div>
                         </div>
                       </Card>

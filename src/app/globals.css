@@ -1,6 +1,79 @@
 @import "tailwindcss";
 @plugin "tailwind-scrollbar";
 
+/* Modern Toast Styles */
+.toast-modern {
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Toast container styling */
+[data-sonner-toaster] {
+  @apply z-50;
+}
+
+/* Base toast styling - Light mode */
+[data-sonner-toast] {
+  @apply border border-gray-200/60 bg-white/90 backdrop-blur-sm;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Dark mode base styling */
+[data-theme="dark"] [data-sonner-toast] {
+  @apply bg-gray-900/90 border-gray-700/60 backdrop-blur-sm;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* Error toasts - Light mode */
+[data-sonner-toast][data-type="error"] {
+  @apply border-red-200/70 bg-red-50/85 backdrop-blur-sm;
+}
+
+/* Error toasts - Dark mode */
+[data-theme="dark"] [data-sonner-toast][data-type="error"] {
+  @apply border-red-800/70 bg-red-950/85 backdrop-blur-sm;
+}
+
+/* Success toasts - Light mode */
+[data-sonner-toast][data-type="success"] {
+  @apply border-green-200/70 bg-green-50/85 backdrop-blur-sm;
+}
+
+/* Success toasts - Dark mode */
+[data-theme="dark"] [data-sonner-toast][data-type="success"] {
+  @apply border-green-800/70 bg-green-950/85 backdrop-blur-sm;
+}
+
+/* Warning toasts - Light mode */
+[data-sonner-toast][data-type="warning"] {
+  @apply border-yellow-200/70 bg-yellow-50/85 backdrop-blur-sm;
+}
+
+/* Warning toasts - Dark mode */
+[data-theme="dark"] [data-sonner-toast][data-type="warning"] {
+  @apply border-yellow-800/70 bg-yellow-950/85 backdrop-blur-sm;
+}
+
+/* Info toasts - Light mode */
+[data-sonner-toast][data-type="info"] {
+  @apply border-blue-200/70 bg-blue-50/85 backdrop-blur-sm;
+}
+
+/* Info toasts - Dark mode */
+[data-theme="dark"] [data-sonner-toast][data-type="info"] {
+  @apply border-blue-800/70 bg-blue-950/85 backdrop-blur-sm;
+}
+
 /* Import fonts */
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap');

@@ -15,6 +15,7 @@ import { agentsService } from "@/services/agent";
 import { Agent } from "@/types/agent";
 import { toast } from "sonner";
 import { CreateAgentModal } from "@/components/CreateAgentModal";
+import { useAgentEdit } from "@/context/agentEditContext";
 
 const typeOptions = [
     { id: 1, name: "All Types" },
@@ -24,13 +25,15 @@ const typeOptions = [
 
 const AgentsPage = () => {
     const router = useRouter();
+    const { setEditingAgent, setIsEditMode, clearEditState } = useAgentEdit();
     const [agents, setAgents] = useState<Agent[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [typeFilter, setTypeFilter] = useState({ id: 1, name: "All" });
     const [isCreateAgentModalOpen, setIsCreateAgentModalOpen] = useState(false);
-    const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    // Note: We don't clear edit state on mount to preserve edit context when navigating back from add-agent page
 
     // Fetch agents from API
     useEffect(() => {
@@ -129,8 +132,10 @@ const AgentsPage = () => {
     };
 
     const handleEditAgent = (agent: Agent) => {
+        // Set agent data in context and navigate to add-agent page
         setEditingAgent(agent);
-        setIsCreateAgentModalOpen(true);
+        setIsEditMode(true);
+        router.push('/add-agent');
     };
 
     const handleUpdateAgent = (updatedAgentData: any) => {
@@ -138,16 +143,14 @@ const AgentsPage = () => {
         
         // Update the agent in the list
         setAgents(prev => prev.map(agent => 
-            agent.id === editingAgent?.id ? updatedAgentData : agent
+            agent.id === updatedAgentData.id ? updatedAgentData : agent
         ));
         
         toast.success("Agent updated successfully!");
-        setEditingAgent(null);
         setIsCreateAgentModalOpen(false);
     };
 
     const handleCloseEditModal = () => {
-        setEditingAgent(null);
         setIsCreateAgentModalOpen(false);
     };
 
@@ -220,7 +223,10 @@ const AgentsPage = () => {
                                 onChange={setTypeFilter}
                                 className="min-w-[150px]"
                             />
-                            <Button onClick={() => router.push('/add-agent')}>
+                            <Button onClick={() => {
+                                clearEditState();
+                                router.push('/add-agent?mode=create');
+                            }}>
                                 <Icon name="plus" className="w-4 h-4 mr-2" />
                                 Add Agent
                             </Button>
@@ -636,8 +642,6 @@ const AgentsPage = () => {
                     isOpen={isCreateAgentModalOpen} 
                     onClose={handleCloseEditModal}
                     onSubmit={handleCreateAgent}
-                    editAgent={editingAgent}
-                    onUpdate={handleUpdateAgent}
                 />
         </Layout>
     );

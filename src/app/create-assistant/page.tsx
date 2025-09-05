@@ -84,7 +84,7 @@ const CreateAssistantPage = () => {
     const shareOptions = [
         { name: "Assistant Link", icon: "link" },
         { name: "WhatsApp", icon: "whatsapp" },
-        { name: "Email", icon: "email" },
+        { name: "Email", icon: "mail" },
         { name: "Facebook", icon: "facebook" },
         { name: "Twitter", icon: "twitter" },
         { name: "Instagram", icon: "instagram" }
@@ -117,7 +117,7 @@ const CreateAssistantPage = () => {
         },
         {
             title: "Training Data",
-            icon: "file",
+            icon: "data1",
             description: "Upload training files",
             to: "training-data",
         },

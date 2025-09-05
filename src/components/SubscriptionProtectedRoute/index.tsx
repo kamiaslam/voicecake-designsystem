@@ -28,17 +28,7 @@ const SubscriptionProtectedRoute: React.FC<SubscriptionProtectedRouteProps> = ({
         getRequiredPlanRedirect 
     } = useFinance();
     const router = useRouter();
-    const [redirectTo, setRedirectTo] = useState('/dashboard');
     const [isChecking, setIsChecking] = useState(true);
-
-    useEffect(() => {
-        // Get redirect parameter from URL without useSearchParams
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirect = urlParams.get('redirect');
-        if (redirect) {
-            setRedirectTo(redirect);
-        }
-    }, []);
 
     useEffect(() => {
         // Add a small delay to ensure auth state is properly loaded
@@ -52,9 +42,9 @@ const SubscriptionProtectedRoute: React.FC<SubscriptionProtectedRouteProps> = ({
     useEffect(() => {
         // Only redirect if we're not checking and definitely not authenticated
         if (!isChecking && !isAuthenticated && !token && !user) {
-            router.push(`/auth/signin?redirect=${encodeURIComponent(redirectTo)}`);
+            router.push('/');
         }
-    }, [isAuthenticated, token, user, router, redirectTo, isChecking]);
+    }, [isAuthenticated, token, user, router, isChecking]);
 
     useEffect(() => {
         // Check subscription status after subscriptions are loaded and user is authenticated
@@ -108,8 +98,7 @@ const SubscriptionProtectedRoute: React.FC<SubscriptionProtectedRouteProps> = ({
         return fallback || (
             <div className="min-h-screen bg-background flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-green-500 mx-auto"></div>
-                    <p className="mt-4 text-lg">Redirecting to plan selection...</p>
+                    <Loader text="Redirecting to plan selection..." />
                 </div>
             </div>
         );

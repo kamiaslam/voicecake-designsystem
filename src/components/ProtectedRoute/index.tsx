@@ -16,17 +16,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 }) => {
     const { isAuthenticated, token, user } = useAuth();
     const router = useRouter();
-    const [redirectTo, setRedirectTo] = useState('/dashboard');
     const [isChecking, setIsChecking] = useState(true);
-
-    useEffect(() => {
-        // Get redirect parameter from URL without useSearchParams
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirect = urlParams.get('redirect');
-        if (redirect) {
-            setRedirectTo(redirect);
-        }
-    }, []);
 
     useEffect(() => {
         // Add a small delay to ensure auth state is properly loaded
@@ -40,9 +30,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     useEffect(() => {
         // Only redirect if we're not checking and definitely not authenticated
         if (!isChecking && !isAuthenticated && !token && !user) {
-            router.push(`/auth/signin?redirect=${encodeURIComponent(redirectTo)}`);
+            router.push('/');
         }
-    }, [isAuthenticated, token, user, router, redirectTo, isChecking]);
+    }, [isAuthenticated, token, user, router, isChecking]);
 
     // Show fallback or loading state while checking authentication
     if (isChecking || (!isAuthenticated && !token && !user)) {

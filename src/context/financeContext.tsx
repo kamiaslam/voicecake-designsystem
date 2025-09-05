@@ -6,12 +6,19 @@ export type BotType = "conversa" | "empath";
 
 export interface SubscriptionPlan {
   id: number;
-  name: string;
+  name?: string;
   bot_type: BotType;
-  minutes: number;
-  price: number;
-  is_active: boolean;
-  created_at: string;
+  minutes?: number;
+  price?: number;
+  total_price?: number;
+  tts_minutes_included?: number;
+  sts_minutes_included?: number;
+  automations_included?: number | null;
+  price_per_automation?: number;
+  price_per_minute?: number;
+  concurrent_sessions_limit?: number;
+  is_active?: boolean;
+  created_at?: string;
 }
 
 export interface UserSubscription {
@@ -19,11 +26,14 @@ export interface UserSubscription {
   user_id: number;
   plan_id: number;
   expires_at: string;
-  minutes_left: number;
-  auto_renew: boolean;
-  is_active: boolean;
-  created_at: string;
-  plan: SubscriptionPlan;
+  minutes_left?: number;
+  tts_minutes_left?: number;
+  sts_minutes_left?: number;
+  automations_left?: number | null;
+  auto_renew?: boolean;
+  is_active?: boolean;
+  created_at?: string;
+  plan?: SubscriptionPlan;
 }
 
 export interface UsageMeter {
@@ -123,7 +133,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     
     if (botType) {
       const subscription = activeSubscriptions[botType];
-      return Boolean(subscription?.is_active && subscription?.minutes_left > 0);
+      const hasMinutes = (subscription?.minutes_left || 0) > 0 || 
+                        (subscription?.tts_minutes_left || 0) > 0 || 
+                        (subscription?.sts_minutes_left || 0) > 0;
+      return Boolean(subscription?.is_active && hasMinutes);
     }
     
     return hasActiveSubscription;
@@ -177,7 +190,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
           // The actual subscription data might be nested in a 'data' property
           const subscriptionData = conversaData.data || conversaData;
           
-          if (subscriptionData && subscriptionData.is_active && subscriptionData.minutes_left > 0) {
+          const hasMinutes = (subscriptionData.minutes_left || 0) > 0 || 
+                            (subscriptionData.tts_minutes_left || 0) > 0 || 
+                            (subscriptionData.sts_minutes_left || 0) > 0;
+          if (subscriptionData && subscriptionData.is_active && hasMinutes) {
             next.conversa = subscriptionData as UserSubscription;
           }
         }
@@ -192,7 +208,10 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
           // The actual subscription data might be nested in a 'data' property
           const subscriptionData = empathData.data || empathData;
           
-          if (subscriptionData && subscriptionData.is_active && subscriptionData.minutes_left > 0) {
+          const hasMinutes = (subscriptionData.minutes_left || 0) > 0 || 
+                            (subscriptionData.tts_minutes_left || 0) > 0 || 
+                            (subscriptionData.sts_minutes_left || 0) > 0;
+          if (subscriptionData && subscriptionData.is_active && hasMinutes) {
             next.empath = subscriptionData as UserSubscription;
           }
         }
@@ -294,7 +313,14 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
           throw new Error("Payment confirmation failed - no subscription data");
         }
         
-        // Refresh subscriptions after successful purchase
+        // Update the subscription state immediately with the new subscription data
+        const botType = subscription.plan?.bot_type || 'conversa';
+        setActiveSubscriptions(prev => ({
+          ...prev,
+          [botType]: subscription as UserSubscription
+        }));
+        
+        // Also refresh subscriptions to ensure we have the latest data
         await refreshSubscriptions();
         
         return { subscription, apiKeyRaw: api_key ?? null };

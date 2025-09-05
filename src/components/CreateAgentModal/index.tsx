@@ -91,7 +91,7 @@ export function CreateAgentModal({ isOpen, onClose, onSubmit, editAgent, onUpdat
       setFormData({
         name: editAgent.name || "",
         description: editAgent.description || "",
-        voice_provider: editAgent.voice_provider || "",
+        voice_provider: editAgent.voice_provider === "hume" ? "voicecake" : editAgent.voice_provider || "", // Map hume back to voicecake for form
         voice_category: "", // Will be set based on voice_id lookup
         voice_id: editAgent.voice_id || "",
         model_provider: editAgent.model_provider || "",
@@ -102,7 +102,8 @@ export function CreateAgentModal({ isOpen, onClose, onSubmit, editAgent, onUpdat
       
       // Set voice category based on voice_id lookup
       if (editAgent.voice_provider && editAgent.voice_id) {
-        const allVoicesForProvider = getVoicesByProvider(editAgent.voice_provider);
+        const mappedProvider = editAgent.voice_provider === "hume" ? "voicecake" : editAgent.voice_provider;
+        const allVoicesForProvider = getVoicesByProvider(mappedProvider);
         const foundVoice = allVoicesForProvider.find(voice => voice.id === editAgent.voice_id);
         if (foundVoice?.category) {
           setFormData(prev => ({ ...prev, voice_category: foundVoice.category || "" }));

@@ -138,15 +138,21 @@ export default function CheckoutForm({ plan, autoRenew, onSuccess, onError }: Ch
         <div className="bg-b-surface1 dark:bg-shade-04 rounded-2xl p-4 border border-s-stroke2">
           <div className="flex justify-between items-center text-sm mb-2">
             <span className="text-t-secondary">Plan:</span>
-            <span className="font-semibold text-t-primary">{plan.name}</span>
+            <span className="font-semibold text-t-primary">{plan.name || 'Unnamed Plan'}</span>
           </div>
           <div className="flex justify-between items-center text-sm mb-2">
             <span className="text-t-secondary">Minutes:</span>
-            <span className="font-semibold text-t-primary">{plan.minutes.toLocaleString()}</span>
+            <span className="font-semibold text-t-primary">{(plan.tts_minutes_included || plan.minutes || 0).toLocaleString()}</span>
           </div>
+          {plan.automations_included && (
+            <div className="flex justify-between items-center text-sm mb-2">
+              <span className="text-t-secondary">Automations:</span>
+              <span className="font-semibold text-t-primary">{plan.automations_included.toLocaleString()}</span>
+            </div>
+          )}
           <div className="flex justify-between items-center text-sm">
             <span className="text-t-secondary">Total:</span>
-            <span className="font-bold text-lg text-green-600 dark:text-green-400">${plan.price}</span>
+            <span className="font-bold text-lg text-green-600 dark:text-green-400">${plan.total_price || plan.price || 0}</span>
           </div>
         </div>
       </div>
@@ -163,7 +169,7 @@ export default function CheckoutForm({ plan, autoRenew, onSuccess, onError }: Ch
             <span>Processing...</span>
           </div>
         ) : (
-          `Pay $${plan.price}`
+          `Pay $${plan.total_price || plan.price || 0}`
         )}
       </Button>
 

@@ -112,9 +112,9 @@ const TelephonyPage = () => {
 
   return (
     <Layout title="Telephony">
-                  <div className="space-y-3">
+      <div className="space-y-3">
         {/* Summary Cards */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Card title="Active Numbers" className="p-6">
             <div className="text-2xl font-bold text-t-primary">{activeNumbers}</div>
             <div className="text-xs text-gray-500">of {numbersData.length} total</div>
@@ -132,7 +132,7 @@ const TelephonyPage = () => {
         {/* Phone Numbers Table */}
         <Card title="Phone Numbers" className="p-6">
           <div className="mb-6">
-             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <Search
                   placeholder="Search numbers..."

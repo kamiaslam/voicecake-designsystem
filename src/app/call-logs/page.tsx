@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import Layout from "@/components/Layout";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
@@ -10,70 +10,32 @@ import Select from "@/components/Select";
 import Table from "@/components/Table";
 import TableRow from "@/components/TableRow";
 import Badge from "@/components/Badge";
+import { callLogsAPI } from "@/services/api";
+import { toast } from "sonner";
 
-// Mock data for call logs
-const mockCallLogs = [
-    {
-        id: "CL-001",
-        assistant: "UXPENDIT-Male",
-        assistantPhone: "+1 (908) 680 8723",
-        customerPhone: "+1 (555) 123 4567",
-        type: "Inbound",
-        endedReason: "Completed",
-        successEvaluation: "Successful",
-        startTime: "2024-01-15 14:30:25",
-        duration: "5m 32s",
-        cost: "$2.45"
-    },
-    {
-        id: "CL-002",
-        assistant: "UXPENDIT-Female",
-        assistantPhone: "+1 (908) 680 8724",
-        customerPhone: "+1 (555) 987 6543",
-        type: "Outbound",
-        endedReason: "No Answer",
-        successEvaluation: "Failed",
-        startTime: "2024-01-15 15:15:10",
-        duration: "1m 45s",
-        cost: "$0.85"
-    },
-    {
-        id: "CL-003",
-        assistant: "UXPENDIT-Male",
-        assistantPhone: "+1 (908) 680 8723",
-        customerPhone: "+1 (555) 456 7890",
-        type: "Inbound",
-        endedReason: "Completed",
-        successEvaluation: "Successful",
-        startTime: "2024-01-15 16:00:45",
-        duration: "8m 12s",
-        cost: "$3.20"
-    },
-    {
-        id: "CL-004",
-        assistant: "UXPENDIT-Female",
-        assistantPhone: "+1 (908) 680 8724",
-        customerPhone: "+1 (555) 321 0987",
-        type: "Outbound",
-        endedReason: "Busy",
-        successEvaluation: "Failed",
-        startTime: "2024-01-15 17:30:20",
-        duration: "0m 15s",
-        cost: "$0.25"
-    },
-    {
-        id: "CL-005",
-        assistant: "UXPENDIT-Male",
-        assistantPhone: "+1 (908) 680 8723",
-        customerPhone: "+1 (555) 654 3210",
-        type: "Inbound",
-        endedReason: "Completed",
-        successEvaluation: "Successful",
-        startTime: "2024-01-15 18:45:30",
-        duration: "12m 05s",
-        cost: "$4.80"
-    }
-];
+// Call log data type
+type CallLog = {
+  session_id: string;
+  agent_id: string;
+  status: string;
+  created_at: string;
+  last_accessed: string;
+  call_sid: string | null;
+  from_number: string | null;
+  to_number: string | null;
+  participant_name: string;
+  participant_identity: string;
+  agent_instructions: string;
+};
+
+type CallLogsResponse = {
+  success: boolean;
+  message: string;
+  data: {
+    total_calls: number;
+    calls: CallLog[];
+  };
+};
 
 const CallLogsPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
@@ -81,47 +43,170 @@ const CallLogsPage = () => {
     const [typeFilter, setTypeFilter] = useState({ id: 0, name: "All Types" });
     const [statusFilter, setStatusFilter] = useState({ id: 0, name: "All Status" });
     const [dateRange, setDateRange] = useState("last-7-days");
+    const [callLogsData, setCallLogsData] = useState<CallLog[]>([]);
+    const [totalCalls, setTotalCalls] = useState(0);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const loadCallLogs = async () => {
+            setLoading(true);
+            try {
+                const data: CallLogsResponse = await callLogsAPI.getCallLogs(50, 0);
+                
+                if (data.success) {
+                    setCallLogsData(data.data.calls);
+                    setTotalCalls(data.data.total_calls);
+                } else {
+                    toast.error(data.message || 'Failed to load call logs');
+                }
+            } catch (error: any) {
+                console.error('Error loading call logs:', error);
+                toast.error(error.response?.data?.message || 'Failed to load call logs');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadCallLogs();
+    }, []);
+
+    const refreshCallLogs = async () => {
+        setLoading(true);
+        try {
+            const data: CallLogsResponse = await callLogsAPI.getCallLogs(50, 0);
+            
+            if (data.success) {
+                setCallLogsData(data.data.calls);
+                setTotalCalls(data.data.total_calls);
+                toast.success('Call logs refreshed successfully');
+            } else {
+                toast.error(data.message || 'Failed to refresh call logs');
+            }
+        } catch (error: any) {
+            console.error('Error refreshing call logs:', error);
+            toast.error(error.response?.data?.message || 'Failed to refresh call logs');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const filteredCallLogs = useMemo(() => {
-        return mockCallLogs.filter(log => {
+        return callLogsData.filter(log => {
             const matchesSearch = 
-                log.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                log.assistant.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                log.customerPhone.includes(searchTerm) ||
-                log.assistantPhone.includes(searchTerm);
+                log.session_id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                log.participant_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                log.agent_id.includes(searchTerm) ||
+                (log.from_number && log.from_number.includes(searchTerm)) ||
+                (log.to_number && log.to_number.includes(searchTerm));
             
-            const matchesAssistant = assistantFilter.id === 0 || log.assistant === assistantFilter.name;
-            const matchesType = typeFilter.id === 0 || log.type === typeFilter.name;
-            const matchesStatus = statusFilter.id === 0 || log.successEvaluation === statusFilter.name;
+            const matchesAssistant = assistantFilter.id === 0 || log.agent_id === assistantFilter.name;
+            const matchesType = typeFilter.id === 0; // We'll determine type based on from_number/to_number
+            const matchesStatus = statusFilter.id === 0 || log.status === statusFilter.name;
             
             return matchesSearch && matchesAssistant && matchesType && matchesStatus;
         });
-    }, [searchTerm, assistantFilter, typeFilter, statusFilter]);
+    }, [searchTerm, assistantFilter, typeFilter, statusFilter, callLogsData]);
 
-    const getTypeBadge = (type: string) => {
-        const typeClasses = {
-            Inbound: "bg-green-100 text-green-800 border border-green-200",
-            Outbound: "bg-blue-100 text-blue-800 border border-blue-200"
-        };
-        return typeClasses[type as keyof typeof typeClasses] || "bg-gray-100 text-gray-800 border border-gray-200";
+    const getTypeBadge = (log: CallLog) => {
+        const hasFromNumber = log.from_number && log.from_number.trim() !== '';
+        const hasToNumber = log.to_number && log.to_number.trim() !== '';
+        
+        if (hasFromNumber && hasToNumber) {
+            return "bg-blue-100 text-blue-800 border border-blue-200";
+        } else if (hasFromNumber) {
+            return "bg-green-100 text-green-800 border border-green-200";
+        } else if (hasToNumber) {
+            return "bg-purple-100 text-purple-800 border border-purple-200";
+        } else {
+            return "bg-gray-100 text-gray-800 border border-gray-200";
+        }
+    };
+
+    const getTypeText = (log: CallLog) => {
+        const hasFromNumber = log.from_number && log.from_number.trim() !== '';
+        const hasToNumber = log.to_number && log.to_number.trim() !== '';
+        
+        if (hasFromNumber && hasToNumber) {
+            return "Two-way";
+        } else if (hasFromNumber) {
+            return "Inbound";
+        } else if (hasToNumber) {
+            return "Outbound";
+        } else {
+            return "Unknown";
+        }
     };
 
     const getStatusBadge = (status: string) => {
         const statusClasses = {
-            Successful: "bg-green-100 text-green-800 border border-green-200",
-            Failed: "bg-red-100 text-red-800 border border-red-200"
+            active: "bg-primary-02/20 text-primary-02 border border-primary-02/30",
+            completed: "bg-green-500/20 text-green-500 border border-green-500/30",
+            expired: "bg-[#FFB020]/20 text-[#FFB020] border border-[#FFB020]/30"
         };
         return statusClasses[status as keyof typeof statusClasses] || "bg-gray-100 text-gray-800 border border-gray-200";
     };
 
-    const getEndedReasonBadge = (reason: string) => {
-        const reasonClasses = {
-            Completed: "bg-green-100 text-green-800 border border-green-200",
-            "No Answer": "bg-yellow-100 text-yellow-800 border border-yellow-200",
-            Busy: "bg-orange-100 text-orange-800 border border-orange-200"
-        };
-        return reasonClasses[reason as keyof typeof reasonClasses] || "bg-gray-100 text-gray-800 border border-gray-200";
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     };
+
+    const getDuration = (createdAt: string, lastAccessed: string) => {
+        const start = new Date(createdAt);
+        const end = new Date(lastAccessed);
+        const diffMs = end.getTime() - start.getTime();
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffSecs = Math.floor((diffMs % 60000) / 1000);
+        return `${diffMins}m ${diffSecs}s`;
+    };
+
+    // Skeleton loader component
+    const SkeletonTableRow = () => (
+        <TableRow>
+            <td className="py-4 px-4">
+                <div className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-20"></div>
+                </div>
+            </td>
+            <td className="py-4 px-4">
+                <div className="animate-pulse flex items-center gap-2">
+                    <div className="w-8 h-8 bg-gray-200 rounded-lg"></div>
+                    <div className="h-4 bg-gray-200 rounded w-16"></div>
+                </div>
+            </td>
+            <td className="py-4 px-4">
+                <div className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-24"></div>
+                </div>
+            </td>
+            <td className="py-4 px-4">
+                <div className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-20 mb-1"></div>
+                    <div className="h-3 bg-gray-200 rounded w-16"></div>
+                </div>
+            </td>
+            <td className="py-4 px-4">
+                <div className="animate-pulse">
+                    <div className="h-6 bg-gray-200 rounded-full w-16"></div>
+                </div>
+            </td>
+            <td className="py-4 px-4">
+                <div className="animate-pulse">
+                    <div className="h-4 bg-gray-200 rounded w-12"></div>
+                </div>
+            </td>
+            <td className="py-4 px-4">
+                <div className="animate-pulse">
+                    <div className="h-6 bg-gray-200 rounded-full w-16"></div>
+                </div>
+            </td>
+            <td className="py-4 px-4">
+                <div className="animate-pulse">
+                    <div className="h-3 bg-gray-200 rounded w-20"></div>
+                </div>
+            </td>
+        </TableRow>
+    );
 
     return (
         <Layout title="Call Logs">
@@ -146,132 +231,138 @@ const CallLogsPage = () => {
                     </div>
                 </div>
 
-                {/* Filters */}
-                <Card title="Filters" className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Search
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Search call ID, assistant, phone..."
-                        />
-                        
-                        <Select
-                            label="Assistant"
-                            value={assistantFilter}
-                            onChange={setAssistantFilter}
-                            options={[
-                                { id: 0, name: "All Assistants" },
-                                { id: 1, name: "UXPENDIT-Male" },
-                                { id: 2, name: "UXPENDIT-Female" }
-                            ]}
-                        />
-                        
-                        <Select
-                            label="Call Type"
-                            value={typeFilter}
-                            onChange={setTypeFilter}
-                            options={[
-                                { id: 0, name: "All Types" },
-                                { id: 1, name: "Inbound" },
-                                { id: 2, name: "Outbound" }
-                            ]}
-                        />
-                        
-                        <Select
-                            label="Status"
-                            value={statusFilter}
-                            onChange={setStatusFilter}
-                            options={[
-                                { id: 0, name: "All Status" },
-                                { id: 1, name: "Successful" },
-                                { id: 2, name: "Failed" }
-                            ]}
-                        />
-                    </div>
-                    
-                    <div className="mt-4">
-                        <label className="block text-sm font-medium text-t-primary mb-2">
-                            Date Range
-                        </label>
-                        <div className="flex gap-2">
-                            {[
-                                { value: "last-7-days", label: "Last 7 Days" },
-                                { value: "last-30-days", label: "Last 30 Days" },
-                                { value: "last-90-days", label: "Last 90 Days" },
-                                { value: "custom", label: "Custom" }
-                            ].map((range) => (
-                                <button
-                                    key={range.value}
-                                    onClick={() => setDateRange(range.value)}
-                                    className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                                        dateRange === range.value
-                                            ? "bg-primary-01 text-white"
-                                            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                                    }`}
-                                >
-                                    {range.label}
-                                </button>
-                            ))}
+                {/* Call Logs Table */}
+                <Card title="Call Logs" className="p-6">
+                    <div className="mb-6">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                                <Search
+                                    placeholder="Search calls..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="w-full sm:w-64"
+                                    isGray
+                                />
+                                <Select
+                                    value={assistantFilter}
+                                    onChange={setAssistantFilter}
+                                    options={[
+                                        { id: 0, name: "All Assistants" },
+                                        { id: 1, name: "34" },
+                                        { id: 2, name: "53" },
+                                        { id: 3, name: "84" },
+                                        { id: 4, name: "100" }
+                                    ]}
+                                    className="w-full sm:w-40"
+                                />
+                                <Select
+                                    value={typeFilter}
+                                    onChange={setTypeFilter}
+                                    options={[
+                                        { id: 0, name: "All Types" },
+                                        { id: 1, name: "Inbound" },
+                                        { id: 2, name: "Outbound" },
+                                        { id: 3, name: "Two-way" }
+                                    ]}
+                                    className="w-full sm:w-40"
+                                />
+                                <Select
+                                    value={statusFilter}
+                                    onChange={setStatusFilter}
+                                    options={[
+                                        { id: 0, name: "All Status" },
+                                        { id: 1, name: "active" },
+                                        { id: 2, name: "completed" },
+                                        { id: 3, name: "expired" }
+                                    ]}
+                                    className="w-full sm:w-40"
+                                />
+                                <Button className="w-full sm:w-auto" onClick={refreshCallLogs}>
+                                    <Icon name="refresh" className="w-4 h-4 mr-2" />
+                                    Refresh
+                                </Button>
+                            </div>
                         </div>
                     </div>
-                </Card>
-
-                {/* Call Logs Table */}
-                <Card title={`Call Logs (${filteredCallLogs.length} results)`} className="p-6">
-                    <Table
-                        cellsThead={
-                            <>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Call ID</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Assistant</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Assistant Phone Number</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Customer Phone Number</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Type</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Ended Reason</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Success Evaluation</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Start Time</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Duration</th>
-                                <th className="text-left py-3 px-4 font-medium text-t-secondary">Cost</th>
-                            </>
-                        }
-                    >
-                        {filteredCallLogs.map((log, index) => (
-                            <TableRow key={index}>
-                                <td className="py-4 px-4">
-                                    <span className="font-medium text-t-primary">{log.id}</span>
-                                </td>
-                                <td className="py-4 px-4">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-8 h-8 bg-gradient-to-br from-primary-01 to-[#8B5CF6] rounded-lg flex items-center justify-center text-white text-xs font-semibold">
-                                            {log.assistant.charAt(0)}
+                    {loading ? (
+                        <Table
+                            cellsThead={
+                                <>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Session ID</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Agent</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Participant</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Phone Numbers</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Type</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Duration</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Status</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Created</th>
+                                </>
+                            }
+                        >
+                            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+                                <SkeletonTableRow key={i} />
+                            ))}
+                        </Table>
+                    ) : (
+                        <Table
+                            cellsThead={
+                                <>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Session ID</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Agent</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Participant</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Phone Numbers</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Type</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Duration</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Status</th>
+                                    <th className="text-left py-3 px-4 font-medium text-t-secondary">Created</th>
+                                </>
+                            }
+                        >
+                            {filteredCallLogs.map((log) => (
+                                <TableRow key={log.session_id}>
+                                    <td className="py-4 px-4">
+                                        <span className="font-medium text-t-primary text-xs">
+                                            {log.session_id.substring(0, 8)}...
+                                        </span>
+                                    </td>
+                                    <td className="py-4 px-4">
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-8 h-8 bg-gradient-to-br from-primary-01 to-[#8B5CF6] rounded-lg flex items-center justify-center text-white text-xs font-semibold">
+                                                {log.agent_id.charAt(0)}
+                                            </div>
+                                            <span className="text-t-primary">Agent {log.agent_id}</span>
                                         </div>
-                                        <span className="text-t-primary">{log.assistant}</span>
-                                    </div>
-                                </td>
-                                <td className="py-4 px-4 text-t-primary">{log.assistantPhone}</td>
-                                <td className="py-4 px-4 text-t-primary">{log.customerPhone}</td>
-                                <td className="py-4 px-4">
-                                    <Badge className={`px-2 py-1 text-xs font-medium ${getTypeBadge(log.type)}`}>
-                                        {log.type}
-                                    </Badge>
-                                </td>
-                                <td className="py-4 px-4">
-                                    <Badge className={`px-2 py-1 text-xs font-medium ${getEndedReasonBadge(log.endedReason)}`}>
-                                        {log.endedReason}
-                                    </Badge>
-                                </td>
-                                <td className="py-4 px-4">
-                                    <Badge className={`px-2 py-1 text-xs font-medium ${getStatusBadge(log.successEvaluation)}`}>
-                                        {log.successEvaluation}
-                                    </Badge>
-                                </td>
-                                <td className="py-4 px-4 text-t-secondary text-sm">{log.startTime}</td>
-                                <td className="py-4 px-4 text-t-primary">{log.duration}</td>
-                                <td className="py-4 px-4 font-medium text-t-primary">{log.cost}</td>
-                            </TableRow>
-                        ))}
-                    </Table>
+                                    </td>
+                                    <td className="py-4 px-4 text-t-primary">{log.participant_name}</td>
+                                    <td className="py-4 px-4 text-t-secondary">
+                                        <div className="text-xs">
+                                            {log.from_number && <div>From: {log.from_number}</div>}
+                                            {log.to_number && <div>To: {log.to_number}</div>}
+                                            {!log.from_number && !log.to_number && <div className="text-gray-400">No numbers</div>}
+                                        </div>
+                                    </td>
+                                    <td className="py-4 px-4">
+                                        <Badge className={`px-2 py-1 text-xs font-medium ${getTypeBadge(log)}`}>
+                                            {getTypeText(log)}
+                                        </Badge>
+                                    </td>
+                                    <td className="py-4 px-4 text-t-primary text-sm">
+                                        {getDuration(log.created_at, log.last_accessed)}
+                                    </td>
+                                    <td className="py-4 px-4">
+                                        <Badge className={`px-2 py-1 text-xs font-medium ${getStatusBadge(log.status)}`}>
+                                            {log.status.charAt(0).toUpperCase() + log.status.slice(1)}
+                                        </Badge>
+                                    </td>
+                                    <td className="py-4 px-4 text-t-secondary text-xs">
+                                        {formatDate(log.created_at)}
+                                    </td>
+                                </TableRow>
+                            ))}
+                        </Table>
+                    )}
                     
-                    {filteredCallLogs.length === 0 && (
+                    {filteredCallLogs.length === 0 && !loading && (
                         <div className="text-center py-8">
                             <Icon name="search" className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                             <p className="text-t-secondary">No call logs found matching your criteria.</p>

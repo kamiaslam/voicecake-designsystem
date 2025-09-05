@@ -1052,7 +1052,10 @@ const useHumeInference = ({
   const startInference = useCallback(async (targetAgentId?: string) => {
     const currentAgentId = targetAgentId || agentId;
     if (!currentAgentId) {
-      toast.error("Agent ID is required for inference");
+      toast.error("Missing Agent ID", {
+        description: "Please provide a valid agent ID to start inference",
+        duration: 4000
+      });
       return;
     }
 
@@ -1109,11 +1112,62 @@ const useHumeInference = ({
             sessionData = await liveKitAPI.createSession(currentAgentId, `User_${Date.now()}`);
           } catch (error: any) {
             console.error('Failed to start LiveKit session:', error);
+            console.error('Error details:', {
+              message: error.message,
+              response: error.response?.data,
+              status: error.response?.status
+            });
+            
+            // Handle concurrent session limit error specifically
+            if (error.response?.data?.error_code === 'CONCURRENT_SESSION_LIMIT_EXCEEDED' || 
+                error.message?.includes('concurrent session limit') ||
+                error.message?.includes('CONCURRENT_SESSION_LIMIT_EXCEEDED')) {
+              const errorMessage = error.response?.data?.message || error.message || 'You have reached your concurrent session limit. Please wait for a session to end before starting a new one.';
+              console.log('🚨 Showing concurrent session limit toast:', errorMessage);
+              toast.error("Session Limit Reached", {
+                description: errorMessage,
+                duration: 8000,
+                action: {
+                  label: "Retry Later",
+                  onClick: () => console.log("User clicked retry later")
+                }
+              });
+              throw new Error(errorMessage);
+            }
+            
             throw new Error(error.response?.data?.detail || error.message || 'Failed to start LiveKit session for TEXT agent');
           }
         } else {
           console.log('🌐 Using public LiveKit session for public inference');
-          sessionData = await publicAgentAPI.createLiveKitSession(currentAgentId);
+          try {
+            sessionData = await publicAgentAPI.createLiveKitSession(currentAgentId);
+          } catch (error: any) {
+            console.error('Failed to start public LiveKit session:', error);
+            console.error('Error details:', {
+              message: error.message,
+              response: error.response?.data,
+              status: error.response?.status
+            });
+            
+            // Handle concurrent session limit error specifically
+            if (error.response?.data?.error_code === 'CONCURRENT_SESSION_LIMIT_EXCEEDED' || 
+                error.message?.includes('concurrent session limit') ||
+                error.message?.includes('CONCURRENT_SESSION_LIMIT_EXCEEDED')) {
+              const errorMessage = error.response?.data?.message || error.message || 'You have reached your concurrent session limit. Please wait for a session to end before starting a new one.';
+              console.log('🚨 Showing concurrent session limit toast:', errorMessage);
+              toast.error("Session Limit Reached", {
+                description: errorMessage,
+                duration: 8000,
+                action: {
+                  label: "Retry Later",
+                  onClick: () => console.log("User clicked retry later")
+                }
+              });
+              throw new Error(errorMessage);
+            }
+            
+            throw new Error(error.response?.data?.detail || error.message || 'Failed to start public LiveKit session');
+          }
         }
         
         console.log('📋 LiveKit session created for TEXT agent:', sessionData);
@@ -1389,13 +1443,18 @@ const useHumeInference = ({
 
 
 
-    } catch (error) {
+    } catch (error: any) {
 
       console.error('Error starting inference:', error);
 
       cleanup();
 
-      toast.error("Failed to start inference connection");
+              // Display the specific error message if available
+        const errorMessage = error.message || "Failed to start inference connection";
+        toast.error("Connection Failed", {
+          description: errorMessage,
+          duration: 6000
+        });
 
       setInferenceState("ERROR");
 

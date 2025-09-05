@@ -42,7 +42,7 @@ const Login = ({}) => {
             const response = await login(username, password);
             
             if (response.success) {
-                toast.success("Login successful! Redirecting...", {
+                toast.success("Login successful!", {
                     position: "top-right"
                 });
                 

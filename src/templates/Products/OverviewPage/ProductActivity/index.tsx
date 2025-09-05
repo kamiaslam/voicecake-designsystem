@@ -48,7 +48,7 @@ const ProductActivity = ({}) => {
 
     return (
         <Card
-            className="p-6 mb-0 h-[325px] flex flex-col"
+            className="p-6 mb-0 h-[521px] flex flex-col"
             title="Your Agents"
             selectValue={duration}
             selectOnChange={setDuration}
@@ -179,7 +179,7 @@ const ProductActivity = ({}) => {
                     </div>
                     
                     {/* Scrollable Table Body with Fixed Height */}
-                    <div className="h-40 overflow-y-auto">
+                    <div className="h-90 overflow-y-auto">
                         {agents.map((agent) => (
                             <div
                                 className="flex items-center gap-3 h-12 border-b border-s-subtle text-body-2 hover:bg-b-surface2 transition-colors"

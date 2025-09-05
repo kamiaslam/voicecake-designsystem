@@ -1,16 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
 import Badge from "@/components/Badge";
 import Select from "@/components/Select";
 import { SelectOption } from "@/types/select";
+import { useFinance } from "@/context/financeContext";
+import { toast } from "sonner";
+import Loader from "@/components/Loader";
+import Icon from "@/components/Icon";
 
 // Mock data types
 const DevNotesPage = () => {
   const [selectedCategory, setSelectedCategory] = useState<SelectOption>({ id: 1, name: "All Categories" });
+  
+  // API Keys state
+  const { listApiKeys, rotateApiKey, revokeApiKey } = useFinance();
+  const [keys, setKeys] = useState<any[]>([]);
+  const [revealed, setRevealed] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  const [selectedScope, setSelectedScope] = useState("conversa");
+
 
   const categories: SelectOption[] = [
     { id: 1, name: "All Categories" },
@@ -18,8 +31,54 @@ const DevNotesPage = () => {
     { id: 3, name: "Integration Guides" },
     { id: 4, name: "Troubleshooting" },
     { id: 5, name: "Changelog" },
-    { id: 6, name: "Code Examples" }
+    { id: 6, name: "Code Examples" },
+    { id: 7, name: "API Keys" }
   ];
+
+  // API Keys management functions
+  useEffect(() => {
+    const load = async () => {
+      setFetching(true);
+      try {
+        const items = await listApiKeys(selectedScope);
+        setKeys(items.filter((k: any) => k.scope === selectedScope));
+      } catch {
+        setKeys([]);
+      } finally {
+        setFetching(false);
+      }
+    };
+    load();
+  }, [selectedScope, listApiKeys]);
+
+  const handleRotate = async () => {
+    setLoading(true);
+    try {
+      const data = await rotateApiKey(selectedScope);
+      setRevealed(true);
+      setKeys(prev => [{ id: data.id, scope: data.scope, preview: data.api_key_raw || undefined, is_active: true }, ...prev]);
+      if (data.api_key_raw) toast.success("New API key generated. Copy and store it securely.");
+    } catch (e: any) {
+      toast.error(e?.message ?? "Failed to rotate API key");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRevoke = async () => {
+    setLoading(true);
+    try {
+      if (!keys[0]?.id) return;
+      await revokeApiKey(keys[0].id as number);
+      setKeys(prev => prev.map((k, i) => (i === 0 ? { ...k, is_active: false } : k)));
+      toast.success("API key revoked");
+    } catch (e: any) {
+      toast.error(e?.message ?? "Failed to revoke API key");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const apiEndpoints = [
     {
@@ -195,6 +254,8 @@ const DevNotesPage = () => {
         return troubleshootingItems;
       case 5:
         return changelogEntries;
+      case 7:
+        return keys;
       default:
         return [];
     }
@@ -373,6 +434,76 @@ function App() {
             </div>
           </Card>
         )}
+
+        {/* API Keys */}
+        {(selectedCategory.id === 1 || selectedCategory.id === 7) && (
+          <Card title="API Keys" className="p-6">
+            <div className="space-y-4">
+              <p className="text-[var(--text-secondary)] text-sm">
+                Manage your API keys for integrations
+              </p>
+              
+              {/* Scope Selection */}
+              <div className="flex gap-2 mb-4">
+                {['conversa', 'empath', 'wallet'].map(scope => (
+                  <Button
+                    key={scope}
+                    isWhite={selectedScope !== scope}
+                    isBlack={selectedScope === scope}
+                    onClick={() => setSelectedScope(scope)}
+                    className="px-4"
+                  >
+                    {scope.charAt(0).toUpperCase() + scope.slice(1)}
+                  </Button>
+                ))}
+              </div>
+
+              {fetching ? (
+                <div className="flex justify-center py-8">
+                  <Loader />
+                </div>
+              ) : (
+                <>
+                  <div className="flex gap-2 items-center">
+                    <Button onClick={handleRotate} disabled={loading}>
+                      Generate New API Key
+                    </Button>
+                    <Button isStroke onClick={handleRevoke} disabled={loading}>
+                      Revoke Latest Key
+                    </Button>
+                  </div>
+                  
+                  {keys.length > 0 && keys[0]?.preview && keys[0].preview.length > 12 ? (
+                    <div className="space-y-2">
+                      <div className="text-sm text-[var(--text-secondary)]">Your new API key (visible once)</div>
+                      <div className="border border-[var(--stroke-border)] rounded-lg p-3 bg-[var(--backgrounds-surface2)]">
+                        <code className="font-mono text-sm">{keys[0].preview as string}</code>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-[var(--text-secondary)]">Keys are masked after creation. Generate a new one to view raw value once.</div>
+                  )}
+                  
+                  <div className="pt-4">
+                    <div className="text-sm font-medium mb-2">Your Keys</div>
+                    <div className="space-y-2">
+                      {keys.map(k => (
+                        <div key={String(k.id)} className="flex items-center justify-between border border-[var(--stroke-border)] rounded-lg px-3 py-2">
+                          <div className="text-sm">
+                            <div className="font-mono">{k.preview || "************"}</div>
+                            <div className="text-xs text-[var(--text-tertiary)]">scope: {k.scope} • {k.is_active ? "active" : "revoked"}</div>
+                          </div>
+                          <div className="text-xs text-[var(--text-tertiary)]">{k.created_at ? new Date(k.created_at).toLocaleString() : ""}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </Card>
+        )}
+
       </div>
     </Layout>
   );

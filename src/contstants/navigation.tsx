@@ -49,11 +49,11 @@ export const navigation = [
     //     icon: "home",
     //     href: "/",
     // },
-    {
-        title: "Telephony",
-        icon: "wallet",
-        href: "/telephony",
-    },
+    // {
+    //     title: "Telephony",
+    //     icon: "wallet",
+    //     href: "/telephony",
+    // },
     // {
     //     title: "Phone Numbers",
     //     icon: "telephone",
@@ -64,77 +64,77 @@ export const navigation = [
         icon: "chart",
         href: "/call-logs",
     },
-    {
-        title: "Security",
-        icon: "chain-think",
-        href: "/security",
-    },
-    {
-        title: "Support",
-        icon: "grid",
-        href: "/support",
-    },
-    {
-        title: "Insights",
-        icon: "chart",
-        href: "/insights",
-    },
-    {
-        title: "Team & Permissions",
-        icon: "edit-profile",
-        href: "/team",
-    },
-    {
-        title: "Error Logs",
-        icon: "star-fill",
-        href: "/logs",
-    },
+    // {
+    //     title: "Security",
+    //     icon: "chain-think",
+    //     href: "/security",
+    // },
+    // {
+    //     title: "Support",
+    //     icon: "grid",
+    //     href: "/support",
+    // },
+    // {
+    //     title: "Insights",
+    //     icon: "chart",
+    //     href: "/insights",
+    // },
+    // {
+    //     title: "Team & Permissions",
+    //     icon: "edit-profile",
+    //     href: "/team",
+    // },
+    // {
+    //     title: "Error Logs",
+    //     icon: "star-fill",
+    //     href: "/logs",
+    // },
     {
         title: "Developer Notes",
         icon: "bag",
         href: "/devnotes",
     },
-    {
-        title: "Sim AI",
-        icon: "product-think",
-        href: "/sim-ai",
-    },
-    {
-        title: "Sim AI Products",
-        icon: "product",
-        href: "/sim-ai-products",
-    },
+    // {
+    //     title: "Sim AI",
+    //     icon: "product-think",
+    //     href: "/sim-ai",
+    // },
+    // {
+    //     title: "Sim AI Products",
+    //     icon: "product",
+    //     href: "/sim-ai-products",
+    // },
 ];
 
 export const navigationUser = [
-    {
-        title: "My shop",
-        icon: "bag",
-        href: "/shop",
-    },
+    // {
+    //     title: "My shop",
+    //     icon: "bag",
+    //     href: "/shop",
+    // },
     {
         title: "Edit profile",
         icon: "edit-profile",
-        href: "/settings",
+        href: "/edit-profile",
     },
-    {
-        title: "Analytics",
-        icon: "chart",
-        href: "/customers",
-    },
-    {
-        title: "Affiliate center",
-        icon: "chain-think",
-        href: "/affiliate-center",
-    },
-    {
-        title: "Explore creators",
-        icon: "grid",
-        href: "/explore-creators",
-    },
-    {
-        title: "Upgrade to Pro",
-        icon: "star-fill",
-        href: "/upgrade-to-pro",
-    },
+    // {
+    //     title: "Analytics",
+    //     icon: "chart",
+    //     href: "/customers",
+    // },
+    // {
+    //     title: "Affiliate center",
+    //     icon: "chain-think",
+    //     href: "/affiliate-center",
+    // },
+    // {
+    //     title: "Explore creators",
+    //     icon: "grid",
+    //     href: "/explore-creators",
+    // },
+    // {
+    //     title: "Upgrade to Pro",
+    //     icon: "star-fill",
+    //     href: "/upgrade-to-pro",
+    // },
 ];

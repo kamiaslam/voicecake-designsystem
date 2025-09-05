@@ -1,7 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import { Element } from "react-scroll";
+import { useState, useEffect, useRef } from "react";
+import { Element, scroller } from "react-scroll";
+import { useRouter, useSearchParams } from "next/navigation";
+
+// Extend Window interface to include scrollSpy
+declare global {
+    interface Window {
+        scrollSpy?: {
+            destroy: () => void;
+            update: () => void;
+        };
+    }
+}
 import Layout from "@/components/Layout";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
@@ -20,6 +31,7 @@ import { allVoices, getVoicesByProvider, getCategoriesByProvider } from "@/lib/v
 import { SelectOption } from "@/types/select";
 import { AgentType } from "@/types/agent";
 import { ToolSelector } from "@/components/ui/tool-selector";
+import { useAgentEdit } from "@/context/agentEditContext";
 
 const ElementWithOffset = ({
     className,
@@ -80,6 +92,15 @@ const modelOptions = [
 ];
 
 const CreateAssistantPage = () => {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const { editingAgent, isEditMode, clearEditState } = useAgentEdit();
+    
+    // Ref to track if component is mounted
+    const isMountedRef = useRef(true);
+    // Ref to track scroll spy state
+    const scrollSpyEnabledRef = useRef(true);
+    
     // Call Transcript Panel
     const [isCallPanelOpen, setIsCallPanelOpen] = useState(false);
 
@@ -91,6 +112,8 @@ const CreateAssistantPage = () => {
 
     // Agent Type Selection
     const [selectedAgentType, setSelectedAgentType] = useState<AgentType | null>(null);
+
+    // Edit mode state is now managed by context
 
     // Form Data (matching CreateAgentModal structure)
     const [formData, setFormData] = useState({
@@ -107,6 +130,8 @@ const CreateAssistantPage = () => {
 
     // Loading state
     const [isLoading, setIsLoading] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [createdAgentId, setCreatedAgentId] = useState<number | null>(null);
 
     // Performance Metrics (keeping existing)
     const [costRange, setCostRange] = useState([0, 50]);
@@ -119,6 +144,120 @@ const CreateAssistantPage = () => {
 
     // Training Data
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    // Handle mode parameter to force create mode
+    useEffect(() => {
+        const mode = searchParams.get('mode');
+        if (mode === 'create') {
+            // Clear edit state when explicitly creating a new agent
+            console.log('Mode=create detected, clearing edit state');
+            clearEditState();
+        }
+    }, [searchParams, clearEditState]);
+
+    // Initialize scroll spy safely
+    useEffect(() => {
+        // Clean up any existing scroll spy instances first
+        try {
+            if (typeof window !== 'undefined' && window.scrollSpy) {
+                window.scrollSpy.destroy();
+            }
+        } catch (error) {
+            console.warn('Scroll spy cleanup on mount warning:', error);
+        }
+
+        // Add a small delay to ensure DOM is ready
+        const timer = setTimeout(() => {
+            try {
+                // Reset scroll spy state
+                scrollSpyEnabledRef.current = true;
+                isMountedRef.current = true;
+                console.log('Scroll spy initialization completed');
+            } catch (error) {
+                console.warn('Scroll spy initialization warning:', error);
+            }
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Cleanup effect
+    useEffect(() => {
+        return () => {
+            isMountedRef.current = false;
+            scrollSpyEnabledRef.current = false;
+            
+            // Clean up any scroll spy references
+            try {
+                if (typeof window !== 'undefined') {
+                    // Disable scroll spy completely
+                    if (window.scrollSpy) {
+                        window.scrollSpy.destroy();
+                    }
+                    
+                    // Remove any scroll event listeners
+                    const scrollHandler = () => {};
+                    window.removeEventListener('scroll', scrollHandler);
+                    window.removeEventListener('scroll', scrollHandler, true);
+                }
+            } catch (error) {
+                console.warn('Scroll spy cleanup warning:', error);
+            }
+        };
+    }, []);
+
+    // Initialize edit mode from context
+    useEffect(() => {
+        console.log('Context state:', { isEditMode, editingAgent: editingAgent?.name });
+        if (isEditMode && editingAgent) {
+            console.log('Setting up edit mode for agent:', editingAgent.name);
+            // Set agent type
+            setSelectedAgentType(editingAgent.agent_type || editingAgent.type || null);
+            
+            // Set form data
+            setFormData({
+                name: editingAgent.name || "",
+                description: editingAgent.description || "",
+                voice_provider: editingAgent.voice_provider === "hume" ? "voicecake" : editingAgent.voice_provider || "", // Map hume back to voicecake for form
+                voice_category: "", // Will be set based on voice_id lookup
+                voice_id: editingAgent.voice_id || "",
+                model_provider: editingAgent.model_provider || "",
+                model_resource: (editingAgent as any).model_resource || "",
+                instructions: editingAgent.custom_instructions || "",
+                tool_ids: editingAgent.tool_ids || []
+            });
+            
+            // Set voice category based on voice_id lookup
+            if (editingAgent.voice_provider && editingAgent.voice_id) {
+                const mappedProvider = editingAgent.voice_provider === "hume" ? "voicecake" : editingAgent.voice_provider;
+                const allVoicesForProvider = getVoicesByProvider(mappedProvider);
+                const foundVoice = allVoicesForProvider.find(voice => voice.id === editingAgent.voice_id);
+                if (foundVoice?.category) {
+                    setFormData(prev => ({ ...prev, voice_category: foundVoice.category || "" }));
+                }
+            }
+        } else {
+            console.log('Setting up create mode');
+            // Reset form when not in edit mode (create mode)
+            setSelectedAgentType(null);
+            setFormData({
+                name: "",
+                description: "",
+                voice_provider: "",
+                voice_category: "",
+                voice_id: "",
+                model_provider: "",
+                model_resource: "",
+                instructions: "",
+                tool_ids: []
+            });
+        }
+    }, [isEditMode, editingAgent]);
+
+    // Debug: Log form data changes (commented out to prevent potential issues)
+    // useEffect(() => {
+    //     console.log('Form data updated:', formData);
+    // }, [formData]);
 
     // Assign Numbers
     const phoneNumbers = [
@@ -144,7 +283,8 @@ const CreateAssistantPage = () => {
         { name: "Instagram", icon: "instagram" }
     ];
 
-    const navigation = [
+    // Base navigation items
+    const baseNavigation = [
         {
             title: "Agent Type",
             icon: "robot",
@@ -159,7 +299,7 @@ const CreateAssistantPage = () => {
         },
         {
             title: "Model",
-            icon: "settings",
+            icon: "model",
             description: "AI model configuration",
             to: "model",
         },
@@ -177,7 +317,7 @@ const CreateAssistantPage = () => {
         },
         {
             title: "Tools",
-            icon: "settings",
+            icon: "tools",
             description: "Select agent tools",
             to: "tools",
         },
@@ -193,13 +333,20 @@ const CreateAssistantPage = () => {
             description: "Phone numbers and automations",
             to: "assignments",
         },
+    ];
+
+    // Add Share section only when agent is created or editing
+    const navigation = (isSuccess || isEditMode) 
+        ? [
+            ...baseNavigation,
         {
             title: "Share",
             icon: "share",
             description: "Share assistant with others",
             to: "share",
         },
-    ];
+        ]
+        : baseNavigation;
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -216,6 +363,12 @@ const CreateAssistantPage = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Prevent multiple submissions
+        if (isLoading || isSuccess) {
+            console.log('Form submission blocked - already processing or completed');
+            return;
+        }
         
         if (!selectedAgentType) {
             toast.error("Please select an agent type");
@@ -265,6 +418,13 @@ const CreateAssistantPage = () => {
             }
         }
 
+        // Additional validation for voice data
+        if (selectedAgentType === 'TEXT' && (!formData.voice_provider || !formData.voice_id)) {
+            toast.error("Please select both voice provider and voice");
+            console.error('Voice validation failed:', { voice_provider: formData.voice_provider, voice_id: formData.voice_id });
+            return;
+        }
+
         setIsLoading(true);
 
         try {
@@ -281,14 +441,37 @@ const CreateAssistantPage = () => {
                 tool_ids: formData.tool_ids
             };
 
-            console.log('Creating agent with payload:', agentPayload);
+            // Debug: Log the form data and payload
+            console.log('Form Data:', formData);
+            console.log('Agent Payload:', agentPayload);
 
-            const response = await agentAPI.createAgent(agentPayload);
-            console.log("Agent created successfully:", response);
-            toast.success("Agent created successfully!");
+            let response;
+            if (isEditMode && editingAgent) {
+                // Update existing agent
+                console.log('Updating agent with payload:', agentPayload);
+                response = await agentAPI.updateAgent(editingAgent.id.toString(), agentPayload);
+                console.log("Agent updated successfully:", response);
+                toast.success(`Agent "${formData.name}" updated successfully!`, {
+                    description: "Your agent has been updated and is ready to use.",
+                    duration: 5000,
+                });
+            } else {
+                // Create new agent
+                console.log('Creating agent with payload:', agentPayload);
+                response = await agentAPI.createAgent(agentPayload);
+                console.log("Agent created successfully:", response);
+                toast.success(`Agent "${formData.name}" created successfully!`, {
+                    description: "Your new agent is ready to use. Redirecting to agents page...",
+                    duration: 5000,
+                });
+            }
             
-            // Reset form
-            setSelectedAgentType(null);
+            // Set success state (preserve edit mode for success display)
+            setIsSuccess(true);
+            setCreatedAgentId(response.data?.id || response.data?.data?.id || editingAgent?.id || null);
+            
+            // Reset form but don't clear edit state yet (needed for success display)
+            // clearEditState(); // Moved to after navigation
             setFormData({
                 name: "",
                 description: "",
@@ -301,11 +484,26 @@ const CreateAssistantPage = () => {
                 tool_ids: []
             });
             
+            // Navigate back to agents page after a short delay
+            setTimeout(() => {
+                try {
+                    clearEditState(); // Clear edit state before navigation
+                    router.push('/agents');
+                } catch (navError) {
+                    console.error("Navigation error:", navError);
+                }
+            }, 2000);
+            
         } catch (error: any) {
-            console.error("Error creating agent:", error);
+            console.error("Error in agent operation:", error);
+            console.error("Error details:", {
+                message: error.message,
+                response: error.response,
+                stack: error.stack
+            });
             
             // Extract error message from different possible sources
-            let errorMessage = "Failed to create agent";
+            let errorMessage = isEditMode ? "Failed to update agent" : "Failed to create agent";
             if (error.response?.data?.message) {
                 errorMessage = error.response.data.message;
             } else if (error.message) {
@@ -342,6 +540,26 @@ const CreateAssistantPage = () => {
                                 isDynamic={true}
                                 spy={true}
                                 offset={-5.5}
+                                onSetActive={(to) => {
+                                    try {
+                                        // Only handle if component is still mounted and scroll spy is enabled
+                                        if (isMountedRef.current && scrollSpyEnabledRef.current) {
+                                            console.log('Active section:', to);
+                                        }
+                                    } catch (error) {
+                                        console.warn('Scroll spy active callback error:', error);
+                                    }
+                                }}
+                                onSetInactive={(to) => {
+                                    try {
+                                        // Only handle if component is still mounted and scroll spy is enabled
+                                        if (isMountedRef.current && scrollSpyEnabledRef.current) {
+                                            console.log('Inactive section:', to);
+                                        }
+                                    } catch (error) {
+                                        console.warn('Scroll spy inactive callback error:', error);
+                                    }
+                                }}
                             >
                                 <div className="box-hover"></div>
                                 <div className="relative z-2 flex justify-center items-center shrink-0 !size-11 rounded-full bg-b-surface1">
@@ -365,8 +583,40 @@ const CreateAssistantPage = () => {
                 <div className="flex flex-col gap-3 w-[calc(100%-30rem)] pl-3 max-3xl:w-[calc(100%-25rem)] max-2xl:w-[calc(100%-18.5rem)] max-lg:w-full max-lg:pl-0">
                     {/* Header */}
                     <div className="flex items-center justify-between mb-4">
-                        <h1 className="text-h6 font-bold">Create New Agent</h1>
+                        <h1 className="text-h6 font-bold">
+                            {isEditMode ? `Edit Agent: ${editingAgent?.name || 'Unknown'}` : 'Create New Agent'}
+                        </h1>
+                        {isEditMode && editingAgent && (
+                        <Button 
+                                onClick={() => setIsCallPanelOpen(true)}
+                                isStroke
+                            className="flex items-center gap-2"
+                        >
+                                <Icon name="play" className="w-4 h-4" />
+                                Test Agent
+                        </Button>
+                        )}
                     </div>
+
+                    {/* Success Banner */}
+                    {isSuccess && (
+                        <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                            <div className="flex items-center gap-3">
+                                <Icon name="check-circle" className="w-5 h-5 text-green-500" />
+                                <div>
+                                    <p className="font-medium text-green-800">
+                                        {isEditMode ? 'Agent Updated Successfully!' : 'Agent Created Successfully!'}
+                                    </p>
+                                    <p className="text-sm text-green-600">
+                                        {isEditMode 
+                                            ? 'Your agent has been updated and is ready to use.' 
+                                            : `Agent ID: ${createdAgentId || 'N/A'}. Your new agent is ready to use. Redirecting to agents page...`
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Agent Type Selection */}
                     <ElementWithOffset name="agent-type">
@@ -376,12 +626,19 @@ const CreateAssistantPage = () => {
                                     <div>
                                         <h3 className="font-semibold text-lg text-center">Choose Agent Type</h3>
                                         <p className="text-t-secondary text-center">Select the type of agent you want to create</p>
+                                        {isEditMode && (
+                                            <p className="text-xs text-t-secondary text-center mt-1">
+                                                Agent type cannot be changed in edit mode
+                                            </p>
+                                        )}
                                     </div>
                                     
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div 
-                                            className="cursor-pointer transition-all hover:shadow-md border-2 rounded-3xl p-6 text-center hover:border-primary-01/50"
-                                            onClick={() => setSelectedAgentType('SPEECH')}
+                                            className={`cursor-pointer transition-all hover:shadow-md border-2 rounded-3xl p-6 text-center hover:border-primary-01/50 ${
+                                                isEditMode ? 'opacity-50 cursor-not-allowed' : ''
+                                            }`}
+                                            onClick={() => !isEditMode && setSelectedAgentType('SPEECH')}
                                         >
                                             <Icon name="microphone" className="w-12 h-12 mx-auto mb-4 text-primary-01" />
                                             <h4 className="font-semibold text-lg mb-2">Speech to Speech</h4>
@@ -391,8 +648,10 @@ const CreateAssistantPage = () => {
                                         </div>
                                         
                                         <div 
-                                            className="cursor-pointer transition-all hover:shadow-md border-2 rounded-3xl p-6 text-center hover:border-primary-01/50"
-                                            onClick={() => setSelectedAgentType('TEXT')}
+                                            className={`cursor-pointer transition-all hover:shadow-md border-2 rounded-3xl p-6 text-center hover:border-primary-01/50 ${
+                                                isEditMode ? 'opacity-50 cursor-not-allowed' : ''
+                                            }`}
+                                            onClick={() => !isEditMode && setSelectedAgentType('TEXT')}
                                         >
                                             <Icon name="chat" className="w-12 h-12 mx-auto mb-4 text-primary-01" />
                                             <h4 className="font-semibold text-lg mb-2">Text to Speech</h4>
@@ -422,14 +681,16 @@ const CreateAssistantPage = () => {
                                             </p>
                                         </div>
                                     </div>
-                                    <Button 
-                                        type="button" 
-                                        isStroke 
-                                        onClick={() => setSelectedAgentType(null)}
-                                        className="h-8 px-3 text-sm"
-                                    >
-                                        Change Type
-                                    </Button>
+                                    {!isEditMode && (
+                                        <Button 
+                                            type="button" 
+                                            isStroke 
+                                            onClick={() => setSelectedAgentType(null)}
+                                            className="h-8 px-3 text-sm"
+                                        >
+                                            Change Type
+                                        </Button>
+                                    )}
                                 </div>
                             )}
                         </Card>
@@ -470,7 +731,7 @@ const CreateAssistantPage = () => {
                                     {/* Voice Provider Selection */}
                                     <div className="space-y-2">
                                         <label className="text-sm font-medium">TTS Provider</label>
-                                        <Select 
+                                    <Select
                                             value={(() => {
                                                 const providerOptions = [
                                                     { id: 1, name: "voicecake" },
@@ -488,7 +749,7 @@ const CreateAssistantPage = () => {
                                                     voice_id: "" // Reset voice_id when provider changes
                                                 }));
                                             }}
-                                            options={[
+                                        options={[
                                                 { id: 1, name: "voicecake" },
                                                 { id: 2, name: "cartesia" },
                                                 { id: 3, name: "elevenlabs" },
@@ -529,7 +790,7 @@ const CreateAssistantPage = () => {
                                             {formData.voice_category && (
                                                 <div className="space-y-2">
                                                     <label className="text-sm font-medium">Voice</label>
-                                                    <Select
+                                    <Select
                                                         value={(() => {
                                                             const voicesInCategory = getVoicesByProvider(formData.voice_provider)
                                                                 .filter(voice => voice.category === formData.voice_category);
@@ -552,8 +813,8 @@ const CreateAssistantPage = () => {
                                                                 name: voice.name
                                                             }))}
                                                         placeholder="Select a voice"
-                                                    />
-                                                </div>
+                                    />
+                                </div>
                                             )}
 
                                             {/* Voice Info Display */}
@@ -580,10 +841,10 @@ const CreateAssistantPage = () => {
 
                                     {/* AI Model - Only for Speech-To-Speech */}
                                     {selectedAgentType === 'SPEECH' && (
-                                        <div className="space-y-4">
+                                <div className="space-y-4">
                                             <div className="space-y-2">
                                                 <label className="text-sm font-medium">AI Model Provider</label>
-                                                <Select 
+                                    <Select
                                                     value={(() => {
                                                         const providerOptions = [
                                                             { id: 1, name: "VOICECAKE" },
@@ -605,7 +866,7 @@ const CreateAssistantPage = () => {
                                                             model_resource: "" // Reset model when provider changes
                                                         }));
                                                     }}
-                                                    options={[
+                                        options={[
                                                         { id: 1, name: "VOICECAKE" },
                                                         { id: 2, name: "OPEN_AI" },
                                                         { id: 3, name: "ANTHROPIC" },
@@ -624,7 +885,7 @@ const CreateAssistantPage = () => {
                                             {formData.model_provider && (
                                                 <div className="space-y-2">
                                                     <label className="text-sm font-medium">Model</label>
-                                                    <Select 
+                                    <Select
                                                         value={(() => {
                                                             const modelsForProvider = modelOptions.filter(model => model.provider === formData.model_provider);
                                                             const selectedModel = modelsForProvider.find(model => model.simpleName === formData.model_resource);
@@ -653,7 +914,7 @@ const CreateAssistantPage = () => {
                             ) : (
                                 <div className="text-center py-8 text-t-secondary">
                                     Please select an agent type first to configure voice and model settings.
-                                </div>
+                            </div>
                             )}
                         </Card>
                     </ElementWithOffset>
@@ -693,24 +954,24 @@ const CreateAssistantPage = () => {
 
                                     {/* Legacy fields for existing design compatibility */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <Field
-                                            label="Language"
-                                            placeholder="English"
-                                            value={language}
-                                            onChange={(e) => setLanguage(e.target.value)}
-                                        />
-                                        <Field
-                                            label="Turn Taking"
-                                            placeholder="auto"
-                                            value={turnTaking}
-                                            onChange={(e) => setTurnTaking(e.target.value)}
-                                        />
-                                    </div>
+                                    <Field
+                                        label="Language"
+                                        placeholder="English"
+                                        value={language}
+                                        onChange={(e) => setLanguage(e.target.value)}
+                                    />
+                                    <Field
+                                        label="Turn Taking"
+                                        placeholder="auto"
+                                        value={turnTaking}
+                                        onChange={(e) => setTurnTaking(e.target.value)}
+                                    />
+                                </div>
                                 </div>
                             ) : (
                                 <div className="text-center py-8 text-t-secondary">
                                     Please select an agent type first to configure details.
-                                </div>
+                            </div>
                             )}
                         </Card>
                     </ElementWithOffset>
@@ -720,7 +981,7 @@ const CreateAssistantPage = () => {
                         <Card title="Instructions" className="p-6">
                             {selectedAgentType ? (
                                 <div className="space-y-4">
-                                    <Field
+                                <Field
                                         label={
                                             selectedAgentType === 'SPEECH' ? 'Custom Instructions' : 'Agent Instructions'
                                         }
@@ -749,27 +1010,27 @@ Be specific to ensure the agent provides helpful and consistent responses.`
                                         }
                                         value={formData.instructions}
                                         onChange={(e) => setFormData(prev => ({ ...prev, instructions: e.target.value }))}
-                                        textarea
-                                        classInput={isSystemPromptExpanded ? "h-72" : "h-24"}
+                                    textarea
+                                    classInput={isSystemPromptExpanded ? "h-72" : "h-24"}
                                         required={selectedAgentType === 'TEXT'}
-                                    />
+                                />
                                     <div className="flex justify-between items-center">
                                         <p className="text-xs text-t-secondary">
                                             💡 Tip: The more detailed your instructions, the better the agent will perform. Include personality traits, response style, and specific guidelines.
                                         </p>
-                                        <Button
-                                            onClick={() => setIsSystemPromptExpanded(!isSystemPromptExpanded)}
-                                            className="text-sm"
-                                            isStroke
-                                        >
-                                            <Icon 
-                                                name={isSystemPromptExpanded ? "chevron-up" : "chevron-down"} 
-                                                className="w-4 h-4 mr-2" 
-                                            />
-                                            {isSystemPromptExpanded ? "Show less" : "Show more"}
-                                        </Button>
-                                    </div>
+                                    <Button
+                                        onClick={() => setIsSystemPromptExpanded(!isSystemPromptExpanded)}
+                                        className="text-sm"
+                                        isStroke
+                                    >
+                                        <Icon 
+                                            name={isSystemPromptExpanded ? "chevron-up" : "chevron-down"} 
+                                            className="w-4 h-4 mr-2" 
+                                        />
+                                        {isSystemPromptExpanded ? "Show less" : "Show more"}
+                                    </Button>
                                 </div>
+                            </div>
                             ) : (
                                 <div className="text-center py-8 text-t-secondary">
                                     Please select an agent type first to configure instructions.
@@ -850,7 +1111,8 @@ Be specific to ensure the agent provides helpful and consistent responses.`
                         </div>
                     </ElementWithOffset>
 
-                    {/* Share */}
+                    {/* Share - Only show when agent is created or editing */}
+                    {(isSuccess || isEditMode) && (
                     <ElementWithOffset name="share">
                         <Card title="Share" className="p-6">
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
@@ -867,48 +1129,68 @@ Be specific to ensure the agent provides helpful and consistent responses.`
                             </div>
                         </Card>
                     </ElementWithOffset>
+                    )}
 
                     {/* Footer Buttons */}
                     <form onSubmit={handleSubmit}>
-                        <div className="flex justify-end gap-3 pt-6">
+                    <div className="flex justify-end gap-3 pt-6">
                             <Button 
                                 type="button" 
                                 isStroke
                                 onClick={() => {
-                                    setSelectedAgentType(null);
-                                    setFormData({
-                                        name: "",
-                                        description: "",
-                                        voice_provider: "",
-                                        voice_category: "",
-                                        voice_id: "",
-                                        model_provider: "",
-                                        model_resource: "",
-                                        instructions: "",
-                                        tool_ids: []
-                                    });
+                                    try {
+                                        // Disable scroll spy immediately to prevent errors
+                                        scrollSpyEnabledRef.current = false;
+                                        isMountedRef.current = false;
+                                        
+                                        // Clear edit state if in edit mode
+                                        if (isEditMode) {
+                                            clearEditState();
+                                        }
+                                        
+                                        // Force cleanup of scroll spy
+                                        try {
+                                            if (typeof window !== 'undefined' && window.scrollSpy) {
+                                                window.scrollSpy.destroy();
+                                            }
+                                        } catch (cleanupError) {
+                                            console.warn('Scroll spy cleanup error:', cleanupError);
+                                        }
+                                        
+                                        // Immediate navigation without delay
+                                        router.push('/agents');
+                                    } catch (error) {
+                                        console.warn('Cancel button error:', error);
+                                        // Fallback: direct navigation
+                                        router.push('/agents');
+                                    }
                                 }}
                             >
-                                Cancel
-                            </Button>
+                            Cancel
+                        </Button>
                             <Button 
                                 type="submit"
-                                disabled={isLoading || !selectedAgentType}
+                                disabled={isLoading || !selectedAgentType || isSuccess}
                                 className="flex items-center gap-2"
                             >
                                 {isLoading ? (
                                     <>
                                         <Icon name="loader" className="w-4 h-4 animate-spin" />
-                                        Creating Agent...
+                                        {isEditMode ? 'Updating Agent...' : 'Creating Agent...'}
+                                    </>
+                                ) : isSuccess ? (
+                                    <>
+                                        <Icon name="check-circle" className="w-4 h-4 text-green-500" />
+                                        {isEditMode ? 'Agent Updated!' : 'Agent Created!'}
                                     </>
                                 ) : (
                                     <>
-                                        <Icon name="save" className="w-4 h-4" />
-                                        Create Agent
+                            <Icon name="save" className="w-4 h-4" />
+                                        {isEditMode ? 'Update Agent' : 'Create Agent'}
                                     </>
                                 )}
-                            </Button>
-                        </div>
+                        </Button>
+                    </div>
                     </form>
                 </div>
             </div>
@@ -917,6 +1199,7 @@ Be specific to ensure the agent provides helpful and consistent responses.`
             <CallTranscriptPanel 
                 isOpen={isCallPanelOpen}
                 onClose={() => setIsCallPanelOpen(false)}
+                agentData={isEditMode ? editingAgent : null}
             />
 
             {/* Create Agent Modal */}

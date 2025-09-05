@@ -18,7 +18,10 @@ const handleApiResponse = (response: any, fallback?: any) => {
       return response.data.data;
     }
     if (!response.data.success && response.data.message) {
-      throw new Error(response.data.message);
+      // Create a custom error that preserves the original response structure
+      const error = new Error(response.data.message);
+      (error as any).response = { data: response.data };
+      throw error;
     }
   }
   return fallback !== undefined ? fallback : response.data;
@@ -337,6 +340,37 @@ export const liveKitAPI = {
       participant_name: participantName || `User_${Date.now()}`
     });
     return handleApiResponse(response);
+  }
+};
+
+// Call Logs API functions
+export const callLogsAPI = {
+  getCallLogs: async (limit: number = 50, offset: number = 0) => {
+    const response = await api.get(`/sessions/call-logs?limit=${limit}&offset=${offset}`);
+    return response.data; // Return full response to access success/message/data structure
+  },
+  
+  getCallLog: async (sessionId: string) => {
+    const response = await api.get(`/sessions/call-logs/${sessionId}`);
+    return handleApiResponse(response);
+  },
+  
+  exportCallLogs: async (filters?: {
+    agent_id?: string;
+    status?: string;
+    date_from?: string;
+    date_to?: string;
+  }) => {
+    const params = new URLSearchParams();
+    if (filters?.agent_id) params.append('agent_id', filters.agent_id);
+    if (filters?.status) params.append('status', filters.status);
+    if (filters?.date_from) params.append('date_from', filters.date_from);
+    if (filters?.date_to) params.append('date_to', filters.date_to);
+    
+    const response = await api.get(`/sessions/call-logs/export?${params.toString()}`, {
+      responseType: 'blob'
+    });
+    return response.data;
   }
 };
 

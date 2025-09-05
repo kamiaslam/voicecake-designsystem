@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
+import Checkbox from "@/components/Checkbox";
 import Icon from "@/components/Icon";
 import Layout from "@/components/Layout";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -38,12 +39,29 @@ const Inference = () => {
     agentId: agentId
   });
 
-  const handleStartInference = () => {
+  const handleStartInference = async () => {
     if (!agentId) {
-      toast.error("Agent ID is required");
+      toast.error("Missing Agent ID", {
+        description: "Please provide a valid agent ID to start inference",
+        duration: 4000
+      });
       return;
     }
-    startInference(agentId);
+    
+    // Test toast to verify toast system is working
+    console.log('🧪 Testing toast system...');
+    toast.info("Starting Voice AI", {
+      description: "Connecting to inference session...",
+      duration: 3000
+    });
+    
+    try {
+      await startInference(agentId);
+    } catch (error: any) {
+      console.error('Error in handleStartInference:', error);
+      // The error should already be handled by the hook and shown via toast
+      // But we can add additional handling here if needed
+    }
   };
 
   const handleStopInference = () => {
@@ -400,16 +418,11 @@ const Inference = () => {
                     {isBackgroundAudioPlaying ? 'Stop Audio' : 'Start Audio'}
                   </Button>
                   <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      id="backgroundAudioEnabled"
+                    <Checkbox
                       checked={isAmbientSoundOn}
-                      onChange={(e) => setIsAmbientSoundOn(e.target.checked)}
-                      className="rounded border-gray-300"
+                      onChange={(checked) => setIsAmbientSoundOn(checked)}
+                      label="Auto-play when inference starts"
                     />
-                    <label htmlFor="backgroundAudioEnabled" className="text-sm text-t-primary">
-                      Auto-play when inference starts
-                    </label>
                   </div>
                 </div>
               </div>

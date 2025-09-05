@@ -9,7 +9,10 @@ const handleApiResponse = (response: any, fallback?: any) => {
       return response.data.data;
     }
     if (!response.data.success && response.data.message) {
-      throw new Error(response.data.message);
+      // Create a custom error that preserves the original response structure
+      const error = new Error(response.data.message);
+      (error as any).response = { data: response.data };
+      throw error;
     }
   }
   return fallback !== undefined ? fallback : response.data;

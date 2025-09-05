@@ -62,7 +62,23 @@ export const config = {
     }
     
     const endpoint = config.websocket.humeEndpoint;
-    return `${config.websocket.baseURL}${endpoint}/${agentId}`;
+    let baseUrl = config.websocket.baseURL;
+    
+    // Remove trailing slash from base URL
+    if (baseUrl.endsWith('/')) {
+      baseUrl = baseUrl.slice(0, -1);
+    }
+    
+    // Check if base URL already contains /api/v1 and endpoint also starts with /api/v1
+    // If so, remove /api/v1 from the endpoint to avoid duplication
+    let cleanEndpoint = endpoint;
+    if (baseUrl.includes('/api/v1') && endpoint.startsWith('/api/v1')) {
+      cleanEndpoint = endpoint.replace('/api/v1', '');
+    } else if (!endpoint.startsWith('/')) {
+      cleanEndpoint = `/${endpoint}`;
+    }
+    
+    return `${baseUrl}${cleanEndpoint}/${agentId}`;
   },
   
   // Debug helper to show endpoint routing

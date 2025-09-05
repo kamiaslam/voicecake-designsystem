@@ -12,7 +12,7 @@ interface AppProtectionProps {
 }
 
 // Routes that don't require authentication
-const PUBLIC_ROUTES = ["/", "/auth/signin", "/auth/signup", "/add-agent", "/agents"];
+const PUBLIC_ROUTES = ["/", "/auth/signin", "/auth/signup"];
 
 // Routes that require authentication but not subscription
 const AUTH_ONLY_ROUTES = ["/plan-selection", "/purchase-plan"];

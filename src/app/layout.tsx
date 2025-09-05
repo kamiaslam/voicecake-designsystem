@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import Providers from "./providers";
 import AppProtection from "@/components/AppProtection";
+import { Toaster } from "sonner";
 import "./globals.css";
 
 const interDisplay = localFont({
@@ -44,9 +45,6 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
-                {/* Favicon */}
-                <link rel="icon" href="/favicon.ico" sizes="any" />
-                <link rel="icon" href="/favicon.ico" type="image/x-icon" />
                 {/* Google Fonts - Inter, Roboto Condensed & JetBrains Mono */}
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -142,6 +140,35 @@ export default function RootLayout({
                     <AppProtection>
                         {children}
                     </AppProtection>
+                    <Toaster 
+                        position="top-right" 
+                        richColors
+                        expand={true}
+                        closeButton={true}
+                        duration={5000}
+                        toastOptions={{
+                            style: {
+                                background: 'rgba(255, 255, 255, 0.9)',
+                                border: '1px solid rgba(229, 231, 235, 0.6)',
+                                borderRadius: '12px',
+                                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                                color: '#111827',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                                padding: '16px 20px',
+                                maxWidth: '400px',
+                                backdropFilter: 'blur(8px)',
+                            },
+                            className: 'toast-modern',
+                            classNames: {
+                                title: 'text-gray-900 dark:text-gray-100 font-semibold',
+                                description: 'text-gray-600 dark:text-gray-300 text-sm mt-1',
+                                actionButton: 'bg-blue-600 dark:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors',
+                                cancelButton: 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors',
+                                closeButton: 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors',
+                            }
+                        }}
+                    />
                 </Providers>
             </body>
         </html>

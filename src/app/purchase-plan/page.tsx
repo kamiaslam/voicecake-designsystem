@@ -157,7 +157,7 @@ export default function PlanPurchase() {
         <div className="max-w-2xl mx-auto">
           <div className="text-center space-y-4 mb-8">
             <Badge className="mx-auto">Complete Your Purchase</Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold">Purchase {selectedPlan.name}</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold">Purchase {selectedPlan.name || 'Plan'}</h2>
             <p className="text-muted-foreground">
               Review your plan details and complete your purchase to get started with VoiceCake.
             </p>
@@ -174,15 +174,20 @@ export default function PlanPurchase() {
                 <div className="rounded-lg border p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="font-semibold text-lg">{selectedPlan.name}</div>
+                      <div className="font-semibold text-lg">{selectedPlan.name || 'Unnamed Plan'}</div>
                       <div className="text-muted-foreground text-sm">
                         VoiceCake {selectedPlan.bot_type === "conversa" ? "Conversa" : "Empath"} Bot
                       </div>
                       <div className="text-sm text-blue-600 dark:text-blue-400 mt-1">
-                        {selectedPlan.minutes.toLocaleString()} minutes included
+                        {(selectedPlan.tts_minutes_included || selectedPlan.minutes || 0).toLocaleString()} minutes included
                       </div>
+                      {selectedPlan.automations_included && (
+                        <div className="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                          {selectedPlan.automations_included.toLocaleString()} automations included
+                        </div>
+                      )}
                     </div>
-                    <div className="text-3xl font-bold text-green-600 dark:text-green-400">${selectedPlan.price}</div>
+                    <div className="text-3xl font-bold text-green-600 dark:text-green-400">${selectedPlan.total_price || selectedPlan.price || 0}</div>
                   </div>
                 </div>
               ) : (

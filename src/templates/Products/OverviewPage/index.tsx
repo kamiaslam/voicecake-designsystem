@@ -19,7 +19,7 @@ const OverviewPage = () => {
                         <ProductView />
                     </div>
                 </div>
-                <Products />
+                {/* <Products /> */}
             </div>
         </Layout>
     );
