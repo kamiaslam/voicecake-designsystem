@@ -23,7 +23,7 @@ export default function AppProtection({ children }: AppProtectionProps) {
   const { hasActiveSubscription, subscriptionsLoaded, requiresPlan } = useFinance();
 
   // Check if current route is public
-  const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
+  const isPublicRoute = PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/share/');
   
   // Check if current route only requires authentication (not subscription)
   const isAuthOnlyRoute = AUTH_ONLY_ROUTES.includes(pathname);

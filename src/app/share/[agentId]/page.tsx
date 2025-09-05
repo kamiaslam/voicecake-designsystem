@@ -6,11 +6,13 @@ import Button from "@/components/Button";
 import Card from "@/components/Card";
 import Badge from "@/components/Badge";
 import Icon from "@/components/Icon";
-import Layout from "@/components/Layout";
+import Logo from "@/components/Logo";
+import ThemeButton from "@/components/ThemeButton";
 import useHumeInference, { INFERENCE_STATES } from "@/hooks/useHumeInference";
 import { toast } from "sonner";
 import { Agent } from "@/types/agent";
 import { publicAgentAPI } from "@/services/publicApi";
+import Loader from "@/components/Loader";
 
 const Share = () => {
   const params = useParams();
@@ -165,60 +167,115 @@ const Share = () => {
 
   if (loading) {
     return (
-      <Layout title="Voice AI Chat">
-        <div className="container mx-auto py-8 px-4 max-w-4xl">
-          <div className="flex items-center justify-center min-h-[400px]">
-            <div className="flex items-center space-x-2">
-              <Icon name="loader" className="h-6 w-6 animate-spin" />
-              <span className="text-t-secondary">Loading agent...</span>
+      <div className="min-h-screen bg-b-surface1">
+        {/* Custom Top Navigation */}
+        <div className="sticky top-0 left-0 right-0 z-50 bg-b-surface1">
+          <div className="flex items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-3">
+              <Logo className="w-8 h-8" />
+              <div>
+                <h1 className="text-lg font-semibold text-t-primary">Voice AI Chat</h1>
+                <p className="text-sm text-t-secondary">Public Agent Access</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <ThemeButton className="flex-row w-22" />
             </div>
           </div>
         </div>
-      </Layout>
+
+        {/* Main Content */}
+        <div className="pt-20 px-6 pb-6">
+          <div className="container mx-auto py-8 px-4 max-w-4xl">
+            <div className="flex items-center justify-center min-h-[400px]">
+              <div className="flex items-center space-x-2">
+                <Loader text="Loading agent..." />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
   if (error || !agent) {
     return (
-      <Layout title="Voice AI Chat">
-        <div className="container mx-auto py-8 px-4 max-w-4xl">
-          <div className="text-center space-y-4">
-            <Card className="p-6 max-w-md mx-auto">
-              <div className="text-center">
-                <Icon name="alert-circle" className="h-12 w-12 text-[#FF6A55] mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-t-primary mb-2">Error</h3>
-                <p className="text-t-secondary">
-                  {error || "Agent not found"}
-                </p>
+      <div className="min-h-screen bg-b-surface1">
+        {/* Custom Top Navigation */}
+        <div className="sticky top-0 left-0 right-0 z-50 bg-b-surface1">
+          <div className="flex items-center justify-between px-6 py-4">
+            <div className="flex items-center gap-3">
+              <Logo className="w-8 h-8" />
+              <div>
+                <h1 className="text-lg font-semibold text-t-primary">Voice AI Chat</h1>
+                <p className="text-sm text-t-secondary">Public Agent Access</p>
               </div>
-            </Card>
-            <div className="flex gap-2 justify-center">
-              <Button 
-                isStroke
-                onClick={() => window.location.reload()}
-                className="gap-2"
-              >
-                <Icon name="loader" className="w-4 h-4" />
-                Retry
-              </Button>
-              <Button 
-                isStroke
-                onClick={() => router.push('/')}
-                className="gap-2"
-              >
-                <Icon name="arrow-left" className="w-4 h-4" />
-                Go Home
-              </Button>
+            </div>
+            <div className="flex items-center gap-3">
+              <ThemeButton className="flex-row w-22" />
             </div>
           </div>
         </div>
-      </Layout>
+
+        {/* Main Content */}
+        <div className="pt-20 px-6 pb-6">
+          <div className="container mx-auto py-8 px-4 max-w-4xl">
+            <div className="text-center space-y-4">
+              <Card className="p-6 max-w-md mx-auto">
+                <div className="text-center">
+                  <Icon name="alert-circle" className="h-12 w-12 text-[#FF6A55] mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-t-primary mb-2">Error</h3>
+                  <p className="text-t-secondary">
+                    {error || "Agent not found"}
+                  </p>
+                </div>
+              </Card>
+              <div className="flex gap-2 justify-center">
+                <Button 
+                  isStroke
+                  onClick={() => window.location.reload()}
+                  className="gap-2"
+                >
+                  <Icon name="loader" className="w-4 h-4" />
+                  Retry
+                </Button>
+                <Button 
+                  isStroke
+                  onClick={() => router.push('/')}
+                  className="gap-2"
+                >
+                  <Icon name="arrow-left" className="w-4 h-4" />
+                  Go Home
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Layout title="Voice AI Inference">
-      <div className="space-y-3">
+    <div className="min-h-screen bg-b-surface1">
+      {/* Custom Top Navigation */}
+      <div className="sticky top-0 left-0 right-0 z-50 bg-b-surface1">
+        <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <Logo className="w-8 h-8" />
+            <div>
+              <h1 className="text-lg font-semibold text-t-primary">Voice AI Chat</h1>
+              <p className="text-sm text-t-secondary">Public Agent Access</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <ThemeButton className="flex-row w-22"/>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="pt-10 px-6 pb-6">
+        <div className="space-y-3">
         {/* Header with stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="p-6 mb-0" title="Connection Status">
@@ -605,8 +662,9 @@ const Share = () => {
             </div>
           </Card>
         </div>
+        </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 
