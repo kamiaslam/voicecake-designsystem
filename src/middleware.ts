@@ -16,6 +16,11 @@ function isPublicRoute(pathname: string): boolean {
     return true;
   }
   
+  // Share routes (public agent sharing)
+  if (pathname.startsWith('/share/')) {
+    return true;
+  }
+  
   // Static assets and API routes
   if (pathname.startsWith('/api/') || 
       pathname.startsWith('/_next/') || 
