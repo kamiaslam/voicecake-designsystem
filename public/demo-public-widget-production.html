@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoiceCake Public Widget Demo</title>
+    <title>VoiceCake Public Widget Demo - Production</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -60,16 +60,22 @@
 </head>
 <body>
     <div class="container">
-        <h1>🎤 VoiceCake Public Widget Demo</h1>
+        <h1>🎤 VoiceCake Public Widget Demo - Production</h1>
         
         <div class="info-box">
-            <h3>✅ Public Access - No Authentication Required</h3>
-            <p>This demo shows how to use the VoiceCake widget with public access. No authentication token is needed!</p>
+            <h3>✅ Production Mode - Real Agent Connection</h3>
+            <p>This demo connects to the production VoiceCake API endpoints for real agent conversations.</p>
         </div>
 
         <div class="warning">
-            <h3>⚠️ Important Note</h3>
-            <p>For the public endpoint to work, your agent must be configured as a <strong>public agent</strong> (<code>is_active=True</code>) in your VoiceCake dashboard.</p>
+            <h3>⚠️ Production Configuration</h3>
+            <p>This demo is configured for <strong>production</strong> and uses:</p>
+            <ul>
+                <li>API URL: <code>https://voicecake-ame5ascacvgrgde6.canadacentral-01.azurewebsites.net/api/v1</code></li>
+                <li>WebSocket URL: <code>wss://voicecake-ame5ascacvgrgde6.canadacentral-01.azurewebsites.net</code></li>
+                <li>Agent ID: <code>53</code> (real agent - replace with your agent ID)</li>
+            </ul>
+            <p>Replace <code>data-agent-id="53"</code> with your actual public agent ID.</p>
         </div>
 
         <div class="step">
@@ -100,46 +106,12 @@
             <p>Click the floating microphone button in the bottom-left corner to test the voice conversation:</p>
             <ol>
                 <li>Click the microphone icon</li>
-                <li>Wait for agent details to load (shows "VoiceCake Test Assistant")</li>
+                <li>Wait for agent details to load</li>
                 <li>Click "Start Chat"</li>
                 <li>Allow microphone access when prompted</li>
                 <li>Speak naturally into your microphone</li>
-                <li>Watch the conversation status indicator show:
-                    <ul>
-                        <li>🔵 "You are speaking..." (when you talk)</li>
-                        <li>🟣 "Processing your message..." (when AI is thinking)</li>
-                        <li>🟡 "AI is responding..." (when AI is speaking)</li>
-                        <li>🟢 "Ready to listen" (when ready for your next message)</li>
-                    </ul>
-                </li>
+                <li>Have a real conversation with the AI agent!</li>
             </ol>
-        </div>
-
-        <div class="warning">
-            <h3>⚠️ Local Development Mode</h3>
-            <p>This demo is configured for <strong>local development</strong> and uses:</p>
-            <ul>
-                <li>Frontend: <code>localhost:4000</code> (this page)</li>
-                <li>Backend API: <code>http://localhost:8000/api/v1</code></li>
-                <li>WebSocket: <code>ws://localhost:8000</code></li>
-                <li>Test agent ID: <code>test-agent-123</code> (simulates conversation)</li>
-            </ul>
-            <p>Make sure your VoiceCake backend server is running on <strong>localhost:8000</strong> for real agent connections.</p>
-        </div>
-
-        <div class="step">
-            <h3>Voice Conversation Features</h3>
-            <p>The updated widget now includes:</p>
-            <ul>
-                <li>✅ Real-time voice conversation with AI agents</li>
-                <li>✅ Visual conversation status indicators</li>
-                <li>✅ Speech detection and audio feedback</li>
-                <li>✅ Agent information display (name, description, type)</li>
-                <li>✅ Loading state while fetching agent details</li>
-                <li>✅ Better error handling for public access</li>
-                <li>✅ Improved public API endpoint usage</li>
-                <li>✅ Agent status and type badges</li>
-            </ul>
         </div>
 
         <div class="info-box">
@@ -151,12 +123,10 @@
     <!-- Load LiveKit client -->
     <script src="https://unpkg.com/livekit-client@latest/dist/livekit-client.umd.js"></script>
 
-    <!-- VoiceCake Public Widget - No Auth Token Needed -->
+    <!-- VoiceCake Public Widget - Production -->
     <script 
         src="voicecake-widget-loader.js"
-        data-agent-id="test-agent-123"
-        data-api-url="http://localhost:8000/api/v1"
-        data-ws-url="ws://localhost:8000"
+        data-agent-id="53"
         data-debug="true">
     </script>
 
@@ -171,10 +141,10 @@
             
             console.log('VoiceCake Public Widget Configuration:');
             console.log('Agent ID:', agentId);
-            console.log('API URL:', apiUrl);
-            console.log('WebSocket URL:', wsUrl);
+            console.log('API URL:', apiUrl || 'Default production URL');
+            console.log('WebSocket URL:', wsUrl || 'Default production WebSocket URL');
             console.log('Auth Token:', authToken ? 'Provided (fallback)' : 'Not provided (public access)');
-            console.log('Mode: Public Access (Local Development)');
+            console.log('Mode: Public Access (Production)');
         });
     </script>
 </body>

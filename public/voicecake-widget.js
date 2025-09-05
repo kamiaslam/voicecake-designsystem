@@ -21,7 +21,10 @@ class VoiceCakeWidget {
             isUserSpeaking: false,
             startTime: null,
             timerInterval: null,
-            transcription: []
+            transcription: [],
+            agent: null,
+            loading: true,
+            error: null
         };
 
         this.connections = {
@@ -52,6 +55,7 @@ class VoiceCakeWidget {
         }
 
         this.bindEvents();
+        this.loadAgentDetails();
         this.log('VoiceCake Widget initialized successfully');
     }
 
@@ -96,6 +100,12 @@ class VoiceCakeWidget {
         const retryButton = document.getElementById('voicecake-widget-retry');
         if (retryButton) {
             retryButton.addEventListener('click', () => this.startConversation());
+        }
+
+        // Reload button
+        const reloadButton = document.getElementById('voicecake-widget-reload');
+        if (reloadButton) {
+            reloadButton.addEventListener('click', () => this.loadAgentDetails());
         }
 
         // Keyboard shortcuts
@@ -149,7 +159,7 @@ class VoiceCakeWidget {
         this.log(`Showing state: ${stateName}`);
         
         // Hide all states
-        const states = ['initial', 'connecting', 'active', 'error'];
+        const states = ['loading', 'initial', 'connecting', 'active', 'error'];
         states.forEach(state => {
             const element = document.getElementById(`voicecake-widget-${state}`);
             if (element) {
@@ -174,6 +184,88 @@ class VoiceCakeWidget {
         }
     }
 
+    async loadAgentDetails() {
+        try {
+            this.state.loading = true;
+            this.showState('loading');
+            
+            // For test agent, create mock data
+            if (this.config.agentId === 'test-agent-123' || this.config.agentId.startsWith('test-')) {
+                this.log('Test agent ID detected - creating mock agent data');
+                const mockAgent = {
+                    id: this.config.agentId,
+                    name: 'VoiceCake Test Assistant',
+                    description: 'A test AI assistant for demonstrating the widget functionality',
+                    agent_type: 'SPEECH',
+                    type: 'SPEECH',
+                    status: 'active',
+                    is_active: true,
+                    is_public: true,
+                    total_sessions: 0,
+                    last_used: null
+                };
+                
+                this.state.agent = mockAgent;
+                this.state.loading = false;
+                this.updateAgentDisplay(mockAgent);
+                this.showState('initial');
+                return;
+            }
+            
+            const agent = await this.fetchAgentDetails();
+            this.state.agent = agent;
+            this.state.loading = false;
+            
+            this.updateAgentDisplay(agent);
+            this.showState('initial');
+            
+        } catch (error) {
+            this.log(`Error loading agent details: ${error.message}`);
+            this.state.loading = false;
+            this.state.error = error.message;
+            this.showError(error.message);
+        }
+    }
+
+    updateAgentDisplay(agent) {
+        // Update agent name
+        const agentName = document.getElementById('voicecake-widget-agent-name');
+        const agentNameInline = document.getElementById('voicecake-widget-agent-name-inline');
+        if (agentName) agentName.textContent = agent.name || 'Voice AI Assistant';
+        if (agentNameInline) agentNameInline.textContent = agent.name || 'our AI assistant';
+
+        // Update agent description
+        const agentDescription = document.getElementById('voicecake-widget-agent-description');
+        if (agentDescription) {
+            agentDescription.textContent = agent.description || 'Powered by VoiceCake';
+        }
+
+        // Update agent type badge
+        const agentType = document.getElementById('voicecake-widget-agent-type');
+        if (agentType) {
+            const agentTypeValue = agent.agent_type || agent.type || 'SPEECH';
+            if (agentTypeValue === 'TEXT') {
+                agentType.textContent = 'Text-to-Speech';
+            } else {
+                agentType.textContent = 'Speech-to-Speech';
+            }
+        }
+
+        // Update agent status badge
+        const agentStatus = document.getElementById('voicecake-widget-agent-status');
+        if (agentStatus) {
+            const status = agent.status || agent.is_active ? 'active' : 'inactive';
+            agentStatus.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+            agentStatus.className = `voicecake-widget-badge voicecake-widget-badge-status ${status}`;
+        }
+
+        // Update widget title
+        const widgetTitle = document.querySelector('.voicecake-widget-title-text h3');
+        if (widgetTitle) {
+            widgetTitle.textContent = agent.name || 'Voice AI Assistant';
+        }
+    }
+
     async startConversation() {
         this.log('Starting conversation...');
         this.showState('connecting');
@@ -186,9 +278,12 @@ class VoiceCakeWidget {
                 return;
             }
 
-            // Fetch agent details to determine agent type
-            this.log('Fetching agent details...');
-            const agentInfo = await this.fetchAgentDetails();
+            // Use already loaded agent details
+            if (!this.state.agent) {
+                throw new Error('Agent details not loaded. Please try again.');
+            }
+            
+            const agentInfo = this.state.agent;
             this.log(`Agent type detected: ${agentInfo.agent_type || agentInfo.type || 'SPEECH'}`);
             this.log('Agent details:', {
                 id: agentInfo.id,
@@ -240,7 +335,26 @@ class VoiceCakeWidget {
 
         } catch (error) {
             this.log(`Error starting conversation: ${error.message}`);
-            this.showError(`Failed to start conversation: ${error.message}`);
+            this.log('Error details:', error);
+            
+            // Clean up any partial connections
+            this.cleanupConnections();
+            
+            // Show user-friendly error message
+            let errorMessage = 'Failed to start conversation';
+            if (error.message.includes('timeout')) {
+                errorMessage = 'Connection timed out. Please check your internet connection and try again.';
+            } else if (error.message.includes('not found') || error.message.includes('404')) {
+                errorMessage = 'Agent not found or not publicly accessible. Please check the agent ID.';
+            } else if (error.message.includes('permission') || error.message.includes('microphone')) {
+                errorMessage = 'Microphone permission denied. Please allow microphone access and try again.';
+            } else if (error.message.includes('network') || error.message.includes('fetch')) {
+                errorMessage = 'Network error. Please check your internet connection and try again.';
+            } else {
+                errorMessage = `Failed to start conversation: ${error.message}`;
+            }
+            
+            this.showError(errorMessage);
         }
     }
 
@@ -266,7 +380,12 @@ class VoiceCakeWidget {
             // Set a timeout for connection
             const connectionTimeout = setTimeout(() => {
                 if (socket.readyState === WebSocket.CONNECTING) {
-                    socket.close();
+                    this.log('WebSocket connection timeout - closing connection');
+                    try {
+                        socket.close();
+                    } catch (error) {
+                        this.log(`Error closing timed out socket: ${error.message}`);
+                    }
                     reject(new Error('Connection timeout - please check your agent ID and network connection'));
                 }
             }, 10000); // 10 second timeout
@@ -280,6 +399,7 @@ class VoiceCakeWidget {
             socket.onerror = (error) => {
                 clearTimeout(connectionTimeout);
                 this.log(`WebSocket error: ${error}`);
+                this.log('WebSocket error details:', error);
                 reject(new Error('Failed to connect to voice service. Please check your agent ID and network connection.'));
             };
 
@@ -290,7 +410,15 @@ class VoiceCakeWidget {
             socket.onclose = (event) => {
                 clearTimeout(connectionTimeout);
                 this.log(`WebSocket closed: ${event.code} ${event.reason}`);
-                if (this.state.isActive) {
+                this.log('WebSocket close details:', {
+                    code: event.code,
+                    reason: event.reason,
+                    wasClean: event.wasClean
+                });
+                
+                // Only stop conversation if it was active and this wasn't a clean close
+                if (this.state.isActive && !event.wasClean) {
+                    this.log('WebSocket closed unexpectedly - stopping conversation');
                     this.stopConversation();
                 }
             };
@@ -416,6 +544,7 @@ class VoiceCakeWidget {
                 if (rms > 35 && !this.state.isUserSpeaking) {
                     this.state.isUserSpeaking = true;
                     this.log('User started speaking - RMS:', rms.toFixed(2));
+                    this.updateConversationStatus('listening', 'You are speaking...');
                     
                     // Check if agent joined when user started speaking
                     if (this.connections.livekitRoom && this.connections.livekitRoom.participants) {
@@ -427,6 +556,7 @@ class VoiceCakeWidget {
                 } else if (rms < 20 && this.state.isUserSpeaking) {
                     this.state.isUserSpeaking = false;
                     this.log('User stopped speaking - RMS:', rms.toFixed(2));
+                    this.updateConversationStatus('processing', 'Processing your message...');
                 }
 
                 requestAnimationFrame(checkAudioLevel);
@@ -459,8 +589,8 @@ class VoiceCakeWidget {
         }
     }
 
-    stopConversation() {
-        this.log('Stopping conversation...');
+    cleanupConnections() {
+        this.log('Cleaning up connections...');
         
         // Clear timer
         if (this.state.timerInterval) {
@@ -470,62 +600,105 @@ class VoiceCakeWidget {
 
         // Stop media recorder
         if (this.connections.mediaRecorder && this.connections.mediaRecorder.state !== 'inactive') {
-            this.connections.mediaRecorder.stop();
+            try {
+                this.connections.mediaRecorder.stop();
+            } catch (error) {
+                this.log(`Error stopping media recorder: ${error.message}`);
+            }
         }
 
         // Stop media stream
         if (this.connections.mediaStream) {
-            this.connections.mediaStream.getTracks().forEach(track => track.stop());
+            try {
+                this.connections.mediaStream.getTracks().forEach(track => track.stop());
+            } catch (error) {
+                this.log(`Error stopping media stream: ${error.message}`);
+            }
         }
 
         // Close WebSocket
         if (this.connections.socket && this.connections.socket.readyState === WebSocket.OPEN) {
-            this.connections.socket.close();
+            try {
+                this.connections.socket.close();
+            } catch (error) {
+                this.log(`Error closing WebSocket: ${error.message}`);
+            }
         }
 
         // Disconnect LiveKit room
         if (this.connections.livekitRoom) {
-            // Clean up any audio elements created for LiveKit
-            const audioElements = document.querySelectorAll('audio[data-livekit-track]');
-            audioElements.forEach((element, index) => {
-                this.log(`Cleaning up LiveKit audio element ${index}`);
+            try {
+                // Clean up any audio elements created for LiveKit
+                const audioElements = document.querySelectorAll('audio[data-livekit-track]');
+                audioElements.forEach((element, index) => {
+                    this.log(`Cleaning up LiveKit audio element ${index}`);
+                    
+                    // Remove the media source connection flag
+                    if (element instanceof HTMLAudioElement) {
+                        delete element.dataset.mediaSourceConnected;
+                    }
+                    
+                    // Pause and remove the element
+                    if (element instanceof HTMLAudioElement) {
+                        element.pause();
+                        element.src = '';
+                        element.load();
+                    }
+                    
+                    element.remove();
+                });
                 
-                // Remove the media source connection flag
-                if (element instanceof HTMLAudioElement) {
-                    delete element.dataset.mediaSourceConnected;
-                }
-                
-                // Pause and remove the element
-                if (element instanceof HTMLAudioElement) {
-                    element.pause();
-                    element.src = '';
-                    element.load();
-                }
-                
-                element.remove();
-            });
-            
-            this.connections.livekitRoom.disconnect();
+                this.connections.livekitRoom.disconnect();
+            } catch (error) {
+                this.log(`Error disconnecting LiveKit room: ${error.message}`);
+            }
             this.connections.livekitRoom = null;
         }
 
         // Close audio contexts
         if (this.connections.audioContext && this.connections.audioContext.state !== 'closed') {
-            this.connections.audioContext.close();
+            try {
+                this.connections.audioContext.close();
+            } catch (error) {
+                this.log(`Error closing audio context: ${error.message}`);
+            }
         }
 
         if (this.connections.speechContext && this.connections.speechContext.state !== 'closed') {
-            this.connections.speechContext.close();
+            try {
+                this.connections.speechContext.close();
+            } catch (error) {
+                this.log(`Error closing speech context: ${error.message}`);
+            }
         }
+
+        // Reset connections
+        this.connections = {
+            socket: null,
+            mediaStream: null,
+            mediaRecorder: null,
+            audioContext: null,
+            speechContext: null,
+            livekitRoom: null
+        };
+
+        // Reset audio state
+        this.audio.queue = [];
+        this.audio.isPlaying = false;
+        this.audio.shouldInterrupt = false;
+        this.audio.currentSource = null;
+    }
+
+    stopConversation() {
+        this.log('Stopping conversation...');
+        
+        this.cleanupConnections();
 
         // Reset state
         this.state.isActive = false;
         this.state.isConnected = false;
         this.state.isUserSpeaking = false;
         this.state.startTime = null;
-        this.audio.queue = [];
-        this.audio.isPlaying = false;
-        this.audio.shouldInterrupt = false;
 
         // Reset UI
         this.showState('initial');
@@ -581,11 +754,13 @@ class VoiceCakeWidget {
                 this.audio.isPlaying = false;
                 this.audio.currentSource = null;
                 this.audio.shouldInterrupt = false;
+                this.updateConversationStatus('ready', 'Ready to listen');
                 setTimeout(() => this.playNextAudio(), 1);
             };
             
             source.start(0);
             this.log('Audio playback started');
+            this.updateConversationStatus('speaking', 'AI is responding...');
 
         } catch (error) {
             this.log(`Audio playback failed: ${error.message}`);
@@ -645,6 +820,34 @@ class VoiceCakeWidget {
         }
     }
 
+    updateConversationStatus(status, message) {
+        const content = document.getElementById('voicecake-widget-conversation-content');
+        if (!content) return;
+
+        const statusDot = content.querySelector('.voicecake-widget-status-dot');
+        const statusText = content.querySelector('.voicecake-widget-status-indicator span');
+        
+        if (statusDot && statusText) {
+            // Update status dot color based on status
+            statusDot.className = 'voicecake-widget-status-dot';
+            if (status === 'listening') {
+                statusDot.style.background = '#007bff';
+                statusDot.style.animation = 'voicecake-status-pulse 1s infinite';
+            } else if (status === 'speaking') {
+                statusDot.style.background = '#ffc107';
+                statusDot.style.animation = 'voicecake-status-pulse 0.5s infinite';
+            } else if (status === 'processing') {
+                statusDot.style.background = '#6f42c1';
+                statusDot.style.animation = 'voicecake-status-pulse 0.8s infinite';
+            } else {
+                statusDot.style.background = '#28a745';
+                statusDot.style.animation = 'voicecake-status-pulse 2s infinite';
+            }
+            
+            statusText.textContent = message;
+        }
+    }
+
     addTranscriptionEntry(speaker, text, isFinal = true) {
         if (!text || !text.trim()) return;
 
@@ -657,57 +860,100 @@ class VoiceCakeWidget {
         };
 
         this.state.transcription.push(entry);
-        this.updateTranscriptionDisplay();
-    }
-
-    updateTranscriptionDisplay() {
-        const content = document.getElementById('voicecake-widget-transcription-content');
-        if (!content) return;
-
-        const finalEntries = this.state.transcription.filter(entry => entry.isFinal);
         
-        if (finalEntries.length === 0) {
-            content.innerHTML = '<div class="voicecake-widget-transcription-placeholder"><p>Start speaking to see the conversation here...</p></div>';
-            return;
+        // Update conversation status based on who's speaking
+        if (speaker === 'user') {
+            this.updateConversationStatus('listening', 'You are speaking...');
+        } else {
+            this.updateConversationStatus('speaking', 'AI is responding...');
         }
-
-        content.innerHTML = finalEntries.map(entry => {
-            const time = entry.timestamp.toLocaleTimeString();
-            const speakerClass = entry.speaker === 'user' ? 'user' : 'ai';
-            const speakerName = entry.speaker === 'user' ? 'You' : 'AI Assistant';
-            
-            return `
-                <div class="voicecake-widget-transcription-entry ${speakerClass}">
-                    <div class="speaker">${speakerName} • ${time}</div>
-                    <div>${entry.text}</div>
-                </div>
-            `;
-        }).join('');
-
-        // Scroll to bottom
-        content.scrollTop = content.scrollHeight;
     }
 
     async fetchAgentDetails() {
         try {
-            // Try public API first
-            const response = await fetch(`${this.config.apiBaseUrl}/agents/${this.config.agentId}/public`);
+            this.log('Fetching agent details...');
+            
+            // Add timeout to prevent infinite loading
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Request timeout')), 10000)
+            );
+            
+            // For public widget, always try public endpoint first
+            this.log('Trying public API endpoint...');
+            const publicApiPromise = fetch(`${this.config.apiBaseUrl}/agents/${this.config.agentId}/public`);
+            const response = await Promise.race([publicApiPromise, timeoutPromise]);
+            
             if (response.ok) {
                 const data = await response.json();
-                return data.data || data;
+                this.log('Agent data received from public API:', data);
+                
+                // Handle standardized response format
+                if (data.success === true && data.data) {
+                    return data.data;
+                } else if (data.data) {
+                    return data.data;
+                } else {
+                    return data;
+                }
             }
             
-            // If public API fails, try regular API
-            const response2 = await fetch(`${this.config.apiBaseUrl}/agents/${this.config.agentId}`);
+            // If public API fails with 404, the agent is not publicly accessible
+            if (response.status === 404) {
+                throw new Error('Agent not found or not publicly accessible. Please check the agent ID or contact the agent owner to make it public.');
+            }
+            
+            // If public API fails with 401, the agent requires authentication
+            if (response.status === 401) {
+                throw new Error('This agent requires authentication and cannot be used in public mode.');
+            }
+            
+            // For other errors, try regular API as fallback (but this will likely fail for public widget)
+            this.log('Public API failed, trying regular API as fallback...');
+            const regularApiPromise = fetch(`${this.config.apiBaseUrl}/agents/${this.config.agentId}`);
+            const response2 = await Promise.race([regularApiPromise, timeoutPromise]);
+            
             if (response2.ok) {
                 const data = await response2.json();
-                return data.data || data;
+                this.log('Agent data received from regular API:', data);
+                
+                // Handle standardized response format
+                if (data.success === true && data.data) {
+                    return data.data;
+                } else if (data.data) {
+                    return data.data;
+                } else {
+                    return data;
+                }
             }
             
-            throw new Error('Failed to fetch agent details');
+            // If both fail, provide specific error message
+            if (response2.status === 404) {
+                throw new Error('Agent not found. Please check the agent ID.');
+            } else if (response2.status === 401) {
+                throw new Error('Agent requires authentication and cannot be used in public mode.');
+            }
+            
+            throw new Error('Failed to fetch agent details from both public and regular endpoints.');
+            
         } catch (error) {
             this.log(`Error fetching agent details: ${error.message}`);
-            throw new Error('Failed to fetch agent details. Please check your agent ID.');
+            
+            let errorMessage = "Failed to fetch agent details";
+            if (error.message === 'Request timeout') {
+                errorMessage = "Request timed out. Please check your internet connection and try again.";
+            } else if (error.message.includes('not found') || error.message.includes('404')) {
+                errorMessage = "Agent not found or not publicly accessible. Please check the agent ID or contact the agent owner to make it public.";
+            } else if (error.message.includes('authentication') || error.message.includes('401')) {
+                errorMessage = "This agent requires authentication and cannot be used in public mode.";
+            } else if (error.message.includes('publicly accessible')) {
+                errorMessage = error.message;
+            } else if (error.message.includes('public mode')) {
+                errorMessage = error.message;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            
+            throw new Error(errorMessage);
         }
     }
 
@@ -720,99 +966,55 @@ class VoiceCakeWidget {
                 'Content-Type': 'application/json',
             };
             
-            // Add auth token if available
-            if (this.config.authToken) {
-                headers['Authorization'] = `Bearer ${this.config.authToken}`;
-                this.log('Using authentication token for LiveKit session');
-            } else {
-                this.log('No authentication token provided - using public endpoint');
-            }
-            
             // For public widget, always use public endpoint first
-            let response;
-            try {
-                this.log('Trying public LiveKit endpoint...');
-                this.log('Request URL:', `${this.config.apiBaseUrl}/livekit/session/start/public`);
-                this.log('Request payload:', {
+            this.log('Trying public LiveKit endpoint...');
+            this.log('Request URL:', `${this.config.apiBaseUrl}/livekit/session/start/public`);
+            this.log('Request payload:', {
+                agent_id: this.config.agentId,
+                participant_name: `PublicUser_${Date.now()}`
+            });
+            
+            const requestStartTime = Date.now();
+            
+            // Add timeout to prevent hanging
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+            
+            const response = await fetch(`${this.config.apiBaseUrl}/livekit/session/start/public`, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({
                     agent_id: this.config.agentId,
                     participant_name: `PublicUser_${Date.now()}`
-                });
-                
-                const requestStartTime = Date.now();
-                
-                // Add timeout to prevent hanging
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-                
-                response = await fetch(`${this.config.apiBaseUrl}/livekit/session/start/public`, {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify({
-                        agent_id: this.config.agentId,
-                        participant_name: `PublicUser_${Date.now()}`
-                    }),
-                    signal: controller.signal
-                });
-                
-                clearTimeout(timeoutId);
-                
-                const requestDuration = Date.now() - requestStartTime;
-                this.log(`Public endpoint response received in ${requestDuration}ms:`, {
-                    status: response.status,
-                    statusText: response.statusText,
-                    ok: response.ok
-                });
-                
-                if (response.ok) {
-                    this.log('Public LiveKit endpoint successful');
-                } else {
-                    // Log response body for debugging
-                    const responseText = await response.text();
-                    this.log('Public endpoint error response:', responseText);
-                    this.log(`Public endpoint failed: ${response.status} ${response.statusText}`);
-                    
-                    // If public endpoint fails, try authenticated endpoint as fallback (if token provided)
-                    if (this.config.authToken) {
-                        this.log('Trying authenticated endpoint as fallback...');
-                        response = await fetch(`${this.config.apiBaseUrl}/livekit/session/start`, {
-                            method: 'POST',
-                            headers: headers,
-                            body: JSON.stringify({
-                                agent_id: this.config.agentId,
-                                participant_name: `User_${Date.now()}`
-                            })
-                        });
-                        
-                        if (response.ok) {
-                            this.log('Authenticated LiveKit endpoint successful (fallback)');
-                        } else {
-                            throw new Error(`Both public and authenticated endpoints failed: ${response.status}`);
-                        }
-                    } else {
-                        throw new Error(`Public endpoint failed: ${response.status} - ${responseText}`);
-                    }
-                }
-            } catch (error) {
-                this.log('Public endpoint failed with error:', error.message);
-                this.log('Error details:', error);
-                
-                if (this.config.authToken) {
-                    this.log('Trying authenticated endpoint as fallback...');
-                    response = await fetch(`${this.config.apiBaseUrl}/livekit/session/start`, {
-                        method: 'POST',
-                        headers: headers,
-                        body: JSON.stringify({
-                            agent_id: this.config.agentId,
-                            participant_name: `User_${Date.now()}`
-                        })
-                    });
-                } else {
-                    throw error;
-                }
-            }
-
+                }),
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            const requestDuration = Date.now() - requestStartTime;
+            this.log(`Public endpoint response received in ${requestDuration}ms:`, {
+                status: response.status,
+                statusText: response.statusText,
+                ok: response.ok
+            });
+            
             if (!response.ok) {
-                throw new Error(`Failed to create LiveKit session: ${response.status} ${response.statusText}`);
+                // Log response body for debugging
+                const responseText = await response.text();
+                this.log('Public endpoint error response:', responseText);
+                this.log(`Public endpoint failed: ${response.status} ${response.statusText}`);
+                
+                // Provide specific error messages for public widget
+                if (response.status === 404) {
+                    throw new Error('LiveKit session endpoint not found. This agent may not support voice conversations or may not be publicly accessible.');
+                } else if (response.status === 401) {
+                    throw new Error('This agent requires authentication for voice conversations and cannot be used in public mode.');
+                } else if (response.status === 403) {
+                    throw new Error('Access denied. This agent may not be publicly accessible for voice conversations.');
+                } else {
+                    throw new Error(`Failed to create voice session: ${response.status} - ${responseText}`);
+                }
             }
 
             const sessionData = await response.json();
@@ -826,17 +1028,34 @@ class VoiceCakeWidget {
                 fullData: sessionData
             });
             
-            // Check if this is a public session response
-            if (sessionData.data) {
-                this.log('Public session data:', sessionData.data);
+            // Handle standardized response format
+            let finalSessionData = sessionData;
+            if (sessionData.success === true && sessionData.data) {
+                finalSessionData = sessionData.data;
+                this.log('Using data from standardized response:', finalSessionData);
+            } else if (sessionData.data) {
+                finalSessionData = sessionData.data;
+                this.log('Using data from response:', finalSessionData);
             }
 
             // Connect to LiveKit room
-            await this.connectToLiveKitRoom(sessionData.data || sessionData);
+            await this.connectToLiveKitRoom(finalSessionData);
             
         } catch (error) {
             this.log(`Error connecting to LiveKit: ${error.message}`);
-            throw error;
+            
+            // Provide user-friendly error messages
+            if (error.message.includes('not found') || error.message.includes('404')) {
+                throw new Error('Voice conversation not available for this agent. The agent may not support voice mode or may not be publicly accessible.');
+            } else if (error.message.includes('authentication') || error.message.includes('401')) {
+                throw new Error('This agent requires authentication for voice conversations and cannot be used in public mode.');
+            } else if (error.message.includes('Access denied') || error.message.includes('403')) {
+                throw new Error('Access denied. This agent may not be publicly accessible for voice conversations.');
+            } else if (error.message.includes('timeout')) {
+                throw new Error('Connection timeout. Please check your internet connection and try again.');
+            } else {
+                throw error;
+            }
         }
     }
 
@@ -956,14 +1175,17 @@ class VoiceCakeWidget {
                     // Set up audio event handlers
                     audioElement.onplay = () => {
                         this.log('Agent audio started playing');
+                        this.updateConversationStatus('speaking', 'AI is responding...');
                     };
                     
                     audioElement.onended = () => {
                         this.log('Agent audio ended');
+                        this.updateConversationStatus('ready', 'Ready to listen');
                     };
                     
                     audioElement.onerror = (error) => {
                         this.log(`Agent audio error: ${error}`);
+                        this.updateConversationStatus('ready', 'Ready to listen');
                     };
                     
                     // Add to DOM for playback
@@ -1014,26 +1236,51 @@ class VoiceCakeWidget {
 
     simulateTestConversation() {
         this.log('Starting test conversation simulation');
+        this.updateConversationStatus('ready', 'Ready to listen');
         
-        // Simulate user speaking after 2 seconds
+        // Simulate user speaking after 3 seconds
         setTimeout(() => {
+            this.updateConversationStatus('listening', 'You are speaking...');
             this.addTranscriptionEntry('user', 'Hello, this is a test message from the user.', true);
-        }, 2000);
+        }, 3000);
 
-        // Simulate AI response after 4 seconds
+        // Simulate AI processing and response after 5 seconds
         setTimeout(() => {
+            this.updateConversationStatus('processing', 'Processing your message...');
+        }, 5000);
+
+        // Simulate AI speaking after 6 seconds
+        setTimeout(() => {
+            this.updateConversationStatus('speaking', 'AI is responding...');
             this.addTranscriptionEntry('ai', 'Hello! I\'m the VoiceCake AI assistant. This is a test response to demonstrate the widget functionality.', true);
-        }, 4000);
-
-        // Simulate another user message after 6 seconds
-        setTimeout(() => {
-            this.addTranscriptionEntry('user', 'How does the voice conversation work?', true);
         }, 6000);
 
-        // Simulate AI response after 8 seconds
+        // Simulate AI finished speaking after 8 seconds
         setTimeout(() => {
-            this.addTranscriptionEntry('ai', 'The widget connects to VoiceCake\'s AI service through WebSocket for real-time voice conversations. You can speak naturally and I\'ll respond with voice and text.', true);
+            this.updateConversationStatus('ready', 'Ready to listen');
         }, 8000);
+
+        // Simulate another user message after 10 seconds
+        setTimeout(() => {
+            this.updateConversationStatus('listening', 'You are speaking...');
+            this.addTranscriptionEntry('user', 'How does the voice conversation work?', true);
+        }, 10000);
+
+        // Simulate AI processing after 12 seconds
+        setTimeout(() => {
+            this.updateConversationStatus('processing', 'Processing your message...');
+        }, 12000);
+
+        // Simulate AI response after 13 seconds
+        setTimeout(() => {
+            this.updateConversationStatus('speaking', 'AI is responding...');
+            this.addTranscriptionEntry('ai', 'The widget connects to VoiceCake\'s AI service through WebSocket for real-time voice conversations. You can speak naturally and I\'ll respond with voice and text.', true);
+        }, 13000);
+
+        // Simulate AI finished speaking after 15 seconds
+        setTimeout(() => {
+            this.updateConversationStatus('ready', 'Ready to listen');
+        }, 15000);
     }
 
     log(message) {

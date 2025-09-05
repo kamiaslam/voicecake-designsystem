@@ -167,6 +167,208 @@
     overflow-y: auto;
 }
 
+/* Loading State */
+.voicecake-widget-loading {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.voicecake-widget-loading h3 {
+    margin: 16px 0 8px 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.voicecake-widget-loading p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Agent Info */
+.voicecake-widget-agent-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.voicecake-widget-agent-avatar {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+
+.voicecake-widget-agent-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.voicecake-widget-agent-details h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    line-height: 1.2;
+}
+
+.voicecake-widget-agent-details p {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.3;
+}
+
+.voicecake-widget-agent-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.voicecake-widget-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 500;
+    border-radius: 12px;
+    background: #e9ecef;
+    color: #495057;
+    line-height: 1.2;
+}
+
+.voicecake-widget-badge-status {
+    background: #d4edda;
+    color: #155724;
+}
+
+.voicecake-widget-badge-status.inactive {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Error Actions */
+.voicecake-widget-error-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.voicecake-widget-reload-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.voicecake-widget-reload-btn:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* Conversation Interface */
+.voicecake-widget-conversation {
+    margin-top: 20px;
+    border-top: 1px solid #e9ecef;
+    padding-top: 20px;
+}
+
+.voicecake-widget-conversation-header {
+    margin-bottom: 16px;
+}
+
+.voicecake-widget-conversation-header h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.voicecake-widget-conversation-content {
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.voicecake-widget-conversation-placeholder {
+    text-align: center;
+    color: #666;
+}
+
+.voicecake-widget-conversation-icon {
+    margin-bottom: 12px;
+    color: #667eea;
+}
+
+.voicecake-widget-conversation-placeholder p {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.voicecake-widget-conversation-status {
+    display: flex;
+    justify-content: center;
+}
+
+.voicecake-widget-status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #f8f9fa;
+    border-radius: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.voicecake-widget-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #28a745;
+    animation: voicecake-status-pulse 2s infinite;
+}
+
+@keyframes voicecake-status-pulse {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.1);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.voicecake-widget-status-indicator span {
+    font-size: 12px;
+    font-weight: 500;
+    color: #495057;
+}
+
 .voicecake-widget-state {
     min-height: 200px;
     display: flex;

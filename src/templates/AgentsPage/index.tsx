@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import Layout from "@/components/Layout";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
@@ -15,6 +16,8 @@ import { agentsService } from "@/services/agent";
 import { Agent } from "@/types/agent";
 import { toast } from "sonner";
 import { CreateAgentModal } from "@/components/CreateAgentModal";
+import { ShareAgentModal } from "@/components/ShareAgentModal";
+import { ConfirmationModal } from "@/components/ConfirmationModal";
 import { useAgentEdit } from "@/context/agentEditContext";
 
 const typeOptions = [
@@ -31,6 +34,11 @@ const AgentsPage = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [typeFilter, setTypeFilter] = useState({ id: 1, name: "All" });
     const [isCreateAgentModalOpen, setIsCreateAgentModalOpen] = useState(false);
+    const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
+    const [agentToDelete, setAgentToDelete] = useState<Agent | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     // Note: We don't clear edit state on mount to preserve edit context when navigating back from add-agent page
@@ -70,6 +78,42 @@ const AgentsPage = () => {
         return type === "SPEECH" 
             ? "bg-[#6366F1]/20 text-[#6366F1]" 
             : "bg-[#8B5CF6]/20 text-[#8B5CF6]";
+    };
+
+    const handleDeleteAgent = (agent: Agent) => {
+        setAgentToDelete(agent);
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDeleteAgent = async () => {
+        if (!agentToDelete) return;
+        
+        try {
+            setIsDeleting(true);
+            await agentsService.deleteAgent(agentToDelete.id);
+            setAgents(agents.filter(agent => agent.id !== agentToDelete.id));
+            toast.success("Agent deleted successfully");
+            setIsDeleteModalOpen(false);
+            setAgentToDelete(null);
+        } catch (error: any) {
+            console.error("Error deleting agent:", error);
+            toast.error("Failed to delete agent");
+        } finally {
+            setIsDeleting(false);
+        }
+    };
+
+    const cancelDeleteAgent = () => {
+        setIsDeleteModalOpen(false);
+        setAgentToDelete(null);
+    };
+
+    const handleShareAgent = (agentId: number) => {
+        const agent = agents.find(a => a.id === agentId);
+        if (agent) {
+            setSelectedAgent(agent);
+            setIsShareModalOpen(true);
+        }
     };
 
     const getStatusColor = (status: string) => {
@@ -527,9 +571,31 @@ const AgentsPage = () => {
                                                         >
                                                             <Icon name="play" className="w-4 h-4 fill-t-secondary" />
                                                         </button>
-                                                        <button className="w-8 h-8 p-1 border rounded-3xl border-gray-300 rounded hover:bg-gray-100 hover:text-primary-01 flex items-center justify-center transition-colors">
-                                                            <Icon name="dots" className="w-4 h-4 fill-t-secondary" />
-                                                        </button>
+                                                        <Menu as="div" className="relative">
+                                                            <MenuButton className="w-8 h-8 p-1 border rounded-3xl border-gray-300 rounded hover:bg-gray-100 hover:text-primary-01 flex items-center justify-center transition-colors">
+                                                                <Icon name="dots" className="w-4 h-4 fill-t-secondary" />
+                                                            </MenuButton>
+                                                            <MenuItems className="absolute right-0 z-20 min-w-32 p-2 rounded-[1.25rem] bg-b-surface2 border border-s-subtle outline-none shadow-dropdown origin-top transition duration-300 ease-out data-[closed]:scale-95 data-[closed]:opacity-0">
+                                                                <MenuItem as="div">
+                                                                    <button
+                                                                        onClick={() => handleShareAgent(agent.id)}
+                                                                        className="flex items-center w-full px-3 py-2 text-sm text-t-secondary hover:text-t-primary hover:bg-b-highlight rounded-lg transition-colors"
+                                                                    >
+                                                                        <Icon name="share" className="w-4 h-4 mr-2" />
+                                                                        Share
+                                                                    </button>
+                                                                </MenuItem>
+                                                                <MenuItem as="div">
+                                                                    <button
+                                                                        onClick={() => handleDeleteAgent(agent)}
+                                                                        className="flex items-center w-full px-3 py-2 text-sm text-t-secondary hover:text-t-primary hover:bg-b-highlight rounded-lg transition-colors text-red-500 hover:text-red-600"
+                                                                    >
+                                                                        <Icon name="trash" className="w-4 h-4 mr-2" />
+                                                                        Delete
+                                                                    </button>
+                                                                </MenuItem>
+                                                            </MenuItems>
+                                                        </Menu>
                                                     </div>
                                                     {/* Empty column for spacing */}
                                                     <div className="flex items-center">
@@ -643,6 +709,22 @@ const AgentsPage = () => {
                     onClose={handleCloseEditModal}
                     onSubmit={handleCreateAgent}
                 />
+            <ShareAgentModal 
+                isOpen={isShareModalOpen} 
+                onClose={() => setIsShareModalOpen(false)}
+                agent={selectedAgent}
+            />
+            <ConfirmationModal
+                isOpen={isDeleteModalOpen}
+                onClose={cancelDeleteAgent}
+                onConfirm={confirmDeleteAgent}
+                title="Delete Agent"
+                message={`Are you sure you want to delete "${agentToDelete?.name}"? This action cannot be undone and will permanently remove the agent and all its data.`}
+                confirmText="Delete Agent"
+                cancelText="Cancel"
+                type="danger"
+                isLoading={isDeleting}
+            />
         </Layout>
     );
 };
