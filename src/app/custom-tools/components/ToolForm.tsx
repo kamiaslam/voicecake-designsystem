@@ -36,7 +36,7 @@ export const ToolForm = ({
             key={item.tabId}
             className={`flex items-center h-12 px-5.5 rounded-full border text-button transition-colors hover:text-t-primary ${
               activeTab === item.tabId
-                ? "border-s-stroke2 text-white bg-black dark:bg-white dark:text-black"
+                ? "border-s-subtle text-white bg-black dark:bg-white dark:text-black"
                 : "border-transparent text-t-secondary"
             }`}
             onClick={() => onTabClick(item.tabId)}

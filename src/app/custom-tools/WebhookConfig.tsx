@@ -22,7 +22,7 @@ const WebhookConfig = ({ webhookSecret, setWebhookSecret }: WebhookConfigProps) 
             />
 
             {/* Third-Party Tool Integration */}
-            <div className="p-4 border border-s-stroke2 rounded-3xl bg-b-surface2">
+            <div className="p-4 border border-s-subtle rounded-3xl bg-b-surface2">
                 <div className="flex items-center gap-2 mb-4">
                     <Icon name="link" className="w-5 h-5 text-t-primary" />
                     <h3 className="text-h6 text-t-primary">Third-Party Tool Integration</h3>
@@ -52,9 +52,9 @@ const WebhookConfig = ({ webhookSecret, setWebhookSecret }: WebhookConfigProps) 
             </div>
 
             {/* Example Request */}
-            <div className="p-4 border border-s-stroke2 rounded-3xl bg-b-surface2">
+            <div className="p-4 border border-s-subtle rounded-3xl bg-b-surface2">
                 <h3 className="text-h6 text-t-primary mb-4">Example Request to Your Webhook</h3>
-                <div className="bg-b-surface1 border border-s-stroke2 rounded-2xl p-4">
+                <div className="bg-b-surface1 border border-s-subtle rounded-2xl p-4">
                     <pre className="text-sm text-t-primary font-mono whitespace-pre-wrap">
 {`POST /your-webhook-url
 Content-Type: application/json
