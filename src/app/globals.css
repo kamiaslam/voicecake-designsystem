@@ -637,3 +637,21 @@ code, pre, kbd, samp, var,
         @apply stroke-transparent outline-none;
     }
 }
+
+/* Custom Tools page specific styles - dark layout only */
+[data-theme="dark"] {
+    /* Add 2px solid black border to p-4 bg-b-surface2 rounded-lg border border-s-stroke elements */
+    .p-4.bg-b-surface2.rounded-lg.border.border-s-stroke {
+        border: 2px solid #000 !important;
+    }
+    
+    /* Add 2px solid border-bottom to table header */
+    .border-b.border-s-stroke {
+        border-bottom: 2px solid #0f172b !important;
+    }
+}
+
+/* Hide button in sidebar - applies to both light and dark layouts */
+.card.sticky.top-22.shrink-0.w-120.max-3xl\:w-100.max-2xl\:w-74.max-lg\:hidden .inline-flex.items-center.justify-center.h-12.border.rounded-3xl.text-button.transition-all.cursor-pointer.disabled\:pointer-events-none.px-6\.5.w-full.mb-4.transition-all.duration-200.shadow-lg.hover\:shadow-xl.scale-105 {
+    display: none !important;
+}
