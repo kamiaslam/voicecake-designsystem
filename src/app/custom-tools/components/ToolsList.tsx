@@ -171,7 +171,7 @@ export const ToolsList = ({
       {/* Quick Stats */}
       {tools.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-          <div className="p-4 bg-b-surface2 rounded-lg border border-s-stroke">
+          <div className="p-4 bg-b-surface2 rounded-lg border border-s-subtle">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-t-secondary">Total Tools</p>
@@ -180,7 +180,7 @@ export const ToolsList = ({
               <Icon name="tools" className="w-8 h-8 fill-t-secondary" />
             </div>
           </div>
-          <div className="p-4 bg-b-surface2 rounded-lg border border-s-stroke">
+          <div className="p-4 bg-b-surface2 rounded-lg border border-s-subtle">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-t-secondary">Active Tools</p>
@@ -191,7 +191,7 @@ export const ToolsList = ({
               <Icon name="check-circle" className="w-8 h-8 fill-primary-02" />
             </div>
           </div>
-          <div className="p-4 bg-b-surface2 rounded-lg border border-s-stroke">
+          <div className="p-4 bg-b-surface2 rounded-lg border border-s-subtle">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-t-secondary">Avg Success Rate</p>

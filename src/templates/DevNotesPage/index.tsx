@@ -307,7 +307,7 @@ const DevNotesPage = () => {
           <Card title="API Documentation" className="p-6">
             <div className="space-y-4">
               {apiEndpoints.map((endpoint, index) => (
-                <div key={index} className="border border-[var(--stroke-border)] rounded-lg p-4">
+                <div key={index} className="border border-s-subtle rounded-lg p-4">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-2">
                     <div className="flex items-center gap-3">
                       <Badge className={`${endpoint.method === 'GET' ? 'bg-blue-500/10 text-blue-400' : 'bg-green-500/10 text-green-400'} font-mono`}>
@@ -334,7 +334,7 @@ const DevNotesPage = () => {
           <Card title="Integration Guides" className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {integrationGuides.map((guide, index) => (
-                <div key={index} className="border border-[var(--stroke-border)] rounded-lg p-4">
+                <div key={index} className="border border-s-subtle rounded-lg p-4">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-medium">{guide.title}</h3>
                     <Badge className={getDifficultyColor(guide.difficulty)}>
@@ -359,7 +359,7 @@ const DevNotesPage = () => {
           <Card title="Troubleshooting" className="p-6">
             <div className="space-y-4">
               {troubleshootingItems.map((item, index) => (
-                <div key={index} className="border border-[var(--stroke-border)] rounded-lg p-4">
+                <div key={index} className="border border-s-subtle rounded-lg p-4">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-medium">{item.issue}</h3>
                     <Badge className={getSeverityColor(item.severity)}>
