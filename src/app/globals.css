@@ -676,3 +676,16 @@ body:not([data-theme="dark"]) {
         border-color: #C1C1BC !important;
     }
 }
+
+/* HTTP Method Badge Colors - Devnotes Page */
+/* GET method badge - green background (targeting the blue variant used for GET) */
+.bg-blue-500\/10.text-blue-400.font-mono {
+    background-color: #00B03B !important;
+    color: white !important;
+}
+
+/* POST method badge - purple background (targeting the green variant used for POST) */
+.bg-green-500\/10.text-green-400.font-mono {
+    background-color: #5644D0 !important;
+    color: white !important;
+}
