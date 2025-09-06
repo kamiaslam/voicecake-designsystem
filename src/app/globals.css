@@ -694,3 +694,8 @@ body:not([data-theme="dark"]) {
 .inline-flex.items-center.px-2\.5.py-0\.5.rounded-full.text-xs.font-medium {
     font-weight: 600 !important;
 }
+
+/* Update background color for specific elements */
+.relative.z-2.flex.justify-center.items-center.shrink-0.\!size-11.rounded-full.bg-b-surface1 {
+    background-color: #D2F0FF !important;
+}
