@@ -6,6 +6,7 @@ import AppProtection from "@/components/AppProtection";
 import { Toaster } from "sonner";
 import "./globals.css";
 
+
 const interDisplay = localFont({
     src: [
         {

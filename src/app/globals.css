@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @plugin "tailwind-scrollbar";
 
+
 /* Modern Toast Styles */
 .toast-modern {
   animation: slideInRight 0.3s ease-out;
@@ -78,6 +79,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
@@ -101,6 +105,69 @@
     font-feature-settings: 'liga' 1, 'kern' 1;
     letter-spacing: -0.02em;
 }
+
+.font-open-sans {
+    font-family: "Open Sans", sans-serif !important;
+}
+
+.font-instrument {
+    font-family: "Instrument Serif", serif !important;
+}
+.font-w-thin{
+    font-weight: 100 !important;
+}
+.highlighted-heading{
+    color:  #82D7FF;
+    position: relative;
+    background-image: url(../../public/images/text-elips.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.swiper-section .swiper {
+    overflow: visible;
+}
+body{
+    overflow-x:hidden ;
+}
+.my-shape-top {
+    border-radius: 1742px;
+    background: radial-gradient(
+    39.93% 39.93% at 50% 50%,
+    rgba(128, 202, 88, 0.5) 0%,
+    rgba(4, 78, 129, 0) 100%
+  );
+    position: absolute;
+    width: 1742px;
+    height: 1742px;
+    left: -52%;
+    top: -114%;
+}
+.my-shape-bottom {
+    border-radius: 1742px;
+    background: radial-gradient(39.93% 39.93% at 50% 50%, rgba(130, 215, 255, 0.50) 0%, rgba(4, 78, 129, 0.00) 100%);
+    position: absolute;
+    width: 1742px;
+    height: 1742px;
+    right: -52%;
+    bottom: -150%;
+    z-index: 9;
+}
+/* .highlighted-heading::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(130, 215, 255, 0) 0%,
+    rgba(130, 215, 255, 0.5) 57.21%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  pointer-events: none;
+} */
 
 /* Heading styles with JetBrains Mono */
 h1, h2, h3, h4, h5, h6,
@@ -173,22 +240,33 @@ h1, h2, h3, h4, h5, h6,
 }
 
 /* Keep monospace for bold/semibold text that's not in headings */
-.font-bold, .font-semibold {
+/* .font-bold, .font-semibold {
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace !important;
-}
+} */
+ .font-bold{
+    font-weight: 700;
+ }
 
 /* Primary color overrides */
 .bg-primary-01 {
     background-color: #333339;
 }
+.hero-section {
+    background-image: url(/_next/static/media/hero-banner.cb29cdd6.jpg);
+    background-position: bottom center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+}
 
 /* Landing page hero text */
 .hero-section h1,
 .hero-section h2 {
-    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace !important;
-    font-weight: 600 !important;
+    /* font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace !important; */
+    font-family: "Instrument Serif", serif !important;
+    font-weight: 100 !important;
+    letter-spacing: -3.4px;
 }
-
 .hero-section p {
     font-family: 'Instrument Sans', Roboto, sans-serif !important;
 }
@@ -408,6 +486,8 @@ code, pre, kbd, samp, var,
     --default-transition-duration: 0.2s;
     --default-border-width: 1.5px;
     --border-width-1: 1px;
+    --font-sans: "Open Sans", sans-serif;
+    --font-instrument: "Instrument Serif", serif;
     --font-inter: var(--font-inter-display);
     --text-0: 0;
     --text-h1: 6rem;

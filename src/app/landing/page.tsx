@@ -9,6 +9,12 @@ import Badge from "@/components/Badge";
 import Field from "@/components/Field";
 import Logo from "@/components/Logo";
 import ThemeButton from "@/components/ThemeButton";
+import dynamic from "next/dynamic";
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Pagination, Navigation } from "swiper/modules";
 
 const LandingPage = () => {
     const [email, setEmail] = useState("");
@@ -16,26 +22,32 @@ const LandingPage = () => {
 
     const whyVoicecakeFeatures = [
         {
+            image: "/images/Buttonbase.png",
             title: "Outcome first",
             description: "Teams report dramatic lifts in satisfaction, often 10x, with some feedback showing 10 to 100x, and clear gains in conversion and revenue"
         },
         {
+            image: "/images/cloudebutton.png",
             title: "All in one suite",
             description: "Create the agent, design the logic and publish, without leaving the platform or hiring a developer"
         },
         {
+            image: "/images/indexbutton.png",
             title: "International by design",
             description: "English, Arabic and other major languages for web and telephony, with GCC dialect coverage where you need it"
         },
         {
+            image: "/images/copybutton.png",
             title: "Fast to live",
             description: "No development knowledge needed, you can be up and running in minutes"
         },
         {
+            image: "/images/musicbutton.png",
             title: "Transparent pricing",
             description: "No hidden charges, our natural voice collection is included, what you see is what you pay"
         },
         {
+            image: "/images/mailbutton.png",
             title: "Trusted already",
             description: "Hundreds of customers across global markets, including leaders in the GCC"
         }
@@ -43,19 +55,23 @@ const LandingPage = () => {
 
     const agentSuite = [
         {
-            name: "Conversa",
-            subtitle: "precision scripted voice and rich chat",
-            description: "Perfect for announcements, proactive outreach and guided flows. Conversa gives you crystal clear, on brand delivery, hands off to your team when needed, and stays compliant by design."
-        },
-        {
-            name: "Empth",
-            subtitle: "real time conversational intelligence",
-            description: "Built for open ended conversations in voice and chat. Empth understands intent, keeps context, negotiates next steps and resolves, on your site or your phone lines."
-        },
-        {
+            Image: "/images/girl-avtar.png",
+            bottomImage: "/images/media icons.png",
             name: "Sahla",
-            subtitle: "native Arabic for the GCC and beyond",
-            description: "Our premier Arabic agent for business. Sahla speaks major GCC dialects naturally, plus English, respects local etiquette, and is aligned with GCC laws and regulations. Ideal for banking, public sector, healthcare, hospitality and retail across KSA, UAE, Qatar, Kuwait, Bahrain and Oman."
+            description: "Sahla is our leading Arabic business agent, fluent in GCC dialects and English. She knows local customs and adheres to GCC laws, making her ideal for banking, healthcare, hospitality, and retail in KSA, UAE, Qatar, Kuwait, Bahrain, and Oman."
+        },
+        {
+            Image: "/images/second-avtar.png",
+            bottomImage: "/images/media icons.png",
+            name: "Conversa",
+            description: "Perfect for announcements, proactive outreach and guided flows. Conversa gives you crystal clear, on brand delivery, hands off to your team when needed, and stays compliant by design."
+
+        },
+        {
+            Image: "/images/thrid-avtar.png",
+            bottomImage: "/images/media icons.png",
+            name: "Empth",
+            description: "Built for open ended conversations in voice and chat. Empth understands intent, keeps context, negotiates next steps and resolves, on your site or your phone lines."
         }
     ];
 
@@ -219,42 +235,50 @@ const LandingPage = () => {
         }
     ];
 
+    var settings = {
+        dots: true,
+        infinite: true,
+        speed: 500,
+        slidesToShow: 1,
+        slidesToScroll: 1,
+    };
+
     return (
-        <div className="min-h-screen bg-b-surface1">
+        <div className="min-h-screen bg-b-surface1 overflow-hidden">
             {/* Header/Navigation */}
-            <header className="fixed top-0 left-0 right-0 z-50 bg-b-surface1/80 backdrop-blur-md border-b border-s-border">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+            <header className="fixed top-[40px] left-0 right-0 z-50 ">
+                <div className="max-w-[990px] mx-auto px-4 sm:px-6 py-4 bg-white rounded-[90px] relative">
                     <div className="flex items-center justify-between">
-                        <Logo className="w-auto h-8 sm:h-12" />
-                        
+                        <Logo className="w-[64px] h-[44px] sm:h-12 [filter:invert(1)]" />
+
                         {/* Desktop Navigation */}
                         <nav className="hidden md:flex items-center space-x-8">
-                            <Link href="/products" className="text-t-primary hover:text-t-secondary transition-colors">
+                            <Link href="/products" className="text-[#000] font-open-sans text-sm hover:text-t-secondary transition-colors">
                                 Product
                             </Link>
-                            <Link href="/customers" className="text-t-primary hover:text-t-secondary transition-colors">
+                            <Link href="/customers" className="text-[#000] font-open-sans text-sm hover:text-t-secondary transition-colors">
                                 Solutions
                             </Link>
-                            <Link href="/billing" className="text-t-primary hover:text-t-secondary transition-colors">
+                            <Link href="/billing" className="text-[#000] font-open-sans text-sm hover:text-t-secondary transition-colors">
                                 Pricing
                             </Link>
-                            <Link href="/support" className="text-t-primary hover:text-t-secondary transition-colors">
+                            <Link href="/support" className="text-[#000] font-open-sans text-sm hover:text-t-secondary transition-colors">
                                 Resources
                             </Link>
-                            <Link href="/team" className="text-t-primary hover:text-t-secondary transition-colors">
+                            <Link href="/team" className="text-[#000] font-open-sans text-sm hover:text-t-secondary transition-colors">
                                 Company
                             </Link>
                         </nav>
 
                         {/* Desktop Actions */}
                         <div className="hidden md:flex items-center space-x-4">
-                            <ThemeButton className="flex-row w-22"/>
-                            <Link href="/auth/signin" className="text-t-primary hover:text-t-secondary transition-colors">
+                            <ThemeButton className="flex-row absolute right-[-100px] w-[51px] h-[23px] justify-center items-center gap-[11px]" />
+                            <Link href="/auth/signin" className="text-xs font-open-sans text-[#000] hover:text-t-secondary transition-colors">
                                 Sign in
                             </Link>
-                            <Button>
-                                Book a demo
-                            </Button>
+                            <button className="text-[#0F172A] font-open-sans rounded-[100px] bg-[linear-gradient(85deg,#82D7FF_6.31%,#19B95A_77.97%)] w-[150px] h-[36px] flex justify-center items-center text-sm font-bold">
+                                Open Dashboard
+                            </button>
                         </div>
 
                         {/* Mobile Menu Button */}
@@ -270,36 +294,36 @@ const LandingPage = () => {
                     {mobileMenuOpen && (
                         <div className="md:hidden mt-4 pb-4 border-t border-s-border">
                             <nav className="flex flex-col space-y-4 mt-4">
-                                <Link 
-                                    href="/products" 
+                                <Link
+                                    href="/products"
                                     className="text-t-primary hover:text-t-secondary transition-colors py-2"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
                                     Product
                                 </Link>
-                                <Link 
-                                    href="/customers" 
+                                <Link
+                                    href="/customers"
                                     className="text-t-primary hover:text-t-secondary transition-colors py-2"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
                                     Solutions
                                 </Link>
-                                <Link 
-                                    href="/billing" 
+                                <Link
+                                    href="/billing"
                                     className="text-t-primary hover:text-t-secondary transition-colors py-2"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
                                     Pricing
                                 </Link>
-                                <Link 
-                                    href="/support" 
+                                <Link
+                                    href="/support"
                                     className="text-t-primary hover:text-t-secondary transition-colors py-2"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
                                     Resources
                                 </Link>
-                                <Link 
-                                    href="/team" 
+                                <Link
+                                    href="/team"
                                     className="text-t-primary hover:text-t-secondary transition-colors py-2"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
@@ -310,8 +334,8 @@ const LandingPage = () => {
                                 <div className="flex justify-center">
                                     <ThemeButton />
                                 </div>
-                                <Link 
-                                    href="/auth/signin" 
+                                <Link
+                                    href="/auth/signin"
                                     className="text-t-primary hover:text-t-secondary transition-colors py-2"
                                     onClick={() => setMobileMenuOpen(false)}
                                 >
@@ -326,16 +350,16 @@ const LandingPage = () => {
                 </div>
             </header>
 
-                        {/* Hero Section */}
-            <section className="hero-section pt-20 md:pt-32 lg:pt-40 pb-20" style={{ backgroundColor: '#000000' }}>
-                <div className="max-w-7xl mx-auto px-4 md:px-6 text-center">
-                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight">
+            {/* Hero Section */}
+            <section className="hero-section pt-20 md:pt-[250px] lg:pt-[250px] pb-20 h-[100%]" style={{ backgroundColor: '#0F172A' }}>
+                <div className="max-w-[871px] w-full mx-auto px-4 md:px-6 text-center leading-[125%]">
+                    <h1 className="text-[30px] md:text-[52px] font-instrument font-normal text-white leading-[52px] tracking-[-3.04px] mb-[24px]">
                         Turn every call and click into revenue, with AI voice, chat and automations in one platform
                     </h1>
-                    <p className="text-sm sm:text-base md:text-lg text-gray-300 mb-6 md:mb-8 max-w-4xl mx-auto leading-relaxed px-4">
+                    <p className="text-[#B9B9B9] text-center font-open-sans text-base leading-[125%] mb-[40px]">
                         Launch human sounding voice bots and website chat that solve, sell and support, across your phone lines and your site, anywhere in the world. Go live in minutes, integrate with your stack in a few clicks, and scale globally, including native Arabic across major GCC dialects plus English. Speak to the bot on this page any time for a live demo and quick answers.
                     </p>
-                    
+
                     {/* Animation after text */}
                     <div className="flex justify-center mb-6 md:mb-8">
                         <div style={{ height: '150px', width: '150px' }}>
@@ -350,16 +374,16 @@ const LandingPage = () => {
                             </video>
                         </div>
                     </div>
-                    
+
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-6 md:mb-8 px-4">
                         <Link href="/auth/signup">
-                            <Button className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 h-10 sm:h-12 md:h-14 bg-white text-gray-900 hover:bg-gray-100">
+                            <button className="flex justify-center items-center text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 h-10 sm:h-12 md:h-14 font-open-sans bg-white text-gray-900 hover:bg-gray-100 rounded-[90px]">
                                 Get Started
-                            </Button>
+                            </button>
                         </Link>
-                        <Button className="text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 h-10 sm:h-12 md:h-14 bg-transparent border-2 border-white text-white hover:bg-white hover:text-gray-900">
+                        <button className=" flex justify-center items-center text-sm sm:text-base md:text-lg px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 h-10 sm:h-12 md:h-14 bg-transparent border-2 font-open-sans border-white text-white rounded-[90px] hover:bg-white hover:text-gray-900">
                             Book a Demo
-                        </Button>
+                        </button>
                     </div>
 
                     <div className="text-center mb-12 md:mb-16">
@@ -367,58 +391,93 @@ const LandingPage = () => {
                     </div>
                 </div>
             </section>
+            {/* Agent Suite Section  slider */}
+            <section className="py-12 sm:py-16 md:py-20 bg-[#0F172A] swiper-section overflow-hidden">
+                <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-6">
+                    <div className="text-center mb-12 sm:mb-[150px]">
+                        <h2 className="text-[30px] md:text-[52px] font-instrument font-w-thin text-white leading-[52px] tracking-[-3.04px] mb-[24px]">
+                            Meet the Voicecake<span className="highlighted-heading font-instrument font-w-thin"> Agent Suite</span>
+                        </h2>
+                    </div>
+                    <Swiper
+                        slidesPerView={2.5}
+                        spaceBetween={20}
+                        // pagination={{ clickable: true }}
+                        // navigation
+                        // modules={[Pagination, Navigation]}
+                        className="featured-slider"
+                    >
+                        <div className="space-y-6 sm:space-y-8">
+                            {agentSuite.map((agent, index) => (
+                                <SwiperSlide key={index}>
+                                    <div key={index} className="flex flex-col p-[28px] rounded-[30px] border border-[#757279] bg-[var(--secondary-secondary-5,rgba(245,238,255,0.05))]">
+                                        <div className="flex flex-col gap-[40px]">
+                                            <div className="w-full min-h-[293px] max-h-[293px] rounded-[30px] bg-[linear-gradient(174deg,#82D7FF_18.48%,#19B95A_91.1%)] relative ">
+                                                <img src={agent.Image} alt="agent-image" className="object-cover object-top w-[100%] h-full absolute bottom-[0px] min-h-[450px]" />
+                                            </div>
+                                            <div className="flex flex-col w-full">
+                                                <h3 className="text-[#F5EEFF)] font-open-sans text-[30px] font-bold leading-[30px] mb-[20px]">{agent.name}</h3>
+                                                <p className="text-[#F5EEFF] font-['Open_Sans'] text-[16px] font-normal leading-[24px] line-clamp-3">
+                                                    {agent.description}
+                                                </p>
+                                            </div>
+                                            <div className="w-full">
+                                                <div>
+                                                    <img src={agent.bottomImage} alt="" />
+                                                </div>
 
-            {/* Why Voicecake Section */}
-            <section className="py-12 sm:py-16 md:py-20 bg-b-surface2">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </SwiperSlide>
+                            ))}
+                        </div></Swiper>
+                </div>
+            </section>
+            {/*video section */}
+            <section className="py-12 sm:py-16 md:py-20 bg-[#0F172A] swiper-section relative">
+                <div className="my-shape-top"></div>
+                <div className="my-shape-bottom"></div>
+                <div className="max-w-[929px] w-full mx-auto p-[16px] rounded-[30px] border-2 border-[#82D7FF)] bg-[var(--secondary-secondary-5,rgba(245,238,255,0.05))]">
+                    <div className="relative w-full aspect-video rounded-lg overflow-hidden">
+                        <video
+                            className="w-full h-full object-cover bg-[#020D22] border rounded-[20px]"
+                            controls
+                            poster="/thumbnail.jpg"
+                        >
+                            <source src="/your-video.mp4" type="video/mp4" />
+                            <p className="text-[#FDFCFB)] text-center text-[28px] leading-[28px] tracking-[-0.56px]">Your browser does not support the video tag.</p>
+                        </video>
+
+
+                    </div>
+                    <p className="mt-2 text-[28px] text-gray-300 text-center font-instrument font-w-thin">
+                        The most realistic voice AI platform
+                    </p>
+                </div>
+            </section>
+            <section className="py-12 sm:py-16 md:py-20 pb-[160px] bg-[#0F172A] swiper-section relative">
+                <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
                     <div className="text-center mb-12 sm:mb-16">
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-t-primary mb-4">
-                            Why Voicecake.io
+                         <h2 className="text-[30px] md:text-[52px] font-instrument font-w-thin text-white leading-[52px] tracking-[-3.04px] mb-[24px]">
+                            Why<span className="highlighted-heading font-instrument font-w-thin"> Voicecake.io</span>
                         </h2>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                         {whyVoicecakeFeatures.map((feature, index) => (
-                            <div key={index} className="bg-b-surface1 rounded-xl p-4 sm:p-6 shadow-sm border border-s-border">
-                                <h3 className="text-base sm:text-lg font-semibold text-t-primary mb-2 sm:mb-3">
+                            <div key={index} className="rounded-[30px] border-2 border-[#1F2E4E] bg-[rgba(245,238,255,0.05)] backdrop-blur-[43.35px] p-[30px] min-h-[292px] flex flex-col gap-[30px]">
+                                <div className="w-full max-w-[56px] h-[56px]">
+                                    <img src={feature.image} alt="" />
+                                </div>
+                                <div className="w-full">
+                                <h3 className="text-[#FDFCFB] font-open-sans text-[22px] font-bold leading-[30px] mb-[20px]">
                                     {feature.title}
                                 </h3>
-                                <p className="text-xs sm:text-sm text-t-secondary leading-relaxed">
+                                <p className="text-[#B5B5B5] font-open-sans text-[16px] font-normal leading-[24px]">
                                     {feature.description}
                                 </p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Agent Suite Section */}
-            <section className="py-12 sm:py-16 md:py-20 bg-b-surface1">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                    <div className="text-center mb-12 sm:mb-16">
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-t-primary mb-4">
-                            Meet the Voicecake Agent Suite
-                        </h2>
-                    </div>
-
-                    <div className="space-y-6 sm:space-y-8">
-                        {agentSuite.map((agent, index) => (
-                            <div key={index} className="bg-b-surface1 rounded-xl p-4 sm:p-6 md:p-8 shadow-sm border border-s-border">
-                                <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6">
-                                    <div className="w-12 h-12 sm:w-16 sm:h-16 bg-primary-02 rounded-full flex items-center justify-center flex-shrink-0">
-                                        <span className="text-white font-bold text-lg sm:text-xl">{agent.name.charAt(0)}</span>
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-xl sm:text-2xl font-semibold text-t-primary mb-2">
-                                            {agent.name}
-                                        </h3>
-                                        <p className="text-base sm:text-lg text-t-secondary mb-3 sm:mb-4 font-medium">
-                                            {agent.subtitle}
-                                        </p>
-                                        <p className="text-xs sm:text-sm text-t-secondary leading-relaxed">
-                                            {agent.description}
-                                        </p>
-                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -447,11 +506,11 @@ const LandingPage = () => {
                                 GPT connectivity inside Sim AI lets you build automations conversationally, as if you were chatting in ChatGPT, so non technical teams can ship complex logic fast
                             </p>
                         </div>
-                        
+
                         <div className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border">
                             <h3 className="text-lg font-semibold text-t-primary mb-4">
                                 Connect your systems with secure webhooks and native connectors
-                                </h3>
+                            </h3>
                             <p className="text-sm text-t-secondary mb-4">
                                 For CRM, WhatsApp, SMS and email. Stay in one place, no context switching, no brittle glue code, no extra vendors to manage.
                             </p>
@@ -507,7 +566,7 @@ const LandingPage = () => {
                             <h3 className="text-base font-semibold text-t-primary mb-3">
                                 Try male and female voices across accents and languages
                             </h3>
-                                </div>
+                        </div>
                         <div className="bg-b-surface1 rounded-xl p-6 shadow-sm border border-s-border text-center">
                             <h3 className="text-base font-semibold text-t-primary mb-3">
                                 Switch styles from warm concierge to efficient agent with a single prompt
@@ -567,7 +626,7 @@ const LandingPage = () => {
                                 <div className="p-6">
                                     <h3 className="text-base font-semibold text-t-primary mb-3">
                                         {useCase.title}
-                                </h3>
+                                    </h3>
                                     <p className="text-sm text-t-secondary leading-relaxed">
                                         {useCase.description}
                                     </p>
@@ -624,7 +683,7 @@ const LandingPage = () => {
                             </p>
                         </div>
                     </div>
-                                    </div>
+                </div>
             </section>
 
             {/* Comparison Table Section */}
@@ -637,7 +696,7 @@ const LandingPage = () => {
                         <p className="text-lg text-t-secondary max-w-3xl mx-auto">
                             See how Voicecake compares to other solutions. We provide everything you need in one platform - no more juggling multiple tools.
                         </p>
-                                </div>
+                    </div>
 
                     <div className="bg-b-surface1 rounded-xl shadow-sm border border-s-border overflow-hidden">
                         <div className="overflow-x-auto">
@@ -715,7 +774,7 @@ const LandingPage = () => {
                     </div>
 
                     <div className="flex justify-center items-center">
-                            <Image
+                        <Image
                             src="/images/integration-banner.png"
                             width={800}
                             height={600}
@@ -743,18 +802,18 @@ const LandingPage = () => {
                                     className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-b-surface2 transition-colors"
                                 >
                                     <h3 className="text-lg font-semibold text-t-primary">
-                                    {faq.question}
-                                </h3>
-                                    <Icon 
-                                        name={openFaq === index ? "chevron-up" : "chevron-down"} 
+                                        {faq.question}
+                                    </h3>
+                                    <Icon
+                                        name={openFaq === index ? "chevron-up" : "chevron-down"}
                                         className="w-5 h-5 text-t-secondary transition-transform"
                                     />
                                 </button>
                                 {openFaq === index && (
                                     <div className="px-6 pb-4">
                                         <p className="text-sm text-t-secondary leading-relaxed">
-                                    {faq.answer}
-                                </p>
+                                            {faq.answer}
+                                        </p>
                                     </div>
                                 )}
                             </div>
@@ -843,8 +902,11 @@ const LandingPage = () => {
                     </div>
                 </div>
             </footer>
-        </div>
+        </div >
     );
 };
 
-export default LandingPage;
+//export default LandingPage;
+export default dynamic(() => Promise.resolve(LandingPage), {
+    ssr: false,
+});
