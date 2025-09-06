@@ -165,15 +165,36 @@ type IconProps = {
     fill?: string;
 };
 
-const Icon = ({ className, name, fill }: IconProps) => (
-    <svg
-        className={`inline-flex size-6 ${className || ""}`}
-        width={24}
-        height={24}
-        viewBox="0 0 24 24"
-    >
-        <path fill={fill || "currentColor"} d={icons[name]}></path>
-    </svg>
-);
+const Icon = ({ className, name, fill }: IconProps) => {
+    const iconPath = icons[name] || "";
+    
+    // If no icon path exists, return a placeholder or empty div
+    if (!iconPath) {
+        console.warn(`Icon "${name}" not found in icons object`);
+        return (
+            <div 
+                className={`inline-flex size-6 w-4 h-4 ${className || ""}`}
+                style={{ 
+                    backgroundColor: 'rgba(128, 128, 128, 0.3)', 
+                    borderRadius: '2px',
+                    minWidth: '16px',
+                    minHeight: '16px'
+                }}
+                title={`Missing icon: ${name}`}
+            />
+        );
+    }
+    
+    return (
+        <svg
+            className={`inline-flex size-6 ${className || ""}`}
+            width={24}
+            height={24}
+            viewBox="0 0 24 24"
+        >
+            <path fill={fill || "currentColor"} d={iconPath}></path>
+        </svg>
+    );
+};
 
 export default Icon;
