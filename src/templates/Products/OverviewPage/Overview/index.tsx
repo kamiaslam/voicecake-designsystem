@@ -121,7 +121,7 @@ const Overview = ({}) => {
 
     return (
         <Card
-            className="max-lg:overflow-hidden mb-3"
+            className="max-lg:overflow-hidden mb-3 p-6"
             title="Overview"
             headContent={
                 <>
