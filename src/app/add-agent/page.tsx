@@ -587,7 +587,7 @@ const CreateAssistantPage = () => {
         <Layout title="Create Assistant">
             <div className="flex items-start max-lg:block">
                 {/* Sidebar Menu */}
-                <div className="card sticky top-22 shrink-0 w-120 max-3xl:w-100 max-2xl:w-74 max-lg:hidden">
+                <div className="card sticky top-22 shrink-0 w-120 max-3xl:w-100 max-2xl:w-74 max-lg:hidden p-6">
                     <Search
                         className="mb-3"
                         value=""

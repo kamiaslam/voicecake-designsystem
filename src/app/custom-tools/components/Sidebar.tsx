@@ -25,7 +25,7 @@ export const Sidebar = ({
   navigation
 }: SidebarProps) => {
   return (
-    <div className="card sticky top-22 shrink-0 w-120 max-3xl:w-100 max-2xl:w-74 max-lg:hidden">
+    <div className="card sticky top-22 shrink-0 w-120 max-3xl:w-100 max-2xl:w-74 max-lg:hidden p-6">
       {/* Header */}
       <div className="mb-6">
         <h2 className="text-h6 text-t-primary mb-2">Custom Tools</h2>
