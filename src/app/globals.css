@@ -699,3 +699,15 @@ body:not([data-theme="dark"]) {
 .relative.z-2.flex.justify-center.items-center.shrink-0.\!size-11.rounded-full.bg-b-surface1 {
     background-color: #D2F0FF !important;
 }
+
+/* Keep icons dark on the #D2F0FF background in both light and dark themes */
+.relative.z-2.flex.justify-center.items-center.shrink-0.\!size-11.rounded-full.bg-b-surface1 svg,
+.relative.z-2.flex.justify-center.items-center.shrink-0.\!size-11.rounded-full.bg-b-surface1 .inline-flex {
+    color: #1a1a1a !important;
+    fill: #1a1a1a !important;
+}
+
+/* Ensure icon paths are dark */
+.relative.z-2.flex.justify-center.items-center.shrink-0.\!size-11.rounded-full.bg-b-surface1 svg path {
+    fill: #1a1a1a !important;
+}
