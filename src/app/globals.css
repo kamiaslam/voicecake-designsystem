@@ -656,9 +656,12 @@ code, pre, kbd, samp, var,
     display: none !important;
 }
 
-/* Devnotes page specific styling - add border color to border border-[var(--stroke-border)] rounded-lg p-4 */
-.border.border-\[var\(--stroke-border\)\].rounded-lg.p-4 {
-    border-color: #02102e !important;
+/* Dark theme specific border colors */
+[data-theme="dark"] {
+    /* Devnotes page - dark theme border color */
+    .border.border-\[var\(--stroke-border\)\].rounded-lg.p-4 {
+        border-color: #02102e !important;
+    }
 }
 
 /* Light theme specific border colors */
