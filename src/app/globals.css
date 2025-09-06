@@ -655,3 +655,8 @@ code, pre, kbd, samp, var,
 .card.sticky.top-22.shrink-0.w-120.max-3xl\:w-100.max-2xl\:w-74.max-lg\:hidden .inline-flex.items-center.justify-center.h-12.border.rounded-3xl.text-button.transition-all.cursor-pointer.disabled\:pointer-events-none.px-6\.5.w-full.mb-4.transition-all.duration-200.shadow-lg.hover\:shadow-xl.scale-105 {
     display: none !important;
 }
+
+/* Devnotes page specific styling - add border color to border border-[var(--stroke-border)] rounded-lg p-4 */
+.border.border-\[var\(--stroke-border\)\].rounded-lg.p-4 {
+    border-color: #02102e !important;
+}
