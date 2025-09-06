@@ -43,7 +43,7 @@ const InputSchema = ({ properties, addProperty, updateProperty, removeProperty }
             {/* Properties List */}
             <div className="space-y-3">
                 {properties.map((property, index) => (
-                    <div key={property.id || index} className="p-4 border border-s-stroke2 rounded-3xl bg-b-surface2">
+                    <div key={property.id || index} className="p-4 border border-s-subtle rounded-3xl bg-b-surface2">
                         <div className="flex items-center justify-between mb-4">
                             <h4 className="text-button text-t-primary">Property {index + 1}</h4>
                             <Button 
@@ -69,7 +69,7 @@ const InputSchema = ({ properties, addProperty, updateProperty, removeProperty }
                             <div>
                                 <label className="block text-button mb-4">Type*</label>
                                 <select
-                                    className="w-full h-12 px-4.5 border border-s-stroke2 rounded-full text-body-2 text-t-primary outline-none transition-colors hover:border-s-highlight focus:border-s-highlight bg-b-surface2"
+                                    className="w-full h-12 px-4.5 border border-s-subtle rounded-full text-body-2 text-t-primary outline-none transition-colors hover:border-s-highlight focus:border-s-highlight bg-b-surface2"
                                     value={property.type}
                                     onChange={(e) => updateProperty(index, 'type', e.target.value as any)}
                                 >

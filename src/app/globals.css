@@ -711,3 +711,18 @@ body:not([data-theme="dark"]) {
 .relative.z-2.flex.justify-center.items-center.shrink-0.\!size-11.rounded-full.bg-b-surface1 svg path {
     fill: #1a1a1a !important;
 }
+
+/* Cancel button styling - red background for isStroke buttons */
+.inline-flex.items-center.justify-center.h-12.border.rounded-3xl.text-button.transition-all.cursor-pointer.disabled\:pointer-events-none.px-6\.5.border-s-subtle.fill-t-secondary.text-t-secondary.hover\:border-s-highlight.hover\:text-t-primary.hover\:fill-t-primary.disabled\:border-transparent {
+    background-color: #FA7298 !important;
+    color: white !important;
+    fill: white !important;
+    border-color: #FA7298 !important;
+}
+
+.inline-flex.items-center.justify-center.h-12.border.rounded-3xl.text-button.transition-all.cursor-pointer.disabled\:pointer-events-none.px-6\.5.border-s-subtle.fill-t-secondary.text-t-secondary.hover\:border-s-highlight.hover\:text-t-primary.hover\:fill-t-primary.disabled\:border-transparent:hover {
+    background-color: #FA7298 !important;
+    color: white !important;
+    fill: white !important;
+    border-color: #FA7298 !important;
+}
