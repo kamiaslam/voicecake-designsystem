@@ -118,7 +118,7 @@ const CallLogsPage = () => {
         } else if (hasToNumber) {
             return "bg-purple-100 text-purple-800 border border-purple-200";
         } else {
-            return "bg-gray-100 text-gray-800 border border-gray-200";
+            return "bg-gray-100 text-gray-800 border border-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600";
         }
     };
 
@@ -143,7 +143,7 @@ const CallLogsPage = () => {
             completed: "bg-green-500/20 text-green-500 border border-green-500/30",
             expired: "bg-[#FFB020]/20 text-[#FFB020] border border-[#FFB020]/30"
         };
-        return statusClasses[status as keyof typeof statusClasses] || "bg-gray-100 text-gray-800 border border-gray-200";
+        return statusClasses[status as keyof typeof statusClasses] || "bg-gray-100 text-gray-800 border border-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600";
     };
 
     const formatDate = (dateString: string) => {

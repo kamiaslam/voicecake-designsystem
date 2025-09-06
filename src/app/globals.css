@@ -689,3 +689,8 @@ body:not([data-theme="dark"]) {
     background-color: #5644D0 !important;
     color: white !important;
 }
+
+/* Make all badge text semi-bold for better readability */
+.inline-flex.items-center.px-2\.5.py-0\.5.rounded-full.text-xs.font-medium {
+    font-weight: 600 !important;
+}

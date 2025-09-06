@@ -683,7 +683,7 @@ const Inference = () => {
 
             <Card className="p-6" title="Audio Settings">
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-b-depth2 border border-s-stroke rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-b-depth2 border border-s-subtle rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className="w-4 h-4 bg-[#6366F1] rounded"></div>
                     <span className="font-medium text-t-primary">Background Audio</span>
@@ -697,7 +697,7 @@ const Inference = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center justify-between p-4 bg-b-depth2 border border-s-stroke rounded-lg">
+                <div className="flex items-center justify-between p-4 bg-b-depth2 border border-s-subtle rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className="w-4 h-4 bg-[#8B5CF6] rounded"></div>
                     <span className="font-medium text-t-primary">Auto-play</span>

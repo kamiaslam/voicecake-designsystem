@@ -657,7 +657,7 @@ const AgentsPage = () => {
                         {loading ? (
                             <div className="space-y-4">
                                 {[...Array(2)].map((_, index) => (
-                                    <div key={index} className="flex items-center justify-between p-4 bg-b-depth2 border border-s-stroke rounded-lg">
+                                    <div key={index} className="flex items-center justify-between p-4 bg-b-depth2 border border-s-subtle rounded-lg">
                                         <div className="flex items-center gap-3">
                                             <div className="w-4 h-4 bg-gray-200 rounded animate-pulse"></div>
                                             <div className="h-4 bg-gray-200 rounded animate-pulse w-20"></div>
@@ -671,7 +671,7 @@ const AgentsPage = () => {
                             </div>
                         ) : (
                             <div className="space-y-4">
-                                <div className="flex items-center justify-between p-4 bg-b-depth2 border border-s-stroke rounded-lg">
+                                <div className="flex items-center justify-between p-4 bg-b-depth2 border border-s-subtle rounded-lg">
                                     <div className="flex items-center gap-3">
                                         <div className="w-4 h-4 bg-[#6366F1] rounded"></div>
                                         <span className="font-medium text-t-primary">SPEECH</span>
@@ -685,7 +685,7 @@ const AgentsPage = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="flex items-center justify-between p-4 bg-b-depth2 border border-s-stroke rounded-lg">
+                                <div className="flex items-center justify-between p-4 bg-b-depth2 border border-s-subtle rounded-lg">
                                     <div className="flex items-center gap-3">
                                         <div className="w-4 h-4 bg-[#8B5CF6] rounded"></div>
                                         <span className="font-medium text-t-primary">TEXT</span>
