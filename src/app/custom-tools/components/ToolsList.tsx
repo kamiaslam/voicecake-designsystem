@@ -177,7 +177,9 @@ export const ToolsList = ({
                 <p className="text-sm font-medium text-t-secondary">Total Tools</p>
                 <p className="text-2xl font-bold text-t-primary">{tools.length}</p>
               </div>
-              <Icon name="tools" className="w-8 h-8 fill-t-secondary" />
+              <div className="relative z-2 flex justify-center items-center shrink-0 !size-11 rounded-full bg-b-surface1">
+                <Icon name="tools" className="inline-flex size-6 fill-t-secondary transition-colors duration-200 fill-t-primary" />
+              </div>
             </div>
           </div>
           <div className="p-4 bg-b-surface2 rounded-lg border border-s-subtle">
@@ -188,7 +190,9 @@ export const ToolsList = ({
                   {tools.filter(t => t.is_active).length}
                 </p>
               </div>
-              <Icon name="check-circle" className="w-8 h-8 fill-primary-02" />
+              <div className="relative z-2 flex justify-center items-center shrink-0 !size-11 rounded-full bg-b-surface1">
+                <Icon name="check-circle" className="inline-flex size-6 fill-t-secondary transition-colors duration-200 fill-t-primary" />
+              </div>
             </div>
           </div>
           <div className="p-4 bg-b-surface2 rounded-lg border border-s-subtle">
@@ -199,7 +203,9 @@ export const ToolsList = ({
                   {tools.length > 0 ? Math.round(tools.reduce((sum, t) => sum + (t.success_rate || 0), 0) / tools.length) : 0}%
                 </p>
               </div>
-              <Icon name="chart" className="w-8 h-8 fill-primary-02" />
+              <div className="relative z-2 flex justify-center items-center shrink-0 !size-11 rounded-full bg-b-surface1">
+                <Icon name="chart" className="inline-flex size-6 fill-t-secondary transition-colors duration-200 fill-t-primary" />
+              </div>
             </div>
           </div>
         </div>
