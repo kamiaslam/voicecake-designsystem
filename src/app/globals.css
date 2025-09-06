@@ -660,3 +660,16 @@ code, pre, kbd, samp, var,
 .border.border-\[var\(--stroke-border\)\].rounded-lg.p-4 {
     border-color: #02102e !important;
 }
+
+/* Light theme specific border colors */
+body:not([data-theme="dark"]) {
+    /* Devnotes page - light theme border color */
+    .border.border-\[var\(--stroke-border\)\].rounded-lg.p-4 {
+        border-color: #C1C1BC !important;
+    }
+    
+    /* Custom tools page - light theme border color */
+    .p-4.bg-b-surface2.rounded-lg.border.border-s-stroke {
+        border-color: #C1C1BC !important;
+    }
+}
