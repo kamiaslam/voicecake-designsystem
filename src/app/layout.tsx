@@ -1,36 +1,9 @@
 import { headers } from "next/headers";
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
 import Providers from "./providers";
 import AppProtection from "@/components/AppProtection";
 import { Toaster } from "sonner";
 import "./globals.css";
-
-const interDisplay = localFont({
-    src: [
-        {
-            path: "../../public/fonts/InterDisplay-Light.woff2",
-            weight: "300",
-        },
-        {
-            path: "../../public/fonts/InterDisplay-Regular.woff2",
-            weight: "400",
-        },
-        {
-            path: "../../public/fonts/InterDisplay-Medium.woff2",
-            weight: "500",
-        },
-        {
-            path: "../../public/fonts/InterDisplay-SemiBold.woff2",
-            weight: "600",
-        },
-        {
-            path: "../../public/fonts/InterDisplay-Bold.woff2",
-            weight: "700",
-        },
-    ],
-    variable: "--font-inter-display",
-});
 
 export const metadata: Metadata = {
     title: "Dashboard",
@@ -45,10 +18,10 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
             <head>
-                {/* Google Fonts - Inter, Roboto Condensed & JetBrains Mono */}
+                {/* Google Fonts - Rajdhani for headings & IBM Plex Sans for body */}
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Condensed:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+                <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
                 {/* Description no longer than 155 characters */}
                 <meta
                     name="description"
@@ -134,7 +107,7 @@ export default function RootLayout({
                 />
             </head>
             <body
-                className={`${interDisplay.variable} bg-b-surface1 font-mono text-body-1 text-t-primary antialiased`}
+                className="bg-b-surface1 text-body-1 text-t-primary antialiased"
             suppressHydrationWarning>
                 <Providers>
                     <AppProtection>

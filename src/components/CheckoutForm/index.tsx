@@ -38,7 +38,7 @@ export default function CheckoutForm({ plan, autoRenew, onSuccess, onError }: Ch
         base: {
           fontSize: "16px",
           color: getCSSVariable('--color-text-primary') || (isDark ? "#F8F8F8" : "#1A1A1A"),
-          fontFamily: "'Instrument Sans', Roboto, sans-serif",
+          fontFamily: "'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
           "::placeholder": {
             color: getCSSVariable('--color-text-secondary') || (isDark ? "#A0A0A0" : "#666666"),
           },
